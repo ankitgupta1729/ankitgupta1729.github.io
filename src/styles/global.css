@@ -66,23 +66,26 @@ body {
   transform: translateY(-4px);
 }
 
-/* Reveal-on-scroll — only hide when JS is active, so content is never
-   invisible for no-JS users or crawlers. JS reveals as a progressive
-   enhancement and a safety timer guarantees everything appears. */
-.js [data-reveal] {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.js [data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .js [data-reveal] {
+/* Entrance animation — CSS-only so content is ALWAYS visible at the end,
+   even with no JS, slow JS, or crawlers. `both` fill mode locks the final
+   (visible) state. No IntersectionObserver dependency = nothing can stay
+   stuck hidden. */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
     opacity: 1;
     transform: none;
-    transition: none;
+  }
+}
+[data-reveal] {
+  animation: reveal-in 0.6s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    animation: none;
   }
 }
 

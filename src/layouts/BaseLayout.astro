@@ -110,28 +110,6 @@ const ogImage = new URL(image, SITE.url).toString();
         }
         document.addEventListener("scroll", onScroll, { passive: true });
         onScroll();
-
-        const els = document.querySelectorAll("[data-reveal]");
-        if (!("IntersectionObserver" in window)) {
-          els.forEach((el) => el.classList.add("is-visible"));
-        } else {
-          const io = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((e) => {
-                if (e.isIntersecting) {
-                  e.target.classList.add("is-visible");
-                  io.unobserve(e.target);
-                }
-              });
-            },
-            { threshold: 0.05, rootMargin: "0px 0px -5% 0px" }
-          );
-          els.forEach((el) => io.observe(el));
-          // Safety net: never let content stay hidden.
-          window.addEventListener("load", () => {
-            setTimeout(() => els.forEach((el) => el.classList.add("is-visible")), 1500);
-          });
-        }
       })();
     </script>
   </body>
