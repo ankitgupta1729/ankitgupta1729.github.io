@@ -1,0 +1,66 @@
+---
+title: "How RSA Lets Strangers Share Secrets"
+description: "Every time you see a padlock in your browser, public-key cryptography is at work. Here's the elegant number theory that lets two people who've never met communicate securely."
+category: "cryptography"
+tags: ["rsa", "public-key", "number-theory", "security"]
+author: "Ankit Gupta"
+pubDate: 2026-05-30
+heroEmoji: "🔐"
+---
+
+For most of history, encryption had a chicken-and-egg problem: to send a secret, both parties first needed to share a secret key — but how do you share that safely? In 1977, RSA solved it with a beautiful trick from number theory. You can publish a key for the *whole world* to see, and still receive messages only you can read.
+
+## The big idea: one-way doors
+
+RSA rests on a "trapdoor" function — easy to compute one way, practically impossible to reverse without a secret.
+
+The specific door is **factoring**. Multiplying two large primes is trivial:
+
+```
+61 × 53 = 3233
+```
+
+But going backward — given 3233, find the two primes — is hard. Now imagine the primes are hundreds of digits long. Multiplying still takes a microsecond; factoring would take the fastest computers longer than the age of the universe. *That* asymmetry is the entire foundation of RSA.
+
+## How the keys are made
+
+A simplified recipe (real RSA uses gigantic numbers):
+
+1. Pick two primes, `p` and `q`. Compute `n = p × q`.
+2. Compute `φ(n) = (p−1)(q−1)`.
+3. Choose a public exponent `e` (commonly 65537).
+4. Find `d`, the modular inverse of `e` — the private exponent.
+
+Now you have:
+- **Public key:** `(n, e)` — share it with everyone.
+- **Private key:** `d` — guard it with your life.
+
+## Sending a secret
+
+To encrypt a message `m`, anyone uses your *public* key:
+
+```
+ciphertext = mᵉ mod n
+```
+
+To decrypt, you use your *private* key:
+
+```
+m = ciphertextᵈ mod n
+```
+
+The math guarantees these undo each other — but only the holder of `d` can run the second step. Since computing `d` requires factoring `n`, and factoring is infeasible, your secret stays safe even though everyone can see your public key.
+
+## Digital signatures: the same trick in reverse
+
+Run the operations backward — sign with your *private* key, verify with your *public* key — and you get **digital signatures**. Anyone can confirm a message came from you and wasn't altered, because only you could have produced the signature. This is what underpins software updates, certificates, and the padlock in your browser.
+
+## The looming threat: quantum computers
+
+RSA's security assumes factoring is hard *for classical computers*. But Shor's algorithm, running on a sufficiently large quantum computer, could factor those numbers efficiently — breaking RSA. Such machines don't yet exist at the needed scale, but the threat is real enough that the world is already migrating to **post-quantum cryptography**: new schemes based on problems even quantum computers find hard.
+
+## Why it matters
+
+RSA is a rare case where abstract number theory — primes, modular arithmetic, Euler's theorem — turned out to underpin trillions of dollars of daily commerce. Every secure login, payment, and message owes a debt to the simple observation that some doors are far easier to walk through one way than the other.
+
+*Curious how Diffie–Hellman or elliptic curves compare? Let me know in the comments and I'll write it up.*

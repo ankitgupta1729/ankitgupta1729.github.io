@@ -1,0 +1,108 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import ReactionBar from "../components/ReactionBar.astro";
+import Comments from "../components/Comments.astro";
+import { formatDate, categoryBySlug } from "../lib/utils";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  minutes: number;
+  related: CollectionEntry<"blog">[];
+}
+
+const { post, minutes, related } = Astro.props;
+const { title, description, category, tags, author, pubDate, updatedDate, heroEmoji } =
+  post.data;
+const cat = categoryBySlug(category);
+---
+
+<BaseLayout title={title} description={description} article={true}>
+  <article class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <!-- Breadcrumb -->
+    <nav class="mb-6 text-sm text-gray-500 dark:text-gray-400">
+      <a href="/" class="hover:text-brand-600">Home</a>
+      <span class="mx-1.5">/</span>
+      <a href="/blog" class="hover:text-brand-600">Articles</a>
+      <span class="mx-1.5">/</span>
+      <a href={`/categories/${category}`} class="hover:text-brand-600">{cat?.name ?? category}</a>
+    </nav>
+
+    <header class="mb-8" data-pagefind-body>
+      <div class="flex items-center gap-3 text-sm">
+        <span
+          class="rounded-full px-3 py-1 font-semibold"
+          style={`background:${cat?.color ?? "#6366f1"}1a; color:${cat?.color ?? "#6366f1"};`}
+        >
+          {cat?.icon} {cat?.name ?? category}
+        </span>
+        <span class="text-gray-400">{minutes} min read</span>
+      </div>
+
+      <h1 class="mt-4 font-serif text-4xl font-bold leading-tight text-gray-900 sm:text-5xl dark:text-white" data-pagefind-meta="title">
+        {title}
+      </h1>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">{description}</p>
+
+      <div class="mt-6 flex items-center gap-3 border-y border-gray-200 py-4 dark:border-white/10">
+        <div class="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-brand-500 to-pink-500 font-bold text-white">
+          {author.charAt(0)}
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold text-gray-900 dark:text-white">{author}</p>
+          <p class="text-gray-500 dark:text-gray-400">
+            <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+            {updatedDate && <span> · Updated {formatDate(updatedDate)}</span>}
+          </p>
+        </div>
+        <div class="ml-auto text-4xl" aria-hidden="true">{heroEmoji}</div>
+      </div>
+    </header>
+
+    <div
+      class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 prose-img:rounded-xl dark:prose-invert dark:prose-a:text-brand-300 dark:prose-pre:border-white/10"
+      data-pagefind-body
+    >
+      <slot />
+    </div>
+
+    {
+      tags.length > 0 && (
+        <div class="mt-10 flex flex-wrap gap-2">
+          {tags.map((t) => (
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-white/5 dark:text-gray-300">
+              #{t}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    <ReactionBar title={title} />
+
+    {
+      related.length > 0 && (
+        <section class="mt-12">
+          <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Keep reading</h2>
+          <div class="grid gap-4 sm:grid-cols-2">
+            {related.map((r) => {
+              const rc = categoryBySlug(r.data.category);
+              return (
+                <a
+                  href={`/blog/${r.id}`}
+                  class="card-lift rounded-xl border border-gray-200 p-4 hover:border-brand-300 dark:border-white/10 dark:hover:border-brand-500/50"
+                >
+                  <div class="text-2xl">{r.data.heroEmoji}</div>
+                  <p class="mt-2 text-xs font-semibold" style={`color:${rc?.color}`}>{rc?.name}</p>
+                  <p class="mt-1 font-bold leading-snug text-gray-900 dark:text-white">{r.data.title}</p>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )
+    }
+
+    <Comments />
+  </article>
+</BaseLayout>

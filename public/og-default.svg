@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0f1a"/>
+      <stop offset="1" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="txt" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#818cf8"/>
+      <stop offset="0.5" stop-color="#f472b6"/>
+      <stop offset="1" stop-color="#2dd4bf"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="980" cy="120" r="220" fill="#6366f1" opacity="0.18"/>
+  <circle cx="180" cy="560" r="180" fill="#ec4899" opacity="0.14"/>
+  <text x="80" y="300" font-family="Georgia, serif" font-size="96" font-weight="bold" fill="url(#txt)">Polymath</text>
+  <text x="84" y="370" font-family="Inter, Arial, sans-serif" font-size="40" fill="#cbd5e1">Knowledge, beautifully organized.</text>
+  <text x="84" y="430" font-family="Inter, Arial, sans-serif" font-size="28" fill="#94a3b8">AI · Math · Physics · Finance · Science · History &amp; more</text>
+</svg>

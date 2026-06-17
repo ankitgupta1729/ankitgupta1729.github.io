@@ -1,0 +1,64 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { readingTime } from "../../lib/utils";
+import { CATEGORIES } from "../../consts";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
+  return CATEGORIES.map((c) => ({
+    params: { category: c.slug },
+    props: {
+      cat: c,
+      posts: posts
+        .filter((p) => p.data.category === c.slug)
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
+
+const { cat, posts } = Astro.props;
+---
+
+<BaseLayout title={cat.name} description={cat.blurb}>
+  <section class="aurora">
+    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <a href="/categories" class="text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">← All topics</a>
+      <div class="mt-4 flex items-center gap-4">
+        <div class="grid h-16 w-16 place-items-center rounded-2xl text-4xl" style={`background:${cat.color}1a`}>{cat.icon}</div>
+        <div>
+          <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">{cat.name}</h1>
+          <p class="mt-1 text-lg text-gray-600 dark:text-gray-400">{cat.blurb}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    {
+      posts.length > 0 ? (
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((p) => (
+            <ArticleCard
+              url={`/blog/${p.id}`}
+              title={p.data.title}
+              description={p.data.description}
+              category={p.data.category}
+              pubDate={p.data.pubDate}
+              heroEmoji={p.data.heroEmoji}
+              minutes={readingTime(p.body ?? "")}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="rounded-2xl border border-dashed border-gray-300 p-12 text-center dark:border-white/10">
+          <p class="text-4xl">{cat.icon}</p>
+          <p class="mt-3 text-lg font-semibold text-gray-800 dark:text-gray-200">Articles coming soon</p>
+          <p class="mt-1 text-gray-500 dark:text-gray-400">This topic is just getting started. Want to suggest one? Open a discussion in the forum.</p>
+          <a href="/forum" class="mt-5 inline-block rounded-xl bg-brand-600 px-5 py-2.5 font-semibold text-white transition hover:bg-brand-700">Suggest a topic</a>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

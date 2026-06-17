@@ -1,0 +1,27 @@
+---
+import { getCollection, render } from "astro:content";
+import BlogPost from "../../layouts/BlogPost.astro";
+import { readingTime } from "../../lib/utils";
+
+export async function getStaticPaths() {
+  const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
+  return posts.map((post) => {
+    const related = posts
+      .filter((p) => p.id !== post.id && p.data.category === post.data.category)
+      .slice(0, 2);
+    const fallback = posts.filter((p) => p.id !== post.id).slice(0, 2);
+    return {
+      params: { slug: post.id },
+      props: { post, related: related.length ? related : fallback },
+    };
+  });
+}
+
+const { post, related } = Astro.props;
+const { Content } = await render(post);
+const minutes = readingTime(post.body ?? "");
+---
+
+<BlogPost post={post} minutes={minutes} related={related}>
+  <Content />
+</BlogPost>

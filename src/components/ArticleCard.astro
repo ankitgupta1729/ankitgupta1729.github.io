@@ -1,0 +1,62 @@
+---
+import { formatDate, categoryBySlug } from "../lib/utils";
+
+interface Props {
+  url: string;
+  title: string;
+  description: string;
+  category: string;
+  pubDate: Date;
+  heroEmoji?: string;
+  tags?: string[];
+  minutes?: number;
+  featured?: boolean;
+}
+
+const { url, title, description, category, pubDate, heroEmoji = "📖", tags = [], minutes, featured = false } = Astro.props;
+const cat = categoryBySlug(category);
+---
+
+<article
+  data-reveal
+  class:list={[
+    "card-lift group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-xl hover:border-brand-300 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-brand-500/50",
+    featured ? "md:flex-row" : "",
+  ]}
+>
+  <a
+    href={url}
+    class:list={[
+      "relative grid place-items-center overflow-hidden text-6xl",
+      featured ? "md:w-2/5 aspect-video md:aspect-auto" : "aspect-[16/9]",
+    ]}
+    style={`background: linear-gradient(135deg, ${cat?.color ?? "#6366f1"}22, ${cat?.color ?? "#6366f1"}05);`}
+    aria-hidden="true"
+  >
+    <span class="transition-transform duration-300 group-hover:scale-110">{heroEmoji}</span>
+  </a>
+
+  <div class="flex flex-1 flex-col p-5">
+    <div class="flex items-center gap-2 text-xs">
+      <span
+        class="rounded-full px-2.5 py-1 font-semibold"
+        style={`background:${cat?.color ?? "#6366f1"}1a; color:${cat?.color ?? "#6366f1"};`}
+      >
+        {cat?.icon} {cat?.name ?? category}
+      </span>
+      {minutes && <span class="text-gray-400">{minutes} min read</span>}
+    </div>
+
+    <h3 class="mt-3 text-lg font-bold leading-snug text-gray-900 dark:text-white">
+      <a href={url} class="transition group-hover:text-brand-600 dark:group-hover:text-brand-300">{title}</a>
+    </h3>
+    <p class="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{description}</p>
+
+    <div class="mt-4 flex items-center justify-between">
+      <time class="text-xs text-gray-400">{formatDate(pubDate)}</time>
+      <a href={url} class="text-sm font-semibold text-brand-600 transition group-hover:translate-x-0.5 dark:text-brand-300">
+        Read →
+      </a>
+    </div>
+  </div>
+</article>

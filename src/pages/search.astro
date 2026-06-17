@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Search" description="Search every article on Polymath.">
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">Search</h1>
+    <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">
+      Full-text search across every article. Fast, private, and runs entirely in your browser.
+    </p>
+
+    <div id="search" class="mt-8"></div>
+
+    <noscript>
+      <p class="mt-4 text-sm text-gray-500">Search requires JavaScript. You can still browse via <a class="text-brand-600 underline" href="/blog">Articles</a>.</p>
+    </noscript>
+  </section>
+</BaseLayout>
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+<script is:inline>
+  window.addEventListener("DOMContentLoaded", () => {
+    if (window.PagefindUI) {
+      new window.PagefindUI({
+        element: "#search",
+        showSubResults: true,
+        showImages: false,
+        resetStyles: false,
+      });
+    } else {
+      document.getElementById("search").innerHTML =
+        '<div class="rounded-xl border border-dashed border-gray-300 p-6 text-sm text-gray-500 dark:border-white/10">Search index builds during deployment. Run <code>npm run build</code> locally, or try it on the live site.</div>';
+    }
+  });
+</script>
