@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" class="scroll-smooth"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.18.2"><title>Bayes&#39; Theorem: The Math of Changing Your Mind · Polymath</title><meta name="description" content="A single formula tells you how much to update a belief when new evidence arrives. It's the backbone of spam filters, medical tests, and clear thinking itself."><meta name="author" content="Ankit Gupta"><link rel="canonical" href="https://ankitgupta1729.github.io/blog/bayes-theorem-updating-beliefs/"><!-- Open Graph --><meta property="og:type" content="article"><meta property="og:title" content="Bayes' Theorem: The Math of Changing Your Mind · Polymath"><meta property="og:description" content="A single formula tells you how much to update a belief when new evidence arrives. It's the backbone of spam filters, medical tests, and clear thinking itself."><meta property="og:url" content="https://ankitgupta1729.github.io/blog/bayes-theorem-updating-beliefs/"><meta property="og:image" content="https://ankitgupta1729.github.io/og-default.svg"><meta property="og:site_name" content="Polymath"><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Bayes' Theorem: The Math of Changing Your Mind · Polymath"><meta name="twitter:description" content="A single formula tells you how much to update a belief when new evidence arrives. It's the backbone of spam filters, medical tests, and clear thinking itself."><meta name="twitter:image" content="https://ankitgupta1729.github.io/og-default.svg"><link rel="alternate" type="application/rss+xml" title="Polymath" href="/rss.xml"><!-- Fonts --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opt@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><!-- Theme: apply before paint to avoid flash --><script>
+<!DOCTYPE html><html lang="en" class="scroll-smooth"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.18.2"><title>Bayes&#39; Theorem: The Math of Changing Your Mind · Polymath</title><meta name="description" content="A single formula tells you how much to update a belief when new evidence arrives. Use the interactive calculator to see why a '99% accurate' test can still mostly cry wolf."><meta name="author" content="Ankit Gupta"><link rel="canonical" href="https://ankitgupta1729.github.io/blog/bayes-theorem-updating-beliefs/"><!-- Open Graph --><meta property="og:type" content="article"><meta property="og:title" content="Bayes' Theorem: The Math of Changing Your Mind · Polymath"><meta property="og:description" content="A single formula tells you how much to update a belief when new evidence arrives. Use the interactive calculator to see why a '99% accurate' test can still mostly cry wolf."><meta property="og:url" content="https://ankitgupta1729.github.io/blog/bayes-theorem-updating-beliefs/"><meta property="og:image" content="https://ankitgupta1729.github.io/og-default.svg"><meta property="og:site_name" content="Polymath"><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Bayes' Theorem: The Math of Changing Your Mind · Polymath"><meta name="twitter:description" content="A single formula tells you how much to update a belief when new evidence arrives. Use the interactive calculator to see why a '99% accurate' test can still mostly cry wolf."><meta name="twitter:image" content="https://ankitgupta1729.github.io/og-default.svg"><link rel="alternate" type="application/rss+xml" title="Polymath" href="/rss.xml"><!-- Fonts --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opt@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><!-- Theme: apply before paint to avoid flash --><script>
       (function () {
         // Mark that JS is available so reveal animations can hide content.
         document.documentElement.classList.add("js");
@@ -8,7 +8,7 @@
           document.documentElement.classList.add("dark");
         }
       })();
-    </script><!-- JSON-LD --><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Polymath","url":"https://ankitgupta1729.github.io","description":"Polymath is a free, open knowledge hub exploring AI, machine learning, data science, mathematics, physics, cryptography, finance, history, science and technology — with a community that discusses, questions and learns together.","author":{"@type":"Person","name":"Ankit Gupta"}}</script><link rel="stylesheet" href="/_astro/_slug_.B5cGyqVf.css">
+    </script><!-- JSON-LD --><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Polymath","url":"https://ankitgupta1729.github.io","description":"Polymath is a free, open knowledge hub exploring AI, machine learning, data science, mathematics, physics, cryptography, finance, history, science and technology — with a community that discusses, questions and learns together.","author":{"@type":"Person","name":"Ankit Gupta"}}</script><link rel="stylesheet" href="/_astro/_slug_.CqK9JqwI.css">
 <style>.reaction-btn[data-astro-cid-pjabxf5r]{display:inline-flex;align-items:center;gap:.35rem;border-radius:.6rem;border:1px solid rgb(229 231 235);padding:.4rem .7rem;font-size:.85rem;font-weight:600;color:#374151;cursor:pointer;transition:all .15s ease;background:transparent}.reaction-btn[data-astro-cid-pjabxf5r]:hover{border-color:#818cf8;transform:translateY(-1px)}.reaction-btn[data-astro-cid-pjabxf5r].active{background:#eef2ff;border-color:#6366f1;color:#4338ca}.dark .reaction-btn[data-astro-cid-pjabxf5r]{border-color:#ffffff1f;color:#d1d5db}.dark .reaction-btn[data-astro-cid-pjabxf5r].active{background:#6366f12e;color:#c7d2fe}
 </style></head> <body class="min-h-screen flex flex-col"> <div id="reading-progress" class="fixed top-0 left-0 z-50 h-1 w-full bg-gradient-to-r from-brand-500 via-pink-500 to-teal-400"></div> <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-ink/80"> <nav class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6"> <a href="/" class="group flex items-center gap-2"> <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-pink-500 text-lg font-black text-white shadow-sm transition group-hover:scale-105">P</span> <span class="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white"> Polymath </span> </a> <div class="hidden items-center gap-1 md:flex"> <a href="/" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Home </a><a href="/blog" class="rounded-lg px-3 py-2 text-sm font-medium transition bg-brand-50 text-brand-700 dark:bg-white/10 dark:text-white"> Articles </a><a href="/categories" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Topics </a><a href="/forum" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Forum </a><a href="/search" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Search </a><a href="/about" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> About </a> </div> <div class="flex items-center gap-2"> <button id="theme-toggle" aria-label="Toggle dark mode" class="grid h-9 w-9 place-items-center rounded-lg text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"> <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <circle cx="12" cy="12" r="4"></circle> <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path> </svg> <svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <script>
   (function () {
@@ -25,7 +25,7 @@
     const menu = document.getElementById("mobile-menu");
     btn?.addEventListener("click", () => menu?.classList.toggle("hidden"));
   })();
-</script> <main class="flex-1">  <article class="mx-auto max-w-3xl px-4 py-10 sm:px-6"> <!-- Breadcrumb --> <nav class="mb-6 text-sm text-gray-500 dark:text-gray-400"> <a href="/" class="hover:text-brand-600">Home</a> <span class="mx-1.5">/</span> <a href="/blog" class="hover:text-brand-600">Articles</a> <span class="mx-1.5">/</span> <a href="/categories/data-science" class="hover:text-brand-600">Data Science</a> </nav> <header class="mb-8" data-pagefind-body> <div class="flex items-center gap-3 text-sm"> <span class="rounded-full px-3 py-1 font-semibold" style="background:#14b8a61a; color:#14b8a6;"> 🔬 Data Science </span> <span class="text-gray-400">3 min read</span> </div> <h1 class="mt-4 font-serif text-4xl font-bold leading-tight text-gray-900 sm:text-5xl dark:text-white" data-pagefind-meta="title"> Bayes&#39; Theorem: The Math of Changing Your Mind </h1> <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">A single formula tells you how much to update a belief when new evidence arrives. It&#39;s the backbone of spam filters, medical tests, and clear thinking itself.</p> <div class="mt-6 flex items-center gap-3 border-y border-gray-200 py-4 dark:border-white/10"> <div class="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-brand-500 to-pink-500 font-bold text-white"> A </div> <div class="text-sm"> <p class="font-semibold text-gray-900 dark:text-white">Ankit Gupta</p> <p class="text-gray-500 dark:text-gray-400"> <time datetime="2026-05-12T00:00:00.000Z">May 12, 2026</time>  </p> </div> <div class="ml-auto text-4xl" aria-hidden="true">🎲</div> </div> <div class="mt-4"> <button id="bookmark-btn" data-meta="{&#34;id&#34;:&#34;bayes-theorem-updating-beliefs&#34;,&#34;title&#34;:&#34;Bayes' Theorem: The Math of Changing Your Mind&#34;,&#34;category&#34;:&#34;data-science&#34;,&#34;emoji&#34;:&#34;🎲&#34;,&#34;description&#34;:&#34;A single formula tells you how much to update a belief when new evidence arrives. It's the backbone of spam filters, medical tests, and clear thinking itself.&#34;,&#34;url&#34;:&#34;/blog/bayes-theorem-updating-beliefs/&#34;}" class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/15 dark:text-gray-200 dark:hover:text-white"> <span id="bookmark-icon">🔖</span> <span id="bookmark-label">Save for later</span> </button> <script>
+</script> <main class="flex-1">  <article class="mx-auto max-w-3xl px-4 py-10 sm:px-6"> <!-- Breadcrumb --> <nav class="mb-6 text-sm text-gray-500 dark:text-gray-400"> <a href="/" class="hover:text-brand-600">Home</a> <span class="mx-1.5">/</span> <a href="/blog" class="hover:text-brand-600">Articles</a> <span class="mx-1.5">/</span> <a href="/categories/data-science" class="hover:text-brand-600">Data Science</a> </nav> <header class="mb-8" data-pagefind-body> <div class="flex items-center gap-3 text-sm"> <span class="rounded-full px-3 py-1 font-semibold" style="background:#14b8a61a; color:#14b8a6;"> 🔬 Data Science </span> <span class="text-gray-400">3 min read</span> </div> <h1 class="mt-4 font-serif text-4xl font-bold leading-tight text-gray-900 sm:text-5xl dark:text-white" data-pagefind-meta="title"> Bayes&#39; Theorem: The Math of Changing Your Mind </h1> <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">A single formula tells you how much to update a belief when new evidence arrives. Use the interactive calculator to see why a &#39;99% accurate&#39; test can still mostly cry wolf.</p> <div class="mt-6 flex items-center gap-3 border-y border-gray-200 py-4 dark:border-white/10"> <div class="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-brand-500 to-pink-500 font-bold text-white"> A </div> <div class="text-sm"> <p class="font-semibold text-gray-900 dark:text-white">Ankit Gupta</p> <p class="text-gray-500 dark:text-gray-400"> <time datetime="2026-05-12T00:00:00.000Z">May 12, 2026</time>  </p> </div> <div class="ml-auto text-4xl" aria-hidden="true">🎲</div> </div> <div class="mt-4"> <button id="bookmark-btn" data-meta="{&#34;id&#34;:&#34;bayes-theorem-updating-beliefs&#34;,&#34;title&#34;:&#34;Bayes' Theorem: The Math of Changing Your Mind&#34;,&#34;category&#34;:&#34;data-science&#34;,&#34;emoji&#34;:&#34;🎲&#34;,&#34;description&#34;:&#34;A single formula tells you how much to update a belief when new evidence arrives. Use the interactive calculator to see why a '99% accurate' test can still mostly cry wolf.&#34;,&#34;url&#34;:&#34;/blog/bayes-theorem-updating-beliefs/&#34;}" class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/15 dark:text-gray-200 dark:hover:text-white"> <span id="bookmark-icon">🔖</span> <span id="bookmark-label">Save for later</span> </button> <script>
   (function () {
     var btn = document.getElementById("bookmark-btn");
     if (!btn) return;
@@ -57,47 +57,165 @@
     });
     render();
   })();
-</script> </div> </header> <details open class="group mb-8 rounded-2xl border border-gray-200 bg-gray-50/60 p-5 dark:border-white/10 dark:bg-white/[0.03]"><summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-gray-900 dark:text-white"><span class="flex items-center gap-2">📑 On this page</span><span class="text-gray-400 transition group-open:rotate-180">▾</span></summary><nav class="mt-4"><ul class="space-y-2 text-sm"><li class><a href="#the-formula" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">The formula</a></li><li class><a href="#the-famous-medical-test-trap" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">The famous medical-test trap</a></li><li class><a href="#why-this-is-everywhere" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">Why this is everywhere</a></li><li class><a href="#a-way-of-thinking-not-just-a-formula" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">A way of thinking, not just a formula</a></li><li class><a href="#the-takeaway" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">The takeaway</a></li></ul></nav></details> <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 prose-img:rounded-xl dark:prose-invert dark:prose-a:text-brand-300 dark:prose-pre:border-white/10" data-pagefind-body>  <p>Most people, including many smart ones, reason badly about evidence. They hear a scary test result and panic, or a reassuring one and relax — often by a wildly wrong amount. Bayes’ theorem is the cure. It’s a precise rule for one of life’s most important skills: updating what you believe when you learn something new.</p>
+</script> </div> </header> <details open class="group mb-8 rounded-2xl border border-gray-200 bg-gray-50/60 p-5 dark:border-white/10 dark:bg-white/[0.03]"><summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-gray-900 dark:text-white"><span class="flex items-center gap-2">📑 On this page</span><span class="text-gray-400 transition group-open:rotate-180">▾</span></summary><nav class="mt-4"><ul class="space-y-2 text-sm"><li class><a href="#the-formula" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">The formula</a></li><li class><a href="#the-famous-medical-test-trap--play-with-it" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">The famous medical-test trap — play with it</a></li><li class><a href="#why-this-happens" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">Why this happens</a></li><li class><a href="#randomness-fools-us-too-the-law-of-large-numbers" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">Randomness fools us too: the law of large numbers</a></li><li class><a href="#where-bayesian-thinking-shows-up" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">Where Bayesian thinking shows up</a></li><li class><a href="#test-yourself" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300">Test yourself</a></li></ul></nav></details> <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 prose-img:rounded-xl dark:prose-invert dark:prose-a:text-brand-300 dark:prose-pre:border-white/10" data-pagefind-body>  <p>Most people, including many smart ones, reason badly about evidence. They hear a scary test result and panic — often by a wildly wrong amount. Bayes’ theorem is the cure: a precise rule for updating what you believe when you learn something new.</p>
 <h2 id="the-formula">The formula</h2>
-<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>P(A | B) = P(B | A) × P(A) / P(B)</span></span></code></pre>
-<p>In words: the probability of A <em>given</em> B equals the probability of B given A, times how likely A was to begin with, divided by how likely B is overall. The vocabulary:</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8;overflow-x:auto;white-space:pre-wrap;word-wrap:break-word" tabindex="0" data-language="plaintext"><code><span class="line"><span>P(A | B) = P(B | A) × P(A) / P(B)</span></span></code></pre>
 <ul>
 <li><strong>P(A)</strong> — the <strong>prior</strong>: your belief before the evidence.</li>
 <li><strong>P(A | B)</strong> — the <strong>posterior</strong>: your updated belief after.</li>
 <li><strong>P(B | A)</strong> — the <strong>likelihood</strong>: how expected the evidence is if A is true.</li>
 </ul>
-<h2 id="the-famous-medical-test-trap">The famous medical-test trap</h2>
-<p>Here’s the example that humbles everyone. Suppose:</p>
+<h2 id="the-famous-medical-test-trap--play-with-it">The famous medical-test trap — play with it</h2>
+<p>A disease affects 1% of people. A test is 99% accurate. You test positive. What’s the chance you’re actually sick? Most say “99%.” Drag the sliders and watch the real answer:</p>
+<div id="bypcl3ti" class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"> <div class="mb-4 flex items-center gap-2"> <span class="text-xl">🎲</span> <h4 class="m-0 font-bold text-gray-900 dark:text-white">The positive-test paradox</h4> </div> <div class="grid gap-4 sm:grid-cols-3"> <label class="block text-sm"> <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Disease rate <b data-out="prev" class="text-brand-600 dark:text-brand-300"></b></span> <input data-in="prev" type="range" min="0.1" max="50" step="0.1" value="1" class="mt-1 w-full accent-brand-600"> </label> <label class="block text-sm"> <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Sensitivity <b data-out="sens" class="text-brand-600 dark:text-brand-300"></b></span> <input data-in="sens" type="range" min="50" max="100" step="0.5" value="99" class="mt-1 w-full accent-brand-600"> </label> <label class="block text-sm"> <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Specificity <b data-out="spec" class="text-brand-600 dark:text-brand-300"></b></span> <input data-in="spec" type="range" min="50" max="100" step="0.5" value="99" class="mt-1 w-full accent-brand-600"> </label> </div> <div class="mt-5 rounded-xl bg-gradient-to-br from-brand-50 to-pink-50 p-4 text-center dark:from-brand-900/30 dark:to-pink-900/20"> <p class="m-0 text-sm text-gray-600 dark:text-gray-400">If you test <b>positive</b>, your actual chance of having the disease is</p> <p class="m-0 mt-1 text-4xl font-extrabold text-brand-700 dark:text-brand-300" data-out="post">—</p> <p class="m-0 mt-1 text-xs text-gray-500 dark:text-gray-400" data-out="explain"></p> </div> <div class="mt-4"> <div class="mb-2 flex flex-wrap gap-x-4 gap-y-1 text-xs"> <span class="flex items-center gap-1"><span class="inline-block h-3 w-3 rounded-sm bg-rose-500"></span> True positive (sick &amp; flagged)</span> <span class="flex items-center gap-1"><span class="inline-block h-3 w-3 rounded-sm bg-amber-400"></span> False positive (healthy &amp; flagged)</span> <span class="flex items-center gap-1"><span class="inline-block h-3 w-3 rounded-sm bg-gray-300 dark:bg-white/15"></span> Negative</span> </div> <div data-grid class="grid grid-cols-20 gap-0.5" style="grid-template-columns:repeat(20,minmax(0,1fr))"></div> <p class="mt-2 text-xs text-gray-400">Each square = 1 of 1,000 people. Among the highlighted (flagged) squares, only the red ones are truly sick.</p> </div> </div> <script>(function(){const uid = "bypcl3ti";
+
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const ins = { prev: root.querySelector('[data-in="prev"]'), sens: root.querySelector('[data-in="sens"]'), spec: root.querySelector('[data-in="spec"]') };
+    const grid = root.querySelector("[data-grid]");
+    const N = 1000;
+
+    function render() {
+      const prev = +ins.prev.value / 100, sens = +ins.sens.value / 100, spec = +ins.spec.value / 100;
+      root.querySelector('[data-out="prev"]').textContent = (+ins.prev.value).toFixed(1) + "%";
+      root.querySelector('[data-out="sens"]').textContent = (+ins.sens.value).toFixed(1) + "%";
+      root.querySelector('[data-out="spec"]').textContent = (+ins.spec.value).toFixed(1) + "%";
+
+      const sick = N * prev;
+      const tp = sick * sens;
+      const fp = (N - sick) * (1 - spec);
+      const post = tp + fp > 0 ? tp / (tp + fp) : 0;
+
+      root.querySelector('[data-out="post"]').textContent = (post * 100).toFixed(1) + "%";
+      root.querySelector('[data-out="explain"]').textContent =
+        "Per 1,000 people: ~" + Math.round(tp) + " true positives vs ~" + Math.round(fp) + " false alarms.";
+
+      // pictograph: build 1000 cells, draw a representative 100? Use 1000 tiny cells is heavy; use 500 scaled.
+      const cells = 500;
+      const tpC = Math.round((tp / N) * cells);
+      const fpC = Math.round((fp / N) * cells);
+      let html = "";
+      for (let i = 0; i < cells; i++) {
+        let cls = "bg-gray-300 dark:bg-white/15";
+        if (i < tpC) cls = "bg-rose-500";
+        else if (i < tpC + fpC) cls = "bg-amber-400";
+        html += '<span class="aspect-square rounded-[2px] ' + cls + '"></span>';
+      }
+      grid.innerHTML = html;
+    }
+
+    Object.values(ins).forEach((el) => el.addEventListener("input", render));
+    render();
+  })();
+})();</script>
+<aside class="not-prose my-6 flex gap-3 rounded-xl border border-brand-300 dark:border-brand-500/40 bg-brand-50 dark:bg-brand-900/30 p-4"> <span class="text-xl leading-none" aria-hidden="true">🔑</span> <div class="text-sm leading-relaxed text-gray-700 dark:text-gray-200"> <p class="m-0 mb-1 font-bold text-gray-900 dark:text-white">Key idea</p> <div class="space-y-2 [&_a]:text-brand-600 [&_a]:underline dark:[&_a]:text-brand-300"><p>With a 1% disease rate and a 99% test, a positive result means only about a <strong>50%</strong> chance of being sick — and if the disease is rarer (say 0.1%), it plummets to under 10%. The rarer the condition, the more false alarms swamp the true ones. This is the <strong>base-rate fallacy</strong>.</p></div> </div> </aside>
+<h2 id="why-this-happens">Why this happens</h2>
+<p>Imagine 1,000 people. If 10 are sick, the test flags ~10 of them (true positives). But of the 990 healthy people, 1% — about 10 — get a false positive. So among ~20 positives, only half are truly sick. The disease is so rare that false alarms compete with real cases.</p>
+<h2 id="randomness-fools-us-too-the-law-of-large-numbers">Randomness fools us too: the law of large numbers</h2>
+<p>Part of why we misjudge probability is that small samples are noisy. Flip a fair coin a few times and you might get 80% heads. Keep going and it settles toward 50%:</p>
+<div id="cfymih2i" class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"> <div class="mb-3 flex items-center gap-2"> <span class="text-xl">🪙</span> <h4 class="m-0 font-bold text-gray-900 dark:text-white">Law of large numbers — flip a coin</h4> </div> <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+Each flip is 50/50, but small samples are wild. Keep flipping and watch the running % of heads settle toward the dashed 50% line.
+</p> <svg viewBox="0 0 600 200" class="w-full text-gray-400" data-chart aria-hidden="true"> <line x1="40" y1="100" x2="590" y2="100" stroke="#94a3b8" stroke-dasharray="4 4"></line> <text x="44" y="94" font-size="10" fill="currentColor">50%</text> <line x1="40" y1="10" x2="40" y2="190" stroke="currentColor" stroke-opacity="0.25"></line> <path data-line fill="none" stroke="#4f46e5" stroke-width="2"></path> </svg> <div class="mt-3 flex flex-wrap items-center gap-3"> <button data-flip="1" class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Flip once</button> <button data-flip="100" class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Flip 100×</button> <button data-flip="1000" class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Flip 1,000×</button> <button data-reset class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Reset</button> <span class="ml-auto text-sm font-semibold text-gray-700 dark:text-gray-200" data-out>0 flips</span> </div> </div> <script>(function(){const uid = "cfymih2i";
+
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const line = root.querySelector("[data-line]");
+    const out = root.querySelector("[data-out]");
+    let heads = 0, total = 0;
+    const props = [];
+
+    function flip(n) {
+      for (let i = 0; i < n; i++) {
+        total++;
+        if (Math.random() < 0.5) heads++;
+        props.push(heads / total);
+      }
+      // keep at most 600 sampled points for a smooth line
+      const step = Math.max(1, Math.ceil(props.length / 600));
+      const pts = [];
+      for (let i = 0; i < props.length; i += step) pts.push(props[i]);
+      pts.push(props[props.length - 1]);
+      const W = 550, X0 = 40, H = 180, Y0 = 10;
+      const d = pts.map((p, i) => (i ? "L" : "M") + (X0 + (i / (pts.length - 1 || 1)) * W).toFixed(1) + " " + (Y0 + (1 - p) * H).toFixed(1)).join(" ");
+      line.setAttribute("d", d);
+      out.textContent = total.toLocaleString() + " flips · " + Math.round((heads / total) * 100) + "% heads";
+    }
+
+    root.querySelectorAll("[data-flip]").forEach((b) =>
+      b.addEventListener("click", () => flip(+b.getAttribute("data-flip")))
+    );
+    root.querySelector("[data-reset]").addEventListener("click", () => {
+      heads = 0; total = 0; props.length = 0; line.setAttribute("d", ""); out.textContent = "0 flips";
+    });
+  })();
+})();</script>
+<h2 id="where-bayesian-thinking-shows-up">Where Bayesian thinking shows up</h2>
 <ul>
-<li>A disease affects <strong>1 in 1,000</strong> people.</li>
-<li>A test is <strong>99% accurate</strong> (correct 99% of the time).</li>
-</ul>
-<p>You test positive. What’s the chance you actually have the disease? Most people say “99%.” The real answer is about <strong>9%</strong>. Here’s why.</p>
-<p>Imagine 100,000 people:</p>
-<ul>
-<li><strong>100</strong> have the disease. The test catches 99 of them → <strong>99 true positives</strong>.</li>
-<li><strong>99,900</strong> are healthy. But 1% get a false positive → <strong>999 false positives</strong>.</li>
-</ul>
-<p>So among everyone who tests positive (99 + 999 = 1,098), only 99 are actually sick:</p>
-<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="plaintext"><code><span class="line"><span>99 / 1,098 ≈ 9%</span></span></code></pre>
-<p>The disease is so rare that false positives swamp the true ones. Your <strong>prior</strong> matters enormously — and ignoring it (the “base rate fallacy”) leads to dangerously wrong conclusions.</p>
-<h2 id="why-this-is-everywhere">Why this is everywhere</h2>
-<p>Once you see the pattern, Bayesian updating is hiding in plain sight:</p>
-<ul>
-<li><strong>Spam filters</strong> start with a prior on each word and update as your inbox teaches them.</li>
+<li><strong>Spam filters</strong> start with a prior per word and update as your inbox teaches them.</li>
 <li><strong>Medical diagnosis</strong> combines test results with how common a condition actually is.</li>
-<li><strong>Search and rescue</strong> teams update a probability map of a lost hiker’s location as each area is cleared.</li>
-<li><strong>Machine learning</strong> — entire model families (Naive Bayes, Bayesian networks) are built directly on this rule.</li>
+<li><strong>Search and rescue</strong> updates a probability map as each area is cleared.</li>
+<li><strong>Machine learning</strong> — whole model families (Naive Bayes, Bayesian networks) are built on this rule.</li>
 </ul>
-<h2 id="a-way-of-thinking-not-just-a-formula">A way of thinking, not just a formula</h2>
-<p>Beyond the math, Bayes offers a mindset: <strong>strong claims require strong evidence, and you should update in proportion</strong>. An extraordinary result against a very low prior shouldn’t move you much. A modest result confirming something already likely should. You don’t have to compute probabilities by hand to internalize the lesson: always ask “how surprising is this evidence if I’m wrong?” before you let it change your mind.</p>
-<h2 id="the-takeaway">The takeaway</h2>
-<p>Bayes’ theorem turns vague intuition into arithmetic. It explains why “99% accurate” tests can still mostly produce false alarms, and why your starting assumptions deserve as much attention as the new data. Learn to think this way and you’ll be wrong less often — which is, in the end, the whole point of statistics.</p>
-<p><em>Try the medical-test problem on a friend before showing them the answer — almost everyone gets it wrong. Share their reaction below.</em></p>  </div> <div class="mt-10 flex flex-wrap gap-2"> <a href="/tags/probability" class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition hover:bg-brand-100 hover:text-brand-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10">
+<h2 id="test-yourself">Test yourself</h2>
+<div id="qzxp0s1l" class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]" data-questions="[{&#34;q&#34;:&#34;A test is 99% accurate for a disease affecting 1 in 1,000. You test positive. Roughly your chance of being sick?&#34;,&#34;options&#34;:[&#34;About 99%&#34;,&#34;About 9%&#34;,&#34;About 50%&#34;],&#34;answer&#34;:1,&#34;explain&#34;:&#34;False positives from the huge healthy majority dominate the few true positives.&#34;},{&#34;q&#34;:&#34;What does the 'prior' represent?&#34;,&#34;options&#34;:[&#34;Your belief before seeing the evidence&#34;,&#34;The accuracy of the test&#34;,&#34;The final answer&#34;],&#34;answer&#34;:0,&#34;explain&#34;:&#34;Bayes updates the prior into the posterior using the evidence.&#34;},{&#34;q&#34;:&#34;Why does a small number of coin flips mislead?&#34;,&#34;options&#34;:[&#34;The coin is biased&#34;,&#34;Small samples have high variance; they converge only with many trials&#34;,&#34;Heads is genuinely more likely&#34;],&#34;answer&#34;:1,&#34;explain&#34;:&#34;The law of large numbers: averages stabilize as n grows.&#34;}]"> <div class="mb-4 flex items-center gap-2"> <span class="text-xl">🧠</span> <h4 class="m-0 font-bold text-gray-900 dark:text-white">Test yourself</h4> </div> <div data-quiz class="space-y-6"></div> <p class="mt-4 hidden text-sm font-bold text-brand-700 dark:text-brand-300" data-score></p> </div> <script>(function(){const uid = "qzxp0s1l";
+
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const questions = JSON.parse(root.getAttribute("data-questions") || "[]");
+    const wrap = root.querySelector("[data-quiz]");
+    const scoreEl = root.querySelector("[data-score]");
+    const answered = new Array(questions.length).fill(false);
+    let correct = 0;
+
+    questions.forEach((item, qi) => {
+      const block = document.createElement("div");
+      const opts = item.options
+        .map((opt, oi) =>
+          '<button data-q="' + qi + '" data-o="' + oi + '" class="quiz-opt block w-full text-left rounded-lg border border-gray-200 px-3 py-2 text-sm transition hover:border-brand-400 dark:border-white/10">' +
+          opt + "</button>"
+        )
+        .join("");
+      block.innerHTML =
+        '<p class="m-0 mb-2 font-semibold text-gray-900 dark:text-white">' + (qi + 1) + ". " + item.q + "</p>" +
+        '<div class="space-y-2">' + opts + "</div>" +
+        '<p data-exp="' + qi + '" class="m-0 mt-2 hidden text-sm text-gray-600 dark:text-gray-400"></p>';
+      wrap.appendChild(block);
+    });
+
+    wrap.querySelectorAll(".quiz-opt").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const qi = +btn.getAttribute("data-q");
+        const oi = +btn.getAttribute("data-o");
+        if (answered[qi]) return;
+        answered[qi] = true;
+        const item = questions[qi];
+        const group = btn.parentElement.querySelectorAll(".quiz-opt");
+        group.forEach((b, i) => {
+          b.disabled = true;
+          if (i === item.answer) b.classList.add("border-green-500", "bg-green-50", "dark:bg-green-900/30", "font-semibold");
+          else if (i === oi) b.classList.add("border-rose-400", "bg-rose-50", "dark:bg-rose-900/30");
+        });
+        if (oi === item.answer) correct++;
+        const exp = root.querySelector('[data-exp="' + qi + '"]');
+        if (item.explain) { exp.textContent = (oi === item.answer ? "Correct! " : "Not quite. ") + item.explain; exp.classList.remove("hidden"); }
+        if (answered.every(Boolean)) {
+          scoreEl.textContent = "You scored " + correct + " / " + questions.length + (correct === questions.length ? " — perfect! 🎉" : " — nice work!");
+          scoreEl.classList.remove("hidden");
+        }
+      });
+    });
+  })();
+})();</script>
+<p>Beyond the math, Bayes offers a mindset: <strong>strong claims require strong evidence, and you should update in proportion.</strong> Learn to think this way and you’ll be wrong less often — which is, in the end, the whole point of statistics.</p>
+<p><em>Try the medical-test slider on a friend before revealing the answer — almost everyone guesses wrong.</em></p>  </div> <div class="mt-10 flex flex-wrap gap-2"> <a href="/tags/probability" class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition hover:bg-brand-100 hover:text-brand-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10">
 #probability </a><a href="/tags/bayes" class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition hover:bg-brand-100 hover:text-brand-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10">
 #bayes </a><a href="/tags/statistics" class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition hover:bg-brand-100 hover:text-brand-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10">
 #statistics </a><a href="/tags/reasoning" class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition hover:bg-brand-100 hover:text-brand-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10">
-#reasoning </a> </div> <div class="my-8 flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/[0.03]" data-reaction-bar data-astro-cid-pjabxf5r> <div class="flex items-center gap-2" data-astro-cid-pjabxf5r> <span class="mr-1 text-sm font-medium text-gray-600 dark:text-gray-400" data-astro-cid-pjabxf5r>Was this useful?</span> <button data-react="like" class="reaction-btn" aria-label="Like" data-astro-cid-pjabxf5r>
+#reasoning </a><a href="/tags/interactive" class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition hover:bg-brand-100 hover:text-brand-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10">
+#interactive </a> </div> <div class="my-8 flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/[0.03]" data-reaction-bar data-astro-cid-pjabxf5r> <div class="flex items-center gap-2" data-astro-cid-pjabxf5r> <span class="mr-1 text-sm font-medium text-gray-600 dark:text-gray-400" data-astro-cid-pjabxf5r>Was this useful?</span> <button data-react="like" class="reaction-btn" aria-label="Like" data-astro-cid-pjabxf5r>
 👍 <span data-count="like" data-astro-cid-pjabxf5r>0</span> </button> <button data-react="dislike" class="reaction-btn" aria-label="Dislike" data-astro-cid-pjabxf5r>
 👎 <span data-count="dislike" data-astro-cid-pjabxf5r>0</span> </button> <button data-react="love" class="reaction-btn" aria-label="Love" data-astro-cid-pjabxf5r>
 ❤️ <span data-count="love" data-astro-cid-pjabxf5r>0</span> </button> </div> <div class="flex items-center gap-2" data-astro-cid-pjabxf5r> <span class="mr-1 text-sm font-medium text-gray-600 dark:text-gray-400" data-astro-cid-pjabxf5r>Share</span> <a data-share="twitter" target="_blank" rel="noopener" class="reaction-btn" aria-label="Share on X" data-astro-cid-pjabxf5r>𝕏</a> <a data-share="linkedin" target="_blank" rel="noopener" class="reaction-btn" aria-label="Share on LinkedIn" data-astro-cid-pjabxf5r>in</a> <a data-share="whatsapp" target="_blank" rel="noopener" class="reaction-btn" aria-label="Share on WhatsApp" data-astro-cid-pjabxf5r>✆</a> <button data-share="copy" class="reaction-btn" aria-label="Copy link" data-astro-cid-pjabxf5r>🔗</button> </div> </div>  <script>(function(){const title = "Bayes' Theorem: The Math of Changing Your Mind";
