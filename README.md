@@ -66,8 +66,7 @@ The live site is published to the **`gh-pages`** branch and served by GitHub Pag
 To rebuild and redeploy after changing content:
 
 ```bash
-npm run build
-npx gh-pages -d dist -b gh-pages   # or push ./dist to the gh-pages branch
+npm run deploy    # builds, generates the search index, and pushes ./dist to gh-pages
 ```
 
 ### Optional: enable fully automated CI deploys
