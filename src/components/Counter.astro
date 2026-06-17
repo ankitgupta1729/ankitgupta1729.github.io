@@ -1,0 +1,49 @@
+---
+// Number that animates from 0 to its value when scrolled into view.
+interface Props {
+  value: number;
+  suffix?: string;
+  label: string;
+}
+const { value, suffix = "", label } = Astro.props;
+---
+
+<div>
+  <div
+    class="text-3xl font-extrabold text-gray-900 dark:text-white"
+    data-counter
+    data-value={value}
+    data-suffix={suffix}
+  >
+    0{suffix}
+  </div>
+  <div class="text-sm text-gray-500 dark:text-gray-400">{label}</div>
+</div>
+
+<script is:inline>
+  (function () {
+    const els = document.querySelectorAll("[data-counter]:not([data-init])");
+    const animate = (el) => {
+      el.setAttribute("data-init", "1");
+      const target = +el.getAttribute("data-value");
+      const suffix = el.getAttribute("data-suffix") || "";
+      const dur = 1100;
+      const start = performance.now();
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / dur);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    if (!("IntersectionObserver" in window)) {
+      els.forEach((el) => { el.textContent = (+el.getAttribute("data-value")).toLocaleString() + (el.getAttribute("data-suffix") || ""); });
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { animate(e.target); io.unobserve(e.target); } });
+    }, { threshold: 0.4 });
+    els.forEach((el) => io.observe(el));
+  })();
+</script>

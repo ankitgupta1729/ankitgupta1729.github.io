@@ -1,0 +1,98 @@
+---
+title: "Attention, Explained: How Transformers Actually Think"
+description: "The self-attention mechanism powers nearly every modern AI model. An intuitive, jargon-light walkthrough — with a diagram and a great video — of what it does and why it changed everything."
+category: "ai"
+tags: ["transformers", "attention", "deep-learning", "llm", "interactive"]
+author: "Ankit Gupta"
+pubDate: 2026-06-10
+heroEmoji: "🤖"
+featured: true
+---
+
+import Figure from "../../components/Figure.astro";
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+import YouTube from "../../components/YouTube.astro";
+
+If you've used ChatGPT, Claude, or any modern AI assistant, you've used a **transformer**. And at the heart of every transformer is one deceptively simple idea: *attention*.
+
+## The problem attention solves
+
+Language is full of long-range dependencies. Consider:
+
+> "The trophy didn't fit in the suitcase because **it** was too big."
+
+What does "it" refer to — the trophy or the suitcase? You resolved this instantly using context. Older models (RNNs) processed words one at a time, squeezing all earlier context into a single fixed-size memory. By the time they reached "it," much nuance was gone. Attention throws out that bottleneck.
+
+## The core idea: queries, keys, and values
+
+Each word is turned into three vectors:
+
+- **Query (Q):** "What am I looking for?"
+- **Key (K):** "What do I offer?"
+- **Value (V):** "What information do I carry?"
+
+To compute attention for a word, we compare its query against every key. A high match means "pay attention here." Those scores become weights, and we take a weighted average of the values.
+
+<Figure caption="Each word's Query is compared with every Key. The scores become weights (via softmax) that mix the Values into a new, context-aware representation.">
+<svg viewBox="0 0 460 230" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui" font-size="13">
+  <rect x="10" y="20" width="70" height="34" rx="8" fill="#6366f1" opacity="0.15" stroke="#6366f1"/>
+  <text x="45" y="42" text-anchor="middle" fill="currentColor">Query</text>
+  <rect x="10" y="98" width="70" height="34" rx="8" fill="#0ea5e9" opacity="0.15" stroke="#0ea5e9"/>
+  <text x="45" y="120" text-anchor="middle" fill="currentColor">Keys</text>
+  <rect x="10" y="176" width="70" height="34" rx="8" fill="#14b8a6" opacity="0.15" stroke="#14b8a6"/>
+  <text x="45" y="198" text-anchor="middle" fill="currentColor">Values</text>
+  <path d="M80 37 H150" stroke="#94a3b8" marker-end="url(#a)"/>
+  <path d="M80 115 H150" stroke="#94a3b8" marker-end="url(#a)"/>
+  <rect x="150" y="60" width="90" height="40" rx="8" fill="#f59e0b" opacity="0.15" stroke="#f59e0b"/>
+  <text x="195" y="84" text-anchor="middle" fill="currentColor">Q·Kᵀ</text>
+  <path d="M240 80 H300" stroke="#94a3b8" marker-end="url(#a)"/>
+  <rect x="300" y="60" width="90" height="40" rx="8" fill="#ec4899" opacity="0.15" stroke="#ec4899"/>
+  <text x="345" y="84" text-anchor="middle" fill="currentColor">softmax</text>
+  <path d="M345 100 V150 H250" stroke="#94a3b8" marker-end="url(#a)" fill="none"/>
+  <path d="M80 193 H210 V165" stroke="#94a3b8" marker-end="url(#a)" fill="none"/>
+  <rect x="200" y="150" width="100" height="40" rx="8" fill="#22c55e" opacity="0.15" stroke="#22c55e"/>
+  <text x="250" y="174" text-anchor="middle" fill="currentColor">weighted Σ</text>
+  <path d="M300 170 H410" stroke="#94a3b8" marker-end="url(#a)"/>
+  <text x="410" y="166" text-anchor="end" fill="currentColor" font-weight="700">output</text>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#94a3b8"/></marker></defs>
+</svg>
+</Figure>
+
+In one line of math:
+
+```
+Attention(Q, K, V) = softmax( QKᵀ / √dₖ ) V
+```
+
+The `softmax` turns raw scores into probabilities that sum to 1; the `√dₖ` keeps numbers stable. Everything else in a transformer is plumbing around this operation.
+
+<Callout type="key" title="Why 'self' attention is special">
+In self-attention, Q, K, and V all come from the same sentence — every word attends to every other word, including itself. So the representation of "it" can absorb meaning from "trophy" or "suitcase" depending on what the model learned matters.
+</Callout>
+
+## Multi-head attention: many perspectives at once
+
+One attention calculation captures one kind of relationship. Real language has many at once: grammar, meaning, reference, tone. So transformers run several attention operations in parallel — **heads** — each free to specialize. Their outputs are concatenated and mixed.
+
+## Why this design won
+
+1. **Parallelism.** Every position is computed at once — perfect for GPUs.
+2. **Direct long-range links.** Any word can reach any other in one step.
+3. **Scalability.** Performance keeps improving with more data and parameters — the foundation of today's LLMs.
+
+## Watch it visualized
+
+<YouTube id="wjZofJX0v4M" title="Transformers, the tech behind LLMs — 3Blue1Brown" />
+
+## Test yourself
+
+<Quiz questions={[
+  { q: "What does the Query vector represent?", options: ["What a word offers to others", "What a word is looking for", "The final output"], answer: 1, explain: "Query = 'what am I looking for?'; Key = 'what do I offer?'." },
+  { q: "What is the purpose of multiple attention heads?", options: ["To make the model smaller", "To capture different types of relationships in parallel", "To slow training down"], answer: 1, explain: "Different heads specialize — grammar, reference, meaning, etc." },
+  { q: "Why did transformers beat RNNs at scale?", options: ["They process positions in parallel and link any words directly", "They use less data", "They avoid GPUs"], answer: 0, explain: "Parallelism + direct long-range connections = great GPU scaling." }
+]} />
+
+Attention didn't just improve language models; it became the default building block for vision, audio, and biology. Understand this one mechanism and a decade of AI progress suddenly fits together.
+
+*Have a question about a part that still feels fuzzy? Drop a comment below.*

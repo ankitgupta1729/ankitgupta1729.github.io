@@ -1,0 +1,79 @@
+---
+// Self-check quiz for the end of an article. Pass an array of questions:
+// <Quiz questions={[{ q: "...", options: ["a","b"], answer: 1, explain: "..." }]} />
+interface Question {
+  q: string;
+  options: string[];
+  answer: number;
+  explain?: string;
+}
+interface Props {
+  questions: Question[];
+  title?: string;
+}
+const { questions, title = "Test yourself" } = Astro.props;
+const uid = "qz" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+  data-questions={JSON.stringify(questions)}
+>
+  <div class="mb-4 flex items-center gap-2">
+    <span class="text-xl">🧠</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">{title}</h4>
+  </div>
+  <div data-quiz class="space-y-6"></div>
+  <p class="mt-4 hidden text-sm font-bold text-brand-700 dark:text-brand-300" data-score></p>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const questions = JSON.parse(root.getAttribute("data-questions") || "[]");
+    const wrap = root.querySelector("[data-quiz]");
+    const scoreEl = root.querySelector("[data-score]");
+    const answered = new Array(questions.length).fill(false);
+    let correct = 0;
+
+    questions.forEach((item, qi) => {
+      const block = document.createElement("div");
+      const opts = item.options
+        .map((opt, oi) =>
+          '<button data-q="' + qi + '" data-o="' + oi + '" class="quiz-opt block w-full text-left rounded-lg border border-gray-200 px-3 py-2 text-sm transition hover:border-brand-400 dark:border-white/10">' +
+          opt + "</button>"
+        )
+        .join("");
+      block.innerHTML =
+        '<p class="m-0 mb-2 font-semibold text-gray-900 dark:text-white">' + (qi + 1) + ". " + item.q + "</p>" +
+        '<div class="space-y-2">' + opts + "</div>" +
+        '<p data-exp="' + qi + '" class="m-0 mt-2 hidden text-sm text-gray-600 dark:text-gray-400"></p>';
+      wrap.appendChild(block);
+    });
+
+    wrap.querySelectorAll(".quiz-opt").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const qi = +btn.getAttribute("data-q");
+        const oi = +btn.getAttribute("data-o");
+        if (answered[qi]) return;
+        answered[qi] = true;
+        const item = questions[qi];
+        const group = btn.parentElement.querySelectorAll(".quiz-opt");
+        group.forEach((b, i) => {
+          b.disabled = true;
+          if (i === item.answer) b.classList.add("border-green-500", "bg-green-50", "dark:bg-green-900/30", "font-semibold");
+          else if (i === oi) b.classList.add("border-rose-400", "bg-rose-50", "dark:bg-rose-900/30");
+        });
+        if (oi === item.answer) correct++;
+        const exp = root.querySelector('[data-exp="' + qi + '"]');
+        if (item.explain) { exp.textContent = (oi === item.answer ? "Correct! " : "Not quite. ") + item.explain; exp.classList.remove("hidden"); }
+        if (answered.every(Boolean)) {
+          scoreEl.textContent = "You scored " + correct + " / " + questions.length + (correct === questions.length ? " — perfect! 🎉" : " — nice work!");
+          scoreEl.classList.remove("hidden");
+        }
+      });
+    });
+  })();
+</script>

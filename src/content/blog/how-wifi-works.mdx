@@ -1,0 +1,60 @@
+---
+title: "How Wi-Fi Actually Works (It's Just Radio, Cleverly)"
+description: "Your router is a tiny radio station, your laptop a tiny receiver, and your data rides invisible waves at the speed of light. A friendly tour of the magic in your home."
+category: "technology"
+tags: ["wifi", "networking", "radio", "wireless"]
+author: "Ankit Gupta"
+pubDate: 2026-05-17
+heroEmoji: "📶"
+---
+
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+Wi-Fi feels like sorcery: data appears out of thin air. But underneath, it's a beautifully engineered version of something a century old — radio. Your router broadcasts, your devices listen and reply, and your cat videos ride electromagnetic waves traveling at the speed of light.
+
+## It's radio with a vocabulary
+
+Wi-Fi sends information as **radio waves**, the same family as broadcast radio and your microwave oven — just at specific frequencies (commonly **2.4 GHz and 5 GHz**, with **6 GHz** in newer gear). To carry data, the wave is **modulated**: its properties are nudged in patterns that encode the 1s and 0s of your data, millions of times per second.
+
+<Callout type="info" title="2.4 vs 5 vs 6 GHz">
+**Lower frequency (2.4 GHz)** travels farther and through walls better, but is slower and more crowded (it shares space with Bluetooth, microwaves, baby monitors). **Higher frequencies (5/6 GHz)** are faster with less interference, but have shorter range. That's the eternal Wi-Fi trade-off: reach vs. speed.
+</Callout>
+
+## Packets and politeness
+
+Your data isn't sent as one big stream. It's chopped into small **packets**, each labeled with where it's going. This is the same idea that runs [the whole internet](/blog/how-the-internet-actually-works/) — packets can be sent, lost, re-sent, and reassembled independently.
+
+Because everyone on a network shares the airwaves, devices must take turns. Wi-Fi uses a "listen before you talk" rule: a device checks if the channel is free, and if two devices talk at once (a collision), they wait a random moment and retry. It's remarkably like polite conversation at a dinner party.
+
+## From router to the world
+
+Your router does two jobs:
+
+1. **Wireless access point** — the radio that talks to your phone and laptop.
+2. **Gateway** — the bridge between your home network and your internet provider (usually over a fiber or cable line).
+
+So when you open a website, the request hops wirelessly to your router, then travels by wire across the globe and back — all in the blink of an eye.
+
+## Why your Wi-Fi is slow (and how to fix it)
+
+- **Distance and walls.** Signal weakens with every obstacle. Place the router central and high.
+- **Interference.** Microwaves and neighbors' networks crowd 2.4 GHz. Switching to 5 GHz often helps.
+- **Channel congestion.** Many networks on the same channel fight for airtime.
+- **Old hardware.** Wi-Fi standards (Wi-Fi 5, 6, 6E, 7) keep getting faster and better at handling many devices at once.
+
+<Callout type="tip">
+A common myth: more "bars" means faster internet. Bars show *signal strength to your router*, not your internet speed. A strong signal to a slow connection is still slow.
+</Callout>
+
+## Test yourself
+
+<Quiz questions={[
+  { q: "Wi-Fi transmits data using…", options: ["Light from LEDs", "Modulated radio waves", "Sound waves"], answer: 1, explain: "It's radio at GHz frequencies, with data encoded by modulation." },
+  { q: "Why might you switch from 2.4 GHz to 5 GHz?", options: ["Longer range", "Faster speeds and less interference, at shorter range", "Better wall penetration"], answer: 1, explain: "Higher frequency = faster, less crowded, but shorter reach." },
+  { q: "Do more signal bars mean faster internet?", options: ["Yes, always", "No — bars show signal to the router, not internet speed"], answer: 1, explain: "A strong link to a slow connection is still slow." }
+]} />
+
+Next time your devices conjure data from nowhere, remember: it's a tiny radio station in the corner of your room, chopping your life into packets and flinging them through the air at light-speed. Not bad for a box that blinks.
+
+*Want a deep dive on Wi-Fi 7 or mesh networks? Ask in the comments.*

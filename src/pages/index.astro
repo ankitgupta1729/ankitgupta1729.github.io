@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ArticleCard from "../components/ArticleCard.astro";
 import Newsletter from "../components/Newsletter.astro";
+import Counter from "../components/Counter.astro";
 import { readingTime } from "../lib/utils";
 import { CATEGORIES, SITE, SOCIAL } from "../consts";
 
@@ -42,18 +43,9 @@ const totalMinutes = allPosts.reduce((s, p) => s + readingTime(p.body ?? ""), 0)
       </div>
 
       <div class="mx-auto mt-14 grid max-w-2xl grid-cols-3 gap-4">
-        <div>
-          <div class="text-3xl font-extrabold text-gray-900 dark:text-white">{allPosts.length}+</div>
-          <div class="text-sm text-gray-500 dark:text-gray-400">Articles</div>
-        </div>
-        <div>
-          <div class="text-3xl font-extrabold text-gray-900 dark:text-white">{CATEGORIES.length}</div>
-          <div class="text-sm text-gray-500 dark:text-gray-400">Topics</div>
-        </div>
-        <div>
-          <div class="text-3xl font-extrabold text-gray-900 dark:text-white">{totalMinutes}</div>
-          <div class="text-sm text-gray-500 dark:text-gray-400">Min of reading</div>
-        </div>
+        <Counter value={allPosts.length} suffix="+" label="Articles" />
+        <Counter value={CATEGORIES.length} label="Topics" />
+        <Counter value={totalMinutes} label="Min of reading" />
       </div>
     </div>
   </section>

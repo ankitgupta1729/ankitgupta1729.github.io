@@ -1,0 +1,66 @@
+---
+title: "Gradient Descent: How Machines Learn by Walking Downhill"
+description: "Nearly every model is trained by one simple idea — feel which way is downhill, take a step, repeat. Play with the learning rate and watch it converge, crawl, or explode."
+category: "machine-learning"
+tags: ["optimization", "gradient-descent", "training", "fundamentals", "interactive"]
+author: "Ankit Gupta"
+pubDate: 2026-05-15
+heroEmoji: "⛰️"
+---
+
+import GradientDescent from "../../components/widgets/GradientDescent.astro";
+import Callout from "../../components/Callout.astro";
+import YouTube from "../../components/YouTube.astro";
+
+Strip away the jargon and almost all of machine learning comes down to one question: *given a model that's currently wrong, how do we make it a little less wrong?* The answer, more often than not, is **gradient descent** — and the intuition fits in a single mental image.
+
+## The foggy mountain
+
+Imagine standing on a mountain in thick fog, trying to reach the valley. You can't see the whole landscape, but you *can* feel the slope under your feet. So you feel which way is downhill, take a step, and repeat. That's gradient descent.
+
+## Watch it happen
+
+The ball steps downhill. The **learning rate** controls step size — the single most important knob. Try a tiny value (painfully slow), a good value (smooth), and a large value (it overshoots and *diverges*):
+
+<GradientDescent />
+
+<Callout type="key">
+Too small → crawls forever. Too large → leaps past the valley and blows up. Just right → fast, stable convergence. Tuning this trade-off is much of the art of training real models.
+</Callout>
+
+## What the gradient gives you
+
+The gradient is just the multidimensional slope: it points in the direction of steepest *increase* in loss. To *decrease* loss, step the opposite way:
+
+```
+new_parameters = old_parameters − learning_rate × gradient
+```
+
+Calculus hands you the gradient; this update rule does the rest. Run it thousands of times and the model slides toward parameters that work.
+
+## Why not just solve it directly?
+
+For simple problems you sometimes can. But modern models have *billions* of parameters and loss landscapes far too complex for a closed-form solution. Iterative downhill-walking scales to that complexity, which is why it dominates.
+
+## The practical varieties
+
+- **Batch** uses all the data per step — accurate but slow.
+- **Stochastic (SGD)** uses one example at a time — noisy but fast.
+- **Mini-batch** uses small chunks — the practical default.
+- **Adam** adapts the step size per parameter automatically.
+
+<Callout type="warning" title="Local minima and saddle points">
+A foggy hiker might settle in a small dip that isn't the lowest valley. In the very high-dimensional spaces of deep learning, true bad local minima are rare; the bigger obstacle is **saddle points** (flat in some directions), which modern optimizers are built to escape.
+</Callout>
+
+## Watch a deeper dive
+
+This excellent visual explainer from 3Blue1Brown shows gradient descent inside a real neural network:
+
+<YouTube id="IHZwWFHWa-w" title="Gradient descent, how neural networks learn — 3Blue1Brown" />
+
+## The big picture
+
+Every time a neural network learns to recognize faces, translate languages, or generate text, it runs this humble loop millions of times: measure the error, feel the slope, step downhill. The miracle of modern AI isn't an exotic algorithm — it's this simple idea, applied at enormous scale.
+
+*Want a follow-up on backpropagation — how the gradient actually gets computed through a deep network? Ask in the comments.*

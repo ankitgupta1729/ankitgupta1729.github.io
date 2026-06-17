@@ -1,0 +1,65 @@
+---
+title: "Bayes' Theorem: The Math of Changing Your Mind"
+description: "A single formula tells you how much to update a belief when new evidence arrives. Use the interactive calculator to see why a '99% accurate' test can still mostly cry wolf."
+category: "data-science"
+tags: ["probability", "bayes", "statistics", "reasoning", "interactive"]
+author: "Ankit Gupta"
+pubDate: 2026-05-12
+heroEmoji: "🎲"
+---
+
+import BayesCalculator from "../../components/widgets/BayesCalculator.astro";
+import CoinFlip from "../../components/widgets/CoinFlip.astro";
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+Most people, including many smart ones, reason badly about evidence. They hear a scary test result and panic — often by a wildly wrong amount. Bayes' theorem is the cure: a precise rule for updating what you believe when you learn something new.
+
+## The formula
+
+```
+P(A | B) = P(B | A) × P(A) / P(B)
+```
+
+- **P(A)** — the **prior**: your belief before the evidence.
+- **P(A | B)** — the **posterior**: your updated belief after.
+- **P(B | A)** — the **likelihood**: how expected the evidence is if A is true.
+
+## The famous medical-test trap — play with it
+
+A disease affects 1% of people. A test is 99% accurate. You test positive. What's the chance you're actually sick? Most say "99%." Drag the sliders and watch the real answer:
+
+<BayesCalculator />
+
+<Callout type="key">
+With a 1% disease rate and a 99% test, a positive result means only about a **50%** chance of being sick — and if the disease is rarer (say 0.1%), it plummets to under 10%. The rarer the condition, the more false alarms swamp the true ones. This is the **base-rate fallacy**.
+</Callout>
+
+## Why this happens
+
+Imagine 1,000 people. If 10 are sick, the test flags ~10 of them (true positives). But of the 990 healthy people, 1% — about 10 — get a false positive. So among ~20 positives, only half are truly sick. The disease is so rare that false alarms compete with real cases.
+
+## Randomness fools us too: the law of large numbers
+
+Part of why we misjudge probability is that small samples are noisy. Flip a fair coin a few times and you might get 80% heads. Keep going and it settles toward 50%:
+
+<CoinFlip />
+
+## Where Bayesian thinking shows up
+
+- **Spam filters** start with a prior per word and update as your inbox teaches them.
+- **Medical diagnosis** combines test results with how common a condition actually is.
+- **Search and rescue** updates a probability map as each area is cleared.
+- **Machine learning** — whole model families (Naive Bayes, Bayesian networks) are built on this rule.
+
+## Test yourself
+
+<Quiz questions={[
+  { q: "A test is 99% accurate for a disease affecting 1 in 1,000. You test positive. Roughly your chance of being sick?", options: ["About 99%", "About 9%", "About 50%"], answer: 1, explain: "False positives from the huge healthy majority dominate the few true positives." },
+  { q: "What does the 'prior' represent?", options: ["Your belief before seeing the evidence", "The accuracy of the test", "The final answer"], answer: 0, explain: "Bayes updates the prior into the posterior using the evidence." },
+  { q: "Why does a small number of coin flips mislead?", options: ["The coin is biased", "Small samples have high variance; they converge only with many trials", "Heads is genuinely more likely"], answer: 1, explain: "The law of large numbers: averages stabilize as n grows." }
+]} />
+
+Beyond the math, Bayes offers a mindset: **strong claims require strong evidence, and you should update in proportion.** Learn to think this way and you'll be wrong less often — which is, in the end, the whole point of statistics.
+
+*Try the medical-test slider on a friend before revealing the answer — almost everyone guesses wrong.*

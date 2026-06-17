@@ -1,0 +1,89 @@
+---
+// Interactive Bayes' theorem / medical-test calculator. Shows how a "99%
+// accurate" test can still mostly produce false positives when a disease
+// is rare, using a 100-person pictograph.
+const uid = "by" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-4 flex items-center gap-2">
+    <span class="text-xl">🎲</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">The positive-test paradox</h4>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-3">
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Disease rate <b data-out="prev" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="prev" type="range" min="0.1" max="50" step="0.1" value="1" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Sensitivity <b data-out="sens" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="sens" type="range" min="50" max="100" step="0.5" value="99" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Specificity <b data-out="spec" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="spec" type="range" min="50" max="100" step="0.5" value="99" class="mt-1 w-full accent-brand-600" />
+    </label>
+  </div>
+
+  <div class="mt-5 rounded-xl bg-gradient-to-br from-brand-50 to-pink-50 p-4 text-center dark:from-brand-900/30 dark:to-pink-900/20">
+    <p class="m-0 text-sm text-gray-600 dark:text-gray-400">If you test <b>positive</b>, your actual chance of having the disease is</p>
+    <p class="m-0 mt-1 text-4xl font-extrabold text-brand-700 dark:text-brand-300" data-out="post">—</p>
+    <p class="m-0 mt-1 text-xs text-gray-500 dark:text-gray-400" data-out="explain"></p>
+  </div>
+
+  <div class="mt-4">
+    <div class="mb-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+      <span class="flex items-center gap-1"><span class="inline-block h-3 w-3 rounded-sm bg-rose-500"></span> True positive (sick &amp; flagged)</span>
+      <span class="flex items-center gap-1"><span class="inline-block h-3 w-3 rounded-sm bg-amber-400"></span> False positive (healthy &amp; flagged)</span>
+      <span class="flex items-center gap-1"><span class="inline-block h-3 w-3 rounded-sm bg-gray-300 dark:bg-white/15"></span> Negative</span>
+    </div>
+    <div data-grid class="grid grid-cols-20 gap-0.5" style="grid-template-columns:repeat(20,minmax(0,1fr))"></div>
+    <p class="mt-2 text-xs text-gray-400">Each square = 1 of 1,000 people. Among the highlighted (flagged) squares, only the red ones are truly sick.</p>
+  </div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const ins = { prev: root.querySelector('[data-in="prev"]'), sens: root.querySelector('[data-in="sens"]'), spec: root.querySelector('[data-in="spec"]') };
+    const grid = root.querySelector("[data-grid]");
+    const N = 1000;
+
+    function render() {
+      const prev = +ins.prev.value / 100, sens = +ins.sens.value / 100, spec = +ins.spec.value / 100;
+      root.querySelector('[data-out="prev"]').textContent = (+ins.prev.value).toFixed(1) + "%";
+      root.querySelector('[data-out="sens"]').textContent = (+ins.sens.value).toFixed(1) + "%";
+      root.querySelector('[data-out="spec"]').textContent = (+ins.spec.value).toFixed(1) + "%";
+
+      const sick = N * prev;
+      const tp = sick * sens;
+      const fp = (N - sick) * (1 - spec);
+      const post = tp + fp > 0 ? tp / (tp + fp) : 0;
+
+      root.querySelector('[data-out="post"]').textContent = (post * 100).toFixed(1) + "%";
+      root.querySelector('[data-out="explain"]').textContent =
+        "Per 1,000 people: ~" + Math.round(tp) + " true positives vs ~" + Math.round(fp) + " false alarms.";
+
+      // pictograph: build 1000 cells, draw a representative 100? Use 1000 tiny cells is heavy; use 500 scaled.
+      const cells = 500;
+      const tpC = Math.round((tp / N) * cells);
+      const fpC = Math.round((fp / N) * cells);
+      let html = "";
+      for (let i = 0; i < cells; i++) {
+        let cls = "bg-gray-300 dark:bg-white/15";
+        if (i < tpC) cls = "bg-rose-500";
+        else if (i < tpC + fpC) cls = "bg-amber-400";
+        html += '<span class="aspect-square rounded-[2px] ' + cls + '"></span>';
+      }
+      grid.innerHTML = html;
+    }
+
+    Object.values(ins).forEach((el) => el.addEventListener("input", render));
+    render();
+  })();
+</script>

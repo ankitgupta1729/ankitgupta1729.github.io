@@ -1,0 +1,114 @@
+---
+// Interactive compound-interest calculator with a live SVG growth chart.
+// Sliders for starting amount, monthly contribution, return, and years.
+const uid = "ci" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-4 flex items-center gap-2">
+    <span class="text-xl">💹</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">Compound-interest playground</h4>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Starting amount <b data-out="p" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="p" type="range" min="0" max="50000" step="500" value="1000" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Monthly contribution <b data-out="m" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="m" type="range" min="0" max="2000" step="50" value="200" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Annual return <b data-out="r" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="r" type="range" min="0" max="15" step="0.5" value="8" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Years <b data-out="y" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="y" type="range" min="1" max="50" step="1" value="30" class="mt-1 w-full accent-brand-600" />
+    </label>
+  </div>
+
+  <svg viewBox="0 0 600 240" class="mt-5 w-full" data-chart aria-hidden="true">
+    <line x1="40" y1="200" x2="590" y2="200" stroke="currentColor" stroke-opacity="0.2" />
+    <line x1="40" y1="10" x2="40" y2="200" stroke="currentColor" stroke-opacity="0.2" />
+    <path data-area fill={`url(#grad-${uid})`} opacity="0.25"></path>
+    <path data-line fill="none" stroke="#4f46e5" stroke-width="2.5"></path>
+    <path data-contrib fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4"></path>
+    <defs>
+      <linearGradient id={`grad-${uid}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#6366f1" />
+        <stop offset="1" stop-color="#6366f1" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+    <div class="rounded-xl bg-gray-50 p-3 dark:bg-white/5">
+      <div class="text-xs font-semibold uppercase text-gray-500">You put in</div>
+      <div class="text-base font-extrabold text-gray-700 dark:text-gray-200" data-out="invested"></div>
+    </div>
+    <div class="rounded-xl bg-green-50 p-3 dark:bg-green-900/20">
+      <div class="text-xs font-semibold uppercase text-green-600">Interest earned</div>
+      <div class="text-base font-extrabold text-green-700 dark:text-green-300" data-out="gain"></div>
+    </div>
+    <div class="rounded-xl bg-brand-50 p-3 dark:bg-brand-900/30">
+      <div class="text-xs font-semibold uppercase text-brand-600">Final value</div>
+      <div class="text-base font-extrabold text-brand-700 dark:text-brand-300" data-out="total"></div>
+    </div>
+  </div>
+  <p class="mt-2 text-xs text-gray-400">Dashed line = money you contributed. Solid line = total with compounding. Education only, not financial advice.</p>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const ins = { p: root.querySelector('[data-in="p"]'), m: root.querySelector('[data-in="m"]'), r: root.querySelector('[data-in="r"]'), y: root.querySelector('[data-in="y"]') };
+    const fmt = (n) => "$" + Math.round(n).toLocaleString();
+
+    function series() {
+      const p = +ins.p.value, m = +ins.m.value, r = +ins.r.value / 100, y = +ins.y.value;
+      const mr = r / 12;
+      const total = [], contrib = [];
+      let bal = p, put = p;
+      total.push(bal); contrib.push(put);
+      for (let month = 1; month <= y * 12; month++) {
+        bal = bal * (1 + mr) + m;
+        put += m;
+        if (month % 12 === 0) { total.push(bal); contrib.push(put); }
+      }
+      return { total, contrib, invested: put, final: bal };
+    }
+
+    function path(arr, max, w, h, x0, y0) {
+      const n = arr.length - 1 || 1;
+      return arr.map((v, i) => (i ? "L" : "M") + (x0 + (i / n) * w).toFixed(1) + " " + (y0 - (v / max) * h).toFixed(1)).join(" ");
+    }
+
+    function render() {
+      root.querySelector('[data-out="p"]').textContent = fmt(+ins.p.value);
+      root.querySelector('[data-out="m"]').textContent = fmt(+ins.m.value) + "/mo";
+      root.querySelector('[data-out="r"]').textContent = (+ins.r.value).toFixed(1) + "%";
+      root.querySelector('[data-out="y"]').textContent = ins.y.value + " yrs";
+
+      const s = series();
+      const max = Math.max(...s.total) * 1.05 || 1;
+      const W = 550, H = 190, X0 = 40, Y0 = 200;
+      root.querySelector("[data-line]").setAttribute("d", path(s.total, max, W, H, X0, Y0));
+      root.querySelector("[data-contrib]").setAttribute("d", path(s.contrib, max, W, H, X0, Y0));
+      const area = path(s.total, max, W, H, X0, Y0) + " L" + (X0 + W) + " " + Y0 + " L" + X0 + " " + Y0 + " Z";
+      root.querySelector("[data-area]").setAttribute("d", area);
+
+      root.querySelector('[data-out="invested"]').textContent = fmt(s.invested);
+      root.querySelector('[data-out="gain"]').textContent = fmt(s.final - s.invested);
+      root.querySelector('[data-out="total"]').textContent = fmt(s.final);
+    }
+
+    Object.values(ins).forEach((el) => el.addEventListener("input", render));
+    render();
+  })();
+</script>

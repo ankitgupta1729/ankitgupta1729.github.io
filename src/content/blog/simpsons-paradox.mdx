@@ -1,0 +1,70 @@
+---
+title: "Simpson's Paradox: When Data Lies by Telling the Truth"
+description: "A treatment can help every subgroup yet appear harmful overall. This statistical illusion has swayed court cases and medical decisions — here's how to spot it."
+category: "data-science"
+tags: ["statistics", "paradox", "causality", "interactive"]
+author: "Ankit Gupta"
+pubDate: 2026-06-13
+heroEmoji: "🔀"
+---
+
+import Figure from "../../components/Figure.astro";
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+Here's a fact that breaks people's brains: a trend can appear in every single group of your data and then **reverse** when you combine the groups. It's called **Simpson's paradox**, and it's not a trick of bad data — it's a genuine feature of how averages work.
+
+## A real example
+
+The University of California, Berkeley was once accused of gender bias in graduate admissions: men were admitted at a noticeably higher rate than women, overall. But when researchers looked *department by department*, most departments actually favored women slightly. How can both be true?
+
+The answer: women applied disproportionately to highly competitive departments with low acceptance rates, while men applied more to easier-to-enter ones. The *mix* of applications, not bias within departments, drove the overall gap.
+
+<Figure caption="Both groups improve from left to right within their own line — yet the overall average (dashed) trends downward, because the two groups sit at very different baselines and sizes.">
+<svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" font-size="11">
+  <line x1="40" y1="190" x2="400" y2="190" stroke="currentColor" stroke-opacity="0.3"/>
+  <line x1="40" y1="10" x2="40" y2="190" stroke="currentColor" stroke-opacity="0.3"/>
+  <line x1="70" y1="70" x2="180" y2="40" stroke="#6366f1" stroke-width="3"/>
+  <circle cx="70" cy="70" r="4" fill="#6366f1"/><circle cx="180" cy="40" r="4" fill="#6366f1"/>
+  <text x="120" y="30" fill="#6366f1">Group A ↑</text>
+  <line x1="240" y1="160" x2="360" y2="130" stroke="#ec4899" stroke-width="3"/>
+  <circle cx="240" cy="160" r="4" fill="#ec4899"/><circle cx="360" cy="130" r="4" fill="#ec4899"/>
+  <text x="270" y="120" fill="#ec4899">Group B ↑</text>
+  <line x1="70" y1="60" x2="360" y2="150" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="150" y="115" fill="#94a3b8">Combined ↓</text>
+</svg>
+</Figure>
+
+## Why it happens
+
+Simpson's paradox appears when a hidden **confounding variable** (here, *which department*) is unevenly distributed across the groups you're comparing. The overall average secretly mixes together groups of very different sizes and baselines, and that mixing can flip the apparent direction of an effect.
+
+<Callout type="warning">
+The lesson isn't "always split your data" — sometimes the aggregate is the honest number, and slicing too finely invents patterns. The real lesson is that **the right answer depends on the causal question you're asking**, and you must think about confounders before trusting *either* view.
+</Callout>
+
+## It has real consequences
+
+- **Medicine:** a treatment can look worse overall if sicker patients were more likely to receive it — even if it helps everyone.
+- **Hiring and pay:** aggregate gaps can hide or exaggerate what's happening role by role.
+- **Sports and business metrics:** combining seasons, regions, or products can reverse a trend that's consistent within each.
+
+This is a close cousin of [correlation vs. causation](/blog/correlation-is-not-causation/): the numbers are all correct; the *interpretation* is where things go wrong.
+
+## How to protect yourself
+
+1. **Ask what's being averaged.** Are the subgroups very different in size or baseline?
+2. **Look for a lurking variable** that differs across groups.
+3. **Decide the causal question first.** "Does the treatment help a patient?" and "What happens to the population on average?" can have different right answers.
+
+## Test yourself
+
+<Quiz questions={[
+  { q: "Simpson's paradox occurs when…", options: ["The data is fabricated", "A trend within every subgroup reverses when groups are combined", "Two variables are unrelated"], answer: 1, explain: "It's a real effect of aggregating groups with different sizes/baselines." },
+  { q: "What causes the reversal?", options: ["Random noise", "A confounding variable distributed unevenly across groups", "Rounding errors"], answer: 1, explain: "A lurking variable drives the mix, flipping the aggregate." },
+  { q: "The correct fix is to…", options: ["Always use the combined number", "Always split into subgroups", "Decide the causal question and check for confounders"], answer: 2, explain: "Neither view is automatically right — it depends on what you're asking." }
+]} />
+
+Simpson's paradox is a humbling reminder that data never speaks for itself. The same honest numbers can tell opposite stories depending on how you slice them — and knowing which story is *true* requires thinking about cause, not just calculating averages.
+
+*Seen a headline that probably fell for this? Share it below.*

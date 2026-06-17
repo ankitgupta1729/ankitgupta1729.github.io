@@ -1,0 +1,68 @@
+---
+// Law of large numbers demo: flip coins and watch the running proportion of
+// heads converge toward 50%, drawn live on an SVG chart.
+const uid = "cf" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">🪙</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">Law of large numbers — flip a coin</h4>
+  </div>
+  <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+    Each flip is 50/50, but small samples are wild. Keep flipping and watch the running % of heads settle toward the dashed 50% line.
+  </p>
+
+  <svg viewBox="0 0 600 200" class="w-full text-gray-400" data-chart aria-hidden="true">
+    <line x1="40" y1="100" x2="590" y2="100" stroke="#94a3b8" stroke-dasharray="4 4" />
+    <text x="44" y="94" font-size="10" fill="currentColor">50%</text>
+    <line x1="40" y1="10" x2="40" y2="190" stroke="currentColor" stroke-opacity="0.25" />
+    <path data-line fill="none" stroke="#4f46e5" stroke-width="2"></path>
+  </svg>
+
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <button data-flip="1" class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Flip once</button>
+    <button data-flip="100" class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Flip 100×</button>
+    <button data-flip="1000" class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Flip 1,000×</button>
+    <button data-reset class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Reset</button>
+    <span class="ml-auto text-sm font-semibold text-gray-700 dark:text-gray-200" data-out>0 flips</span>
+  </div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const line = root.querySelector("[data-line]");
+    const out = root.querySelector("[data-out]");
+    let heads = 0, total = 0;
+    const props = [];
+
+    function flip(n) {
+      for (let i = 0; i < n; i++) {
+        total++;
+        if (Math.random() < 0.5) heads++;
+        props.push(heads / total);
+      }
+      // keep at most 600 sampled points for a smooth line
+      const step = Math.max(1, Math.ceil(props.length / 600));
+      const pts = [];
+      for (let i = 0; i < props.length; i += step) pts.push(props[i]);
+      pts.push(props[props.length - 1]);
+      const W = 550, X0 = 40, H = 180, Y0 = 10;
+      const d = pts.map((p, i) => (i ? "L" : "M") + (X0 + (i / (pts.length - 1 || 1)) * W).toFixed(1) + " " + (Y0 + (1 - p) * H).toFixed(1)).join(" ");
+      line.setAttribute("d", d);
+      out.textContent = total.toLocaleString() + " flips · " + Math.round((heads / total) * 100) + "% heads";
+    }
+
+    root.querySelectorAll("[data-flip]").forEach((b) =>
+      b.addEventListener("click", () => flip(+b.getAttribute("data-flip")))
+    );
+    root.querySelector("[data-reset]").addEventListener("click", () => {
+      heads = 0; total = 0; props.length = 0; line.setAttribute("d", ""); out.textContent = "0 flips";
+    });
+  })();
+</script>

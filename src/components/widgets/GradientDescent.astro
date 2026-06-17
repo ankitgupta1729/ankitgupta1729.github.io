@@ -1,0 +1,98 @@
+---
+// Interactive gradient-descent visualizer. A ball steps downhill on a bumpy
+// curve; the learning-rate slider shows under-shooting, converging, and
+// diverging behaviour.
+const uid = "gd" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">⛰️</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">Gradient descent — roll downhill</h4>
+  </div>
+  <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+    The ball steps in the downhill direction. Try a tiny learning rate (slow), a good one (smooth), and a huge one (it overshoots and diverges!).
+  </p>
+
+  <svg viewBox="0 0 600 220" class="w-full" data-chart aria-hidden="true">
+    <path data-curve fill="none" stroke="currentColor" stroke-opacity="0.4" stroke-width="2"></path>
+    <circle data-ball r="7" fill="#ec4899" stroke="#fff" stroke-width="2"></circle>
+  </svg>
+
+  <div class="mt-3 flex flex-wrap items-center gap-4">
+    <label class="flex-1 text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Learning rate <b data-out="lr" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="lr" type="range" min="0.01" max="1.05" step="0.01" value="0.18" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <button data-step class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Step</button>
+    <button data-run class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Auto-descend</button>
+    <button data-reset class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Reset</button>
+  </div>
+  <p class="mt-2 text-sm font-semibold" data-status></p>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const curve = root.querySelector("[data-curve]");
+    const ball = root.querySelector("[data-ball]");
+    const status = root.querySelector("[data-status]");
+    const lrIn = root.querySelector('[data-in="lr"]');
+
+    // Loss function on x in [-3,3]: a gentle bowl with a wiggle.
+    const f = (x) => 0.5 * x * x + 0.6 * Math.sin(2.2 * x);
+    const df = (x) => x + 0.6 * 2.2 * Math.cos(2.2 * x);
+
+    const X0 = 30, W = 540, Y0 = 200, H = 170;
+    const xmin = -3, xmax = 3;
+    let fmin = Infinity, fmax = -Infinity;
+    for (let x = xmin; x <= xmax; x += 0.02) { const y = f(x); if (y < fmin) fmin = y; if (y > fmax) fmax = y; }
+    const sx = (x) => X0 + ((x - xmin) / (xmax - xmin)) * W;
+    const sy = (y) => Y0 - ((y - fmin) / (fmax - fmin)) * H;
+
+    let d = "";
+    for (let x = xmin; x <= xmax; x += 0.02) d += (d ? "L" : "M") + sx(x).toFixed(1) + " " + sy(f(x)).toFixed(1) + " ";
+    curve.setAttribute("d", d);
+
+    let pos, timer = null;
+    function place() { ball.setAttribute("cx", sx(pos)); ball.setAttribute("cy", sy(f(pos))); }
+    function reset() { if (timer) cancelAnimationFrame(timer), (timer = null); pos = 2.6; place(); status.textContent = ""; }
+
+    function step() {
+      const lr = +lrIn.value;
+      const g = df(pos);
+      pos = pos - lr * g;
+      if (!isFinite(pos) || Math.abs(pos) > 4) {
+        status.textContent = "💥 Diverged! The learning rate is too large — it overshoots the valley.";
+        status.style.color = "#e11d48";
+        pos = Math.sign(pos || 1) * 3; place();
+        if (timer) cancelAnimationFrame(timer), (timer = null);
+        return false;
+      }
+      place();
+      if (Math.abs(g) < 0.01) {
+        status.textContent = "✅ Converged near the minimum. Smooth!";
+        status.style.color = "#16a34a";
+        return false;
+      }
+      status.textContent = "Descending… slope = " + g.toFixed(2);
+      status.style.color = "";
+      return true;
+    }
+
+    root.querySelector("[data-step]").addEventListener("click", step);
+    root.querySelector("[data-run]").addEventListener("click", () => {
+      if (timer) return;
+      const loop = () => { if (step()) timer = requestAnimationFrame(loop); else timer = null; };
+      loop();
+    });
+    root.querySelector("[data-reset]").addEventListener("click", reset);
+    lrIn.addEventListener("input", () => (root.querySelector('[data-out="lr"]').textContent = (+lrIn.value).toFixed(2)));
+    root.querySelector('[data-out="lr"]').textContent = (+lrIn.value).toFixed(2);
+    reset();
+  })();
+</script>
