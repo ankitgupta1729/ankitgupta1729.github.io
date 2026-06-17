@@ -1,0 +1,109 @@
+---
+// Interactive k-means clustering playground. Scatter random points, then
+// watch centroids iteratively move and re-colour their clusters.
+const uid = "km" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">🎯</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">k-Means clustering — watch it sort itself</h4>
+  </div>
+  <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+    Points start uncoloured. Each <b>step</b>: every point joins its nearest centroid (★), then each centroid moves to the centre of its group. Repeat until stable.
+  </p>
+
+  <svg viewBox="0 0 400 260" class="w-full rounded-xl bg-gray-50 dark:bg-white/5" data-canvas aria-hidden="true"></svg>
+
+  <div class="mt-3 flex flex-wrap items-center gap-2">
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Clusters (k):
+      <select data-k class="ml-1 rounded border border-gray-300 bg-transparent px-1 py-0.5 dark:border-white/15">
+        <option>2</option><option selected>3</option><option>4</option><option>5</option>
+      </select>
+    </label>
+    <button data-step class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Step</button>
+    <button data-run class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Auto-cluster</button>
+    <button data-new class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">New points</button>
+    <span class="ml-auto text-sm text-gray-500" data-iter>iteration 0</span>
+  </div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const svg = root.querySelector("[data-canvas]");
+    const iterEl = root.querySelector("[data-iter]");
+    const kSel = root.querySelector("[data-k]");
+    const colors = ["#6366f1", "#ec4899", "#14b8a6", "#f59e0b", "#0ea5e9"];
+    const W = 400, H = 260;
+    let pts = [], cents = [], iter = 0, timer = null;
+
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function newPoints() {
+      const k = +kSel.value;
+      pts = [];
+      // make k gaussian-ish blobs so clustering looks meaningful
+      for (let c = 0; c < k; c++) {
+        const cx = rnd(50, W - 50), cy = rnd(40, H - 40);
+        for (let i = 0; i < 18; i++) pts.push({ x: cx + rnd(-32, 32), y: cy + rnd(-32, 32), c: -1 });
+      }
+      cents = [];
+      for (let c = 0; c < k; c++) cents.push({ x: rnd(40, W - 40), y: rnd(30, H - 30) });
+      iter = 0;
+      draw();
+    }
+
+    function assign() {
+      let moved = false;
+      pts.forEach((p) => {
+        let best = 0, bd = Infinity;
+        cents.forEach((c, i) => { const d = (c.x - p.x) ** 2 + (c.y - p.y) ** 2; if (d < bd) { bd = d; best = i; } });
+        if (p.c !== best) moved = true;
+        p.c = best;
+      });
+      return moved;
+    }
+    function move() {
+      cents.forEach((c, i) => {
+        const group = pts.filter((p) => p.c === i);
+        if (group.length) { c.x = group.reduce((s, p) => s + p.x, 0) / group.length; c.y = group.reduce((s, p) => s + p.y, 0) / group.length; }
+      });
+    }
+
+    function step() {
+      const moved = assign();
+      move();
+      iter++;
+      draw();
+      return moved;
+    }
+
+    function draw() {
+      let s = "";
+      pts.forEach((p) => {
+        const col = p.c < 0 ? "#94a3b8" : colors[p.c % colors.length];
+        s += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="4" fill="' + col + '" opacity="0.8"/>';
+      });
+      cents.forEach((c, i) => {
+        s += '<text x="' + c.x.toFixed(1) + '" y="' + (c.y + 6).toFixed(1) + '" text-anchor="middle" font-size="22" fill="' + colors[i % colors.length] + '" stroke="white" stroke-width="0.6">★</text>';
+      });
+      svg.innerHTML = s;
+      iterEl.textContent = "iteration " + iter;
+    }
+
+    root.querySelector("[data-step]").addEventListener("click", step);
+    root.querySelector("[data-new]").addEventListener("click", () => { if (timer) clearInterval(timer), (timer = null); newPoints(); });
+    root.querySelector("[data-run]").addEventListener("click", () => {
+      if (timer) return;
+      timer = setInterval(() => { if (!step()) { clearInterval(timer); timer = null; } }, 600);
+    });
+    kSel.addEventListener("change", () => { if (timer) clearInterval(timer), (timer = null); newPoints(); });
+
+    newPoints();
+  })();
+</script>

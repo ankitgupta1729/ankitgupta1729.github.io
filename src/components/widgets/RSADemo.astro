@@ -1,0 +1,94 @@
+---
+// Tiny working RSA demo with small primes so you can encrypt/decrypt a number
+// by hand and see the public/private key magic. Educational scale only.
+const uid = "rsa" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">🔐</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">RSA in miniature — encrypt &amp; decrypt</h4>
+  </div>
+  <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+    Pick two small primes. We build a public key (to lock) and a private key (to unlock). Encrypt a number with the public key — only the private key brings it back.
+  </p>
+
+  <div class="flex flex-wrap items-end gap-3">
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">p
+      <select data-p class="ml-1 rounded border border-gray-300 bg-transparent px-1 py-0.5 dark:border-white/15"></select>
+    </label>
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">q
+      <select data-q class="ml-1 rounded border border-gray-300 bg-transparent px-1 py-0.5 dark:border-white/15"></select>
+    </label>
+    <button data-gen class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Generate keys</button>
+  </div>
+
+  <div class="mt-3 grid gap-2 text-sm" data-keys></div>
+
+  <div class="mt-4 flex flex-wrap items-end gap-3">
+    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Secret number (m)
+      <input data-m type="number" min="0" value="9" class="ml-1 w-20 rounded border border-gray-300 bg-transparent px-2 py-1 dark:border-white/15" />
+    </label>
+    <button data-enc class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">🔒 Encrypt</button>
+    <button data-dec class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">🔓 Decrypt</button>
+  </div>
+  <div class="mt-3 space-y-1 rounded-xl bg-gray-50 p-3 font-mono text-sm dark:bg-white/5" data-out></div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const primes = [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+    const pSel = root.querySelector("[data-p]");
+    const qSel = root.querySelector("[data-q]");
+    primes.forEach((p) => { pSel.add(new Option(p, p)); qSel.add(new Option(p, p)); });
+    pSel.value = 17; qSel.value = 11;
+
+    let n, e, d;
+    const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+    function modpow(base, exp, mod) {
+      base %= mod; let r = 1n; let b = BigInt(base), ex = BigInt(exp), m = BigInt(mod);
+      while (ex > 0n) { if (ex & 1n) r = (r * b) % m; b = (b * b) % m; ex >>= 1n; }
+      return Number(r);
+    }
+    function modinv(a, m) { for (let x = 1; x < m; x++) if ((a * x) % m === 1) return x; return 1; }
+
+    function gen() {
+      const p = +pSel.value, q = +qSel.value;
+      if (p === q) { root.querySelector("[data-keys]").innerHTML = '<p class="text-rose-500">Pick two <b>different</b> primes.</p>'; return; }
+      n = p * q;
+      const phi = (p - 1) * (q - 1);
+      e = 0;
+      for (const cand of [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]) { if (cand < phi && gcd(cand, phi) === 1) { e = cand; break; } }
+      d = modinv(e, phi);
+      root.querySelector("[data-keys]").innerHTML =
+        '<div class="rounded-lg bg-brand-50 p-2 dark:bg-brand-900/30"><b>Public key</b> (share freely): (n=' + n + ', e=' + e + ')</div>' +
+        '<div class="rounded-lg bg-rose-50 p-2 dark:bg-rose-900/20"><b>Private key</b> (keep secret): d=' + d + '  ·  built from p=' + p + ', q=' + q + '</div>';
+      root.querySelector("[data-out]").innerHTML = "";
+      const mIn = root.querySelector("[data-m]"); mIn.max = n - 1; if (+mIn.value >= n) mIn.value = Math.min(9, n - 1);
+    }
+
+    let cipher = null;
+    root.querySelector("[data-gen]").addEventListener("click", gen);
+    root.querySelector("[data-enc]").addEventListener("click", () => {
+      const m = +root.querySelector("[data-m]").value;
+      if (m >= n) { root.querySelector("[data-out]").innerHTML = '<div class="text-rose-500">m must be smaller than n (' + n + ').</div>'; return; }
+      cipher = modpow(m, e, n);
+      root.querySelector("[data-out]").innerHTML =
+        '<div>🔒 encrypt: ' + m + '<sup>' + e + '</sup> mod ' + n + ' = <b class="text-brand-600">' + cipher + '</b></div>' +
+        '<div class="text-gray-400">Send ' + cipher + ' over an open channel — safe without the private key.</div>';
+    });
+    root.querySelector("[data-dec]").addEventListener("click", () => {
+      if (cipher === null) { root.querySelector("[data-out]").innerHTML = '<div class="text-amber-500">Encrypt something first.</div>'; return; }
+      const m2 = modpow(cipher, d, n);
+      root.querySelector("[data-out]").innerHTML +=
+        '<div>🔓 decrypt: ' + cipher + '<sup>' + d + '</sup> mod ' + n + ' = <b class="text-green-600">' + m2 + '</b> ✓ recovered!</div>';
+    });
+
+    gen();
+  })();
+</script>

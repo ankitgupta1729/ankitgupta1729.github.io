@@ -44,10 +44,24 @@ export const CATEGORIES = [
   { slug: "history", name: "History", icon: "🏛️", color: "#a16207", blurb: "How we got here, and why it matters." },
 ];
 
+// Verified free Unsplash banner images for some categories (decorative,
+// shown behind a gradient overlay). Categories without an entry keep the
+// gradient-only header. Append `?w=1200&q=70&auto=format` when rendering.
+export const CATEGORY_IMAGES: Record<string, string> = {
+  mathematics: "photo-1635070041078-e363dbe005cb", // chalkboard equations
+  physics: "photo-1517976487492-5750f3195933", // rocket launch
+  science: "photo-1451187580459-43490279c0fa", // earth from space
+};
+
+export function unsplash(id: string, w = 1200): string {
+  return `https://images.unsplash.com/${id}?w=${w}&q=70&auto=format&fit=crop`;
+}
+
 export const NAV = [
   { name: "Home", href: "/" },
   { name: "Articles", href: "/blog" },
   { name: "Topics", href: "/categories" },
+  { name: "Community", href: "/community" },
   { name: "Forum", href: "/forum" },
   { name: "Search", href: "/search" },
   { name: "About", href: "/about" },

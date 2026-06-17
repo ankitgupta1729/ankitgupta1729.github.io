@@ -2,11 +2,14 @@
 title: "Decision Trees and Random Forests, Explained Simply"
 description: "One of the most intuitive ideas in machine learning — asking a series of yes/no questions — scales into one of the most reliable. Here's how, and why a 'forest' beats a single tree."
 category: "machine-learning"
-tags: ["decision-trees", "random-forest", "ensembles", "fundamentals"]
+tags: ["decision-trees", "random-forest", "ensembles", "fundamentals", "interactive"]
 author: "Ankit Gupta"
 pubDate: 2026-06-12
 heroEmoji: "🌳"
 ---
+
+import KMeans from "../../components/widgets/KMeans.astro";
+import Callout from "../../components/Callout.astro";
 
 If you've ever played 20 Questions, you already understand decision trees — the most human-readable model in machine learning. And the trick that turns them from "decent" to "state of the art on tabular data" is beautifully simple: build a lot of them and let them vote.
 
@@ -53,6 +56,16 @@ This forces the trees to be *different* from one another. Each individual tree i
 ## The trade-off
 
 You lose the single tree's perfect interpretability — you can't easily read 500 trees at once. And for unstructured data like images, text, or audio, deep learning still wins decisively. But for the structured, tabular data that runs most of the business world, random forests (and their cousins, gradient-boosted trees) remain a first-rate default.
+
+## Bonus: the unsupervised cousin
+
+Trees and forests are *supervised* — they learn from labelled examples. But a lot of machine learning has no labels at all; the goal is just to find natural groupings. The classic algorithm for that is **k-means clustering**. Watch it sort scattered points into groups all by itself:
+
+<KMeans />
+
+<Callout type="info">
+Notice there are no "right answers" fed in — k-means simply alternates between *assigning* each point to its nearest centre and *moving* each centre to its group's average, until things stop changing. That's unsupervised learning in a nutshell.
+</Callout>
 
 ## The takeaway
 

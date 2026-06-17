@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ArticleCard from "../../components/ArticleCard.astro";
 import { readingTime } from "../../lib/utils";
-import { CATEGORIES } from "../../consts";
+import { CATEGORIES, CATEGORY_IMAGES, unsplash } from "../../consts";
 
 export async function getStaticPaths() {
   const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
@@ -22,8 +22,18 @@ const { cat, posts } = Astro.props;
 ---
 
 <BaseLayout title={cat.name} description={cat.blurb}>
-  <section class="aurora">
-    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+  <section class="relative overflow-hidden aurora">
+    {CATEGORY_IMAGES[cat.slug] && (
+      <img
+        src={unsplash(CATEGORY_IMAGES[cat.slug])}
+        alt=""
+        aria-hidden="true"
+        loading="eager"
+        class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20 dark:opacity-25"
+      />
+    )}
+    <div class="absolute inset-0 bg-gradient-to-t from-paper via-paper/60 to-transparent dark:from-ink dark:via-ink/60"></div>
+    <div class="relative mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <a href="/categories" class="text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">← All topics</a>
       <div class="mt-4 flex items-center gap-4">
         <div class="grid h-16 w-16 place-items-center rounded-2xl text-4xl" style={`background:${cat.color}1a`}>{cat.icon}</div>

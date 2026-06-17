@@ -10,6 +10,7 @@ heroEmoji: "🎲"
 
 import BayesCalculator from "../../components/widgets/BayesCalculator.astro";
 import CoinFlip from "../../components/widgets/CoinFlip.astro";
+import NormalDistribution from "../../components/widgets/NormalDistribution.astro";
 import Callout from "../../components/Callout.astro";
 import Quiz from "../../components/Quiz.astro";
 
@@ -44,6 +45,12 @@ Imagine 1,000 people. If 10 are sick, the test flags ~10 of them (true positives
 Part of why we misjudge probability is that small samples are noisy. Flip a fair coin a few times and you might get 80% heads. Keep going and it settles toward 50%:
 
 <CoinFlip />
+
+## Bonus: the shape most data takes
+
+Many real-world measurements cluster around an average in the famous bell curve. Drag the mean and spread to see the **68–95–99.7 rule** — the backbone of statistics — hold no matter what:
+
+<NormalDistribution />
 
 ## Where Bayesian thinking shows up
 

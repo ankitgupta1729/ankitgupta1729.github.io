@@ -2,13 +2,21 @@
 title: "How RSA Lets Strangers Share Secrets"
 description: "Every time you see a padlock in your browser, public-key cryptography is at work. Here's the elegant number theory that lets two people who've never met communicate securely."
 category: "cryptography"
-tags: ["rsa", "public-key", "number-theory", "security"]
+tags: ["rsa", "public-key", "number-theory", "security", "interactive"]
 author: "Ankit Gupta"
 pubDate: 2026-05-30
 heroEmoji: "🔐"
 ---
 
+import RSADemo from "../../components/widgets/RSADemo.astro";
+
 For most of history, encryption had a chicken-and-egg problem: to send a secret, both parties first needed to share a secret key — but how do you share that safely? In 1977, RSA solved it with a beautiful trick from number theory. You can publish a key for the *whole world* to see, and still receive messages only you can read.
+
+## Try it live
+
+Generate a key pair from two small primes, then encrypt a number with the public key and watch only the private key bring it back:
+
+<RSADemo />
 
 ## The big idea: one-way doors
 

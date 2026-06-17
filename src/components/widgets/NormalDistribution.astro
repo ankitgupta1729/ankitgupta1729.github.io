@@ -1,0 +1,78 @@
+---
+// Interactive normal distribution: drag mean & standard deviation, see the
+// bell curve reshape and the 68–95–99.7 rule shaded live.
+const uid = "nd" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">🔔</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">The bell curve & the 68–95–99.7 rule</h4>
+  </div>
+
+  <svg viewBox="0 0 460 240" class="w-full" data-chart aria-hidden="true"></svg>
+
+  <div class="mt-2 grid gap-4 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Mean (μ) <b data-out="mu" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="mu" type="range" min="-3" max="3" step="0.1" value="0" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Std dev (σ) <b data-out="sd" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="sd" type="range" min="0.4" max="2.5" step="0.1" value="1" class="mt-1 w-full accent-brand-600" />
+    </label>
+  </div>
+  <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+    Shaded bands show ±1σ (≈68%), ±2σ (≈95%), ±3σ (≈99.7%). The curve moves with the mean and widens with the standard deviation — but those percentages never change.
+  </p>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const svg = root.querySelector("[data-chart]");
+    const muIn = root.querySelector('[data-in="mu"]');
+    const sdIn = root.querySelector('[data-in="sd"]');
+    const W = 460, H = 240, X0 = 10, Y0 = 200, PW = 440, PH = 180;
+    const xmin = -6, xmax = 6;
+    const sx = (x) => X0 + ((x - xmin) / (xmax - xmin)) * PW;
+    const pdfPeak = (sd) => 1 / (sd * Math.sqrt(2 * Math.PI));
+
+    function render() {
+      const mu = +muIn.value, sd = +sdIn.value;
+      root.querySelector('[data-out="mu"]').textContent = mu.toFixed(1);
+      root.querySelector('[data-out="sd"]').textContent = sd.toFixed(1);
+      const peak = pdfPeak(0.4); // fixed scale so taller/shorter is visible
+      const sy = (y) => Y0 - (y / peak) * PH;
+      const pdf = (x) => Math.exp(-((x - mu) ** 2) / (2 * sd * sd)) / (sd * Math.sqrt(2 * Math.PI));
+
+      function band(a, b, fill, op) {
+        let d = "M" + sx(a).toFixed(1) + " " + Y0;
+        for (let x = a; x <= b; x += 0.05) d += " L" + sx(x).toFixed(1) + " " + sy(pdf(x)).toFixed(1);
+        d += " L" + sx(b).toFixed(1) + " " + Y0 + " Z";
+        return '<path d="' + d + '" fill="' + fill + '" opacity="' + op + '"/>';
+      }
+      let line = "";
+      for (let x = xmin; x <= xmax; x += 0.05) line += (line ? "L" : "M") + sx(x).toFixed(1) + " " + sy(pdf(x)).toFixed(1) + " ";
+
+      let s = "";
+      s += '<line x1="' + X0 + '" y1="' + Y0 + '" x2="' + (X0 + PW) + '" y2="' + Y0 + '" stroke="currentColor" stroke-opacity="0.25"/>';
+      s += band(mu - 3 * sd, mu + 3 * sd, "#14b8a6", 0.15);
+      s += band(mu - 2 * sd, mu + 2 * sd, "#6366f1", 0.18);
+      s += band(mu - sd, mu + sd, "#ec4899", 0.25);
+      s += '<path d="' + line + '" fill="none" stroke="#4f46e5" stroke-width="2.5"/>';
+      s += '<line x1="' + sx(mu) + '" y1="' + Y0 + '" x2="' + sx(mu) + '" y2="' + sy(pdf(mu)) + '" stroke="#4f46e5" stroke-dasharray="3 3" opacity="0.6"/>';
+      [["±1σ 68%", mu, "#ec4899", 16], ["±2σ 95%", mu, "#6366f1", 30], ["±3σ 99.7%", mu, "#14b8a6", 44]].forEach((t) => {
+        s += '<text x="' + (X0 + 6) + '" y="' + t[3] + '" font-size="11" fill="' + t[2] + '">' + t[0] + '</text>';
+      });
+      svg.innerHTML = s;
+    }
+    muIn.addEventListener("input", render);
+    sdIn.addEventListener("input", render);
+    render();
+  })();
+</script>

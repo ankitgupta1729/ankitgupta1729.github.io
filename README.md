@@ -94,6 +94,24 @@ Comments and reactions degrade gracefully until configured. To turn them on:
 4. Paste them into `GISCUS` in [`src/consts.ts`](src/consts.ts).
 5. Commit & push. Done — every article and the forum now have live discussions.
 
+## 🗄️ Data & storage (how "saving things" works)
+
+The site is **static**, so there's no server to maintain — yet it still stores plenty:
+
+| Need | Where it's stored | Notes |
+|---|---|---|
+| Likes, reactions, your own comments, reading list, newsletter intent | **Browser localStorage** | Instant, private to each visitor, zero cost. |
+| Real, shared, persistent comments & reactions | **GitHub Discussions via Giscus** | The durable backend. Enable once (see above). |
+| Demo community (members, sample threads) | `src/lib/community.ts` | Seed data, clearly labelled "Demo" in the UI. Edit freely. |
+
+**Want a true shared database** (e.g. global like counts, accounts)? Add [Supabase](https://supabase.com) (generous free tier):
+
+1. Create a project, add a `comments`/`reactions` table, and copy the project URL + anon key.
+2. `npm i @supabase/supabase-js`, then create a client in `src/lib/` and read/write from the relevant components.
+3. The anon key is safe to ship in a static site; protect data with Row Level Security policies.
+
+This is intentionally **optional** — Giscus + localStorage already cover comments, reactions and personalization for free, with nothing to run or pay for.
+
 ## 🌐 Custom domain (optional)
 
 GitHub Pages supports a custom domain for free (you only pay your registrar for the domain itself, ~$10/yr). Add a `CNAME` file in `public/` with your domain and configure DNS per [GitHub's guide](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).
