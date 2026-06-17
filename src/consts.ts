@@ -12,16 +12,6 @@ export const SITE = {
   locale: "en",
 };
 
-// Used by Giscus comments. After you authorize the Giscus GitHub App and run
-// the configurator at https://giscus.app, paste the generated repoId and
-// categoryId here. Comments degrade gracefully until then.
-export const GISCUS = {
-  repo: "ankitgupta1729/ankitgupta1729.github.io",
-  repoId: "", // <-- fill from giscus.app
-  category: "Comments",
-  categoryId: "", // <-- fill from giscus.app
-};
-
 // Optional: a real shared "likes" database via Supabase (free tier). Leave
 // blank to use a per-visitor localStorage fallback (great for demo/showcase).
 // When set, like counts are global and persist across all visitors.
@@ -29,6 +19,15 @@ export const GISCUS = {
 export const SUPABASE = {
   url: "", // e.g. "https://xxxx.supabase.co"
   anonKey: "", // the public anon key (safe to ship; protect with RLS)
+};
+
+// In-browser AI assistant ("Ask Poly") — runs free Hugging Face models via
+// Transformers.js entirely on the visitor's device. No API key, no cost.
+export const AI = {
+  enabled: true,
+  cdn: "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0",
+  embedModel: "Xenova/all-MiniLM-L6-v2", // ~25MB, semantic search over articles
+  genModel: "Xenova/LaMini-Flan-T5-77M", // ~80MB, writes grounded answers
 };
 
 export const SOCIAL = {

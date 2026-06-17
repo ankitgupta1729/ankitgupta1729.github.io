@@ -1,0 +1,256 @@
+---
+import { COMMENTS, memberByHandle, avatarUrl } from "../lib/community";
+import { SUPABASE } from "../consts";
+
+interface Props {
+  slug: string;
+  heading?: string;
+}
+const { slug, heading = "💬 Discussion" } = Astro.props;
+const uid = "cb" + Math.random().toString(36).slice(2, 8);
+
+// Seed/demo comments for this thread, flattened to a portable shape.
+const seed = COMMENTS.filter((c) => c.article === slug).flatMap((c, i) => {
+  const m = memberByHandle(c.handle);
+  const id = "seed-" + slug + "-" + i;
+  const parent = {
+    id,
+    parentId: null as string | null,
+    name: m?.name ?? c.handle,
+    role: m?.role ?? "",
+    avatar: avatarUrl(c.handle),
+    body: c.body,
+    likes: c.likes,
+    createdAt: c.postedAt,
+    seed: true,
+  };
+  const replies = (c.replies ?? []).map((r, j) => {
+    const rm = memberByHandle(r.handle);
+    return {
+      id: id + "-r" + j,
+      parentId: id,
+      name: rm?.name ?? r.handle,
+      role: rm?.role ?? "",
+      avatar: avatarUrl(r.handle),
+      body: r.body,
+      likes: r.likes,
+      createdAt: r.postedAt,
+      seed: true,
+    };
+  });
+  return [parent, ...replies];
+});
+
+const live = !!(SUPABASE.url && SUPABASE.anonKey);
+---
+
+<section
+  id={uid}
+  class="mt-12"
+  data-slug={slug}
+  data-live={live ? "1" : ""}
+  data-url={SUPABASE.url}
+  data-key={SUPABASE.anonKey}
+  data-seed={JSON.stringify(seed)}
+>
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white">{heading} <span data-total class="text-base font-normal text-gray-400"></span></h2>
+    <div class="flex items-center gap-1 rounded-lg bg-gray-100 p-1 text-xs font-semibold dark:bg-white/5">
+      <button data-sort="top" class="rounded-md px-2.5 py-1 text-gray-600 dark:text-gray-300">Top</button>
+      <button data-sort="new" class="rounded-md px-2.5 py-1 text-gray-600 dark:text-gray-300">Newest</button>
+    </div>
+  </div>
+
+  {!live && (
+    <p class="mb-4 text-xs text-gray-400">
+      ✨ Showing sample discussion + your comments (saved in this browser). Connect Supabase to make comments shared & permanent — it's free.
+    </p>
+  )}
+
+  <!-- Composer -->
+  <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
+    <div class="flex items-center gap-3">
+      <img data-avatar src={avatarUrl("you")} alt="" width="40" height="40" class="h-10 w-10 rounded-full bg-gray-100 dark:bg-white/10" />
+      <input data-name placeholder="Your name" maxlength="40" class="w-48 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-white/15" />
+    </div>
+    <textarea data-body rows="3" maxlength="1000" placeholder="Share a thought, a question, or a respectful counter-argument…" class="mt-3 w-full resize-y rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-white/15"></textarea>
+    <div class="mt-2 flex items-center justify-between">
+      <span data-count class="text-xs text-gray-400">0 / 1000</span>
+      <button data-post class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-50">Post comment</button>
+    </div>
+  </div>
+
+  <div data-list class="space-y-4"></div>
+  <p data-empty class="hidden rounded-xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500 dark:border-white/10">Be the first to comment ✍️</p>
+  <p data-loading class="hidden text-center text-sm text-gray-400">Loading comments…</p>
+</section>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const slug = root.getAttribute("data-slug");
+    const live = !!root.getAttribute("data-live");
+    const url = root.getAttribute("data-url");
+    const key = root.getAttribute("data-key");
+    const seed = JSON.parse(root.getAttribute("data-seed") || "[]");
+    const listEl = root.querySelector("[data-list]");
+    const emptyEl = root.querySelector("[data-empty]");
+    const totalEl = root.querySelector("[data-total]");
+    const nameIn = root.querySelector("[data-name]");
+    const bodyIn = root.querySelector("[data-body]");
+    const countEl = root.querySelector("[data-count]");
+    const avatarImg = root.querySelector("[data-avatar]");
+    let sort = "top";
+
+    const LSC = "cbx:" + slug;       // local comments
+    const LSL = "cbxL:" + slug;      // liked ids
+    const NAME = "cbxName";
+    const dice = (s) => "https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(s || "anon") + "&radius=50";
+    const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    nameIn.value = localStorage.getItem(NAME) || "";
+    avatarImg.src = dice(nameIn.value || "you");
+    nameIn.addEventListener("input", () => { localStorage.setItem(NAME, nameIn.value); avatarImg.src = dice(nameIn.value || "you"); });
+    bodyIn.addEventListener("input", () => { countEl.textContent = bodyIn.value.length + " / 1000"; });
+
+    function readLocal() { try { return JSON.parse(localStorage.getItem(LSC) || "[]"); } catch (e) { return []; } }
+    function writeLocal(a) { localStorage.setItem(LSC, JSON.stringify(a)); }
+    function liked() { try { return JSON.parse(localStorage.getItem(LSL) || "{}"); } catch (e) { return {}; } }
+    function setLiked(o) { localStorage.setItem(LSL, JSON.stringify(o)); }
+
+    function relTime(iso) {
+      const d = Date.now() - new Date(iso).getTime();
+      if (isNaN(d)) return "";
+      const days = Math.floor(d / 86400000);
+      if (days > 30) return Math.floor(days / 30) + "mo ago";
+      if (days > 0) return days + "d ago";
+      const h = Math.floor(d / 3600000); if (h > 0) return h + "h ago";
+      const m = Math.floor(d / 60000); if (m > 0) return m + "m ago";
+      return "just now";
+    }
+
+    async function api(path, opts) {
+      return fetch(url + "/rest/v1/" + path, Object.assign({ headers: { apikey: key, Authorization: "Bearer " + key, "Content-Type": "application/json", Prefer: "return=representation" } }, opts));
+    }
+
+    async function getComments() {
+      if (live) {
+        const loading = root.querySelector("[data-loading]"); loading.classList.remove("hidden");
+        try {
+          const r = await api("comments?slug=eq." + encodeURIComponent(slug) + "&select=*&order=created_at.asc");
+          const rows = await r.json();
+          loading.classList.add("hidden");
+          return rows.map((x) => ({ id: x.id, parentId: x.parent_id, name: x.name, role: "", avatar: dice(x.name), body: x.body, likes: x.likes || 0, createdAt: x.created_at, seed: false }));
+        } catch (e) { loading.classList.add("hidden"); }
+        return [];
+      }
+      const local = readLocal().map((c) => ({ ...c, avatar: dice(c.name), seed: false }));
+      return seed.concat(local);
+    }
+
+    function render(all) {
+      const lk = liked();
+      const withLikes = all.map((c) => ({ ...c, likes: c.likes + (lk[c.id] && !live ? 1 : 0), mine: !!lk[c.id] }));
+      const tops = withLikes.filter((c) => !c.parentId);
+      const repliesOf = (id) => withLikes.filter((c) => c.parentId === id);
+      tops.sort((a, b) => sort === "top" ? b.likes - a.likes : new Date(b.createdAt) - new Date(a.createdAt));
+      totalEl.textContent = "(" + withLikes.length + ")";
+      emptyEl.classList.toggle("hidden", withLikes.length > 0);
+
+      const item = (c, isReply) => {
+        const own = !c.seed && (c.local || c.parentId !== undefined) && c.byMe;
+        return (
+          '<div class="' + (isReply ? "" : "rounded-2xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]") + '">' +
+            '<div class="flex items-start gap-3">' +
+              '<img src="' + c.avatar + '" alt="" width="' + (isReply ? 30 : 40) + '" height="' + (isReply ? 30 : 40) + '" class="' + (isReply ? "h-8 w-8" : "h-10 w-10") + ' shrink-0 rounded-full bg-gray-100 dark:bg-white/10"/>' +
+              '<div class="min-w-0 flex-1">' +
+                '<div class="flex flex-wrap items-center gap-x-2 text-sm">' +
+                  '<span class="font-semibold text-gray-900 dark:text-white">' + esc(c.name) + '</span>' +
+                  (c.role ? '<span class="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">' + esc(c.role) + '</span>' : '') +
+                  (c.byMe ? '<span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300">you</span>' : '') +
+                  '<span class="text-xs text-gray-400">· ' + relTime(c.createdAt) + '</span>' +
+                '</div>' +
+                '<p class="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-gray-700 dark:text-gray-200">' + esc(c.body) + '</p>' +
+                '<div class="mt-2 flex items-center gap-3 text-xs font-semibold">' +
+                  '<button data-like="' + c.id + '" class="inline-flex items-center gap-1 rounded-lg border px-2 py-1 transition ' + (c.mine ? "border-pink-400 text-pink-600" : "border-gray-200 text-gray-500 hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-400") + '">' + (c.mine ? "❤️" : "🤍") + ' <span>' + c.likes + '</span></button>' +
+                  (isReply ? '' : '<button data-reply="' + c.id + '" class="text-gray-500 hover:text-brand-600 dark:text-gray-400">Reply</button>') +
+                  (c.byMe ? '<button data-del="' + c.id + '" class="text-gray-400 hover:text-red-500">Delete</button>' : '') +
+                '</div>' +
+                '<div data-replybox="' + c.id + '"></div>' +
+                (isReply ? '' : '<div class="mt-3 space-y-3 ' + (repliesOf(c.id).length ? "border-l-2 border-gray-100 pl-4 dark:border-white/10" : "") + '">' + repliesOf(c.id).map((r) => item(r, true)).join("") + '</div>') +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      };
+
+      listEl.innerHTML = tops.map((c) => item(c, false)).join("");
+      bind();
+    }
+
+    function bind() {
+      const lk = liked();
+      listEl.querySelectorAll("[data-like]").forEach((b) => b.addEventListener("click", async () => {
+        const id = b.getAttribute("data-like");
+        if (live) { try { await api("rpc/like_comment", { method: "POST", body: JSON.stringify({ comment_id: id }) }); } catch (e) {} refresh(); return; }
+        const o = liked(); o[id] = !o[id]; setLiked(o); refresh();
+      }));
+      listEl.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
+        const id = b.getAttribute("data-del");
+        if (live) { try { await api("comments?id=eq." + id, { method: "DELETE" }); } catch (e) {} }
+        else { writeLocal(readLocal().filter((c) => c.id !== id)); }
+        refresh();
+      }));
+      listEl.querySelectorAll("[data-reply]").forEach((b) => b.addEventListener("click", () => {
+        const id = b.getAttribute("data-reply");
+        const box = listEl.querySelector('[data-replybox="' + id + '"]');
+        if (box.dataset.open) { box.innerHTML = ""; box.dataset.open = ""; return; }
+        box.dataset.open = "1";
+        box.innerHTML = '<div class="mt-2 flex gap-2"><input data-rname placeholder="Name" class="w-28 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-sm dark:border-white/15"/><input data-rbody placeholder="Write a reply…" class="flex-1 rounded-lg border border-gray-300 bg-transparent px-2 py-1 text-sm dark:border-white/15"/><button data-rsend class="rounded-lg bg-brand-600 px-3 text-sm font-semibold text-white">Reply</button></div>';
+        box.querySelector("[data-rname]").value = nameIn.value;
+        box.querySelector("[data-rsend]").addEventListener("click", () => {
+          const nm = box.querySelector("[data-rname]").value.trim() || "Anonymous";
+          const bd = box.querySelector("[data-rbody]").value.trim();
+          if (bd) postComment(nm, bd, id);
+        });
+      }));
+    }
+
+    async function postComment(name, body, parentId) {
+      const nm = (name || "").trim() || "Anonymous";
+      localStorage.setItem(NAME, nm);
+      if (live) {
+        try { await api("comments", { method: "POST", body: JSON.stringify({ slug, parent_id: parentId || null, name: nm, body }) }); } catch (e) {}
+      } else {
+        const local = readLocal();
+        local.push({ id: "loc-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6), parentId: parentId || null, name: nm, role: "", body, likes: 0, createdAt: new Date().toISOString(), byMe: true, local: true });
+        writeLocal(local);
+      }
+      bodyIn.value = ""; countEl.textContent = "0 / 1000";
+      refresh();
+    }
+
+    async function refresh() {
+      let all = await getComments();
+      // tag visitor-owned local comments
+      if (!live) { const ids = new Set(readLocal().map((c) => c.id)); all = all.map((c) => ids.has(c.id) ? { ...c, byMe: true, local: true } : c); }
+      render(all);
+    }
+
+    root.querySelectorAll("[data-sort]").forEach((b) => b.addEventListener("click", () => {
+      sort = b.getAttribute("data-sort");
+      root.querySelectorAll("[data-sort]").forEach((x) => x.classList.remove("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10"));
+      b.classList.add("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10");
+      refresh();
+    }));
+    root.querySelector('[data-sort="top"]').classList.add("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10");
+
+    root.querySelector("[data-post]").addEventListener("click", () => {
+      const body = bodyIn.value.trim();
+      if (body) postComment(nameIn.value, body, null);
+    });
+
+    refresh();
+  })();
+</script>

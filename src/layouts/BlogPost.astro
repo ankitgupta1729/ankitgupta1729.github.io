@@ -1,8 +1,7 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import ReactionBar from "../components/ReactionBar.astro";
-import Comments from "../components/Comments.astro";
-import CommunityDiscussion from "../components/CommunityDiscussion.astro";
+import CommentBox from "../components/CommentBox.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import BookmarkButton from "../components/BookmarkButton.astro";
 import LikeButton from "../components/LikeButton.astro";
@@ -128,12 +127,10 @@ const cat = categoryBySlug(category);
       )
     }
 
-    <CommunityDiscussion article={post.id} />
+    <CommentBox slug={post.id} />
 
     <div class="mt-12">
       <Newsletter variant="inline" />
     </div>
-
-    <Comments />
   </article>
 </BaseLayout>
