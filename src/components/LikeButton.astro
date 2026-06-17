@@ -1,0 +1,82 @@
+---
+import { SUPABASE } from "../consts";
+
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+const uid = "lb" + Math.random().toString(36).slice(2, 8);
+// Deterministic seed so the demo (no-DB) count looks populated and stable.
+let seed = 0;
+for (let i = 0; i < slug.length; i++) seed = (seed * 31 + slug.charCodeAt(i)) >>> 0;
+const seedCount = 12 + (seed % 240);
+---
+
+<button
+  id={uid}
+  data-slug={slug}
+  data-seed={seedCount}
+  data-url={SUPABASE.url}
+  data-key={SUPABASE.anonKey}
+  class="group inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-pink-400 hover:text-pink-600 dark:border-white/15 dark:text-gray-200"
+  aria-label="Like this article"
+>
+  <span data-heart class="text-base transition group-hover:scale-110">🤍</span>
+  <span data-count>…</span>
+  <span class="text-gray-400">likes</span>
+</button>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const btn = document.getElementById(uid);
+    if (!btn) return;
+    const slug = btn.getAttribute("data-slug");
+    const seed = +btn.getAttribute("data-seed");
+    const url = btn.getAttribute("data-url");
+    const key = btn.getAttribute("data-key");
+    const live = !!(url && key);
+    const countEl = btn.querySelector("[data-count]");
+    const heart = btn.querySelector("[data-heart]");
+    const MINE = "liked:" + slug;
+    let mine = localStorage.getItem(MINE) === "1";
+
+    function paint(n) { countEl.textContent = n; heart.textContent = mine ? "❤️" : "🤍"; btn.classList.toggle("border-pink-400", mine); btn.classList.toggle("text-pink-600", mine); }
+
+    async function api(path, opts) {
+      return fetch(url + "/rest/v1/" + path, Object.assign({ headers: { apikey: key, Authorization: "Bearer " + key, "Content-Type": "application/json", Prefer: "return=representation" } }, opts));
+    }
+
+    async function load() {
+      if (live) {
+        try {
+          const r = await api("article_likes?slug=eq." + encodeURIComponent(slug) + "&select=likes");
+          const rows = await r.json();
+          paint((rows[0] && rows[0].likes) || 0);
+          return;
+        } catch (e) { /* fall through to local */ }
+      }
+      const local = +(localStorage.getItem("likeN:" + slug) || 0);
+      paint(seed + local);
+    }
+
+    btn.addEventListener("click", async () => {
+      const next = !mine;
+      mine = next;
+      localStorage.setItem(MINE, next ? "1" : "0");
+      if (live) {
+        try {
+          const r = await api("rpc/toggle_like", { method: "POST", body: JSON.stringify({ article_slug: slug, delta: next ? 1 : -1 }) });
+          const n = await r.json();
+          paint(typeof n === "number" ? n : +countEl.textContent + (next ? 1 : -1));
+          return;
+        } catch (e) { /* fall through */ }
+      }
+      let local = +(localStorage.getItem("likeN:" + slug) || 0);
+      local += next ? 1 : -1;
+      localStorage.setItem("likeN:" + slug, local);
+      paint(seed + local);
+    });
+
+    load();
+  })();
+</script>

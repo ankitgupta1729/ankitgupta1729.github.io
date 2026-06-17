@@ -5,6 +5,7 @@ import Comments from "../components/Comments.astro";
 import CommunityDiscussion from "../components/CommunityDiscussion.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import BookmarkButton from "../components/BookmarkButton.astro";
+import LikeButton from "../components/LikeButton.astro";
 import Newsletter from "../components/Newsletter.astro";
 import { formatDate, categoryBySlug } from "../lib/utils";
 import type { CollectionEntry } from "astro:content";
@@ -23,7 +24,7 @@ const { title, description, category, tags, author, pubDate, updatedDate, heroEm
 const cat = categoryBySlug(category);
 ---
 
-<BaseLayout title={title} description={description} article={true}>
+<BaseLayout title={title} description={description} article={true} image={`/og/${post.id}.png`}>
   <article class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
     <!-- Breadcrumb -->
     <nav class="mb-6 text-sm text-gray-500 dark:text-gray-400">
@@ -72,7 +73,8 @@ const cat = categoryBySlug(category);
         </div>
         <div class="ml-auto text-4xl" aria-hidden="true">{heroEmoji}</div>
       </div>
-      <div class="mt-4">
+      <div class="mt-4 flex flex-wrap gap-2">
+        <LikeButton slug={post.id} />
         <BookmarkButton id={post.id} title={title} category={category} emoji={heroEmoji} description={description} />
       </div>
     </header>

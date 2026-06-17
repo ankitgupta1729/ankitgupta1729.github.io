@@ -2,11 +2,13 @@
 title: "Diversification: The Only Free Lunch in Investing"
 description: "There's a way to reduce risk without reducing expected return. It's not magic — it's math — and it's the single most reliable idea in finance."
 category: "finance"
-tags: ["investing", "diversification", "risk", "portfolio"]
+tags: ["investing", "diversification", "risk", "portfolio", "interactive"]
 author: "Ankit Gupta"
 pubDate: 2026-06-01
 heroEmoji: "🧺"
 ---
+
+import KellyCriterion from "../../components/widgets/KellyCriterion.astro";
 
 Economist Harry Markowitz, who won a Nobel Prize for it, called diversification "the only free lunch in investing." In a field full of trade-offs, it's the rare idea that lets you lower risk *without* sacrificing expected return. Here's why it works and how to use it.
 
@@ -38,6 +40,12 @@ Diversification eliminates the risk you aren't compensated for (idiosyncratic) a
 - **Across asset classes:** stocks, bonds, real estate, sometimes commodities.
 - **Across geographies:** domestic and international markets, which don't always move together.
 - **Across time:** investing steadily (dollar-cost averaging) rather than all at once.
+
+## Bonus: how *much* to bet on an edge
+
+Diversification is about spreading risk; its close cousin is *sizing* a single risk. The **Kelly criterion** answers "given a favourable bet, what fraction should I stake to grow fastest without going broke?" Play with the edge and watch why betting *more* than Kelly is a fast track to ruin:
+
+<KellyCriterion />
 
 ## The limits
 

@@ -1,0 +1,104 @@
+---
+// Interactive Kelly criterion: pick a bet's edge and odds, see the optimal
+// fraction to wager, and simulate how full-Kelly, half-Kelly and over-betting
+// grow (or destroy) a bankroll.
+const uid = "kc" + Math.random().toString(36).slice(2, 8);
+---
+
+<div
+  id={uid}
+  class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]"
+>
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">🎰</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">The Kelly criterion — how much to bet</h4>
+  </div>
+  <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+    Given an edge, Kelly says what fraction of your bankroll to risk to grow it fastest. Bet more and you grow faster — until you blow up. Watch the trajectories.
+  </p>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Win probability (p) <b data-out="p" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="p" type="range" min="0.3" max="0.8" step="0.01" value="0.55" class="mt-1 w-full accent-brand-600" />
+    </label>
+    <label class="block text-sm">
+      <span class="flex justify-between font-medium text-gray-700 dark:text-gray-300">Win pays (× stake, b) <b data-out="b" class="text-brand-600 dark:text-brand-300"></b></span>
+      <input data-in="b" type="range" min="0.5" max="3" step="0.1" value="1" class="mt-1 w-full accent-brand-600" />
+    </label>
+  </div>
+
+  <div class="mt-4 rounded-xl bg-gradient-to-br from-brand-50 to-pink-50 p-4 text-center dark:from-brand-900/30 dark:to-pink-900/20">
+    <p class="m-0 text-sm text-gray-600 dark:text-gray-400">Optimal fraction of bankroll to bet (Kelly)</p>
+    <p class="m-0 mt-1 text-3xl font-extrabold text-brand-700 dark:text-brand-300" data-out="f">—</p>
+    <p class="m-0 mt-1 text-xs text-gray-500 dark:text-gray-400" data-out="note"></p>
+  </div>
+
+  <svg viewBox="0 0 460 220" class="mt-4 w-full" data-chart aria-hidden="true"></svg>
+  <div class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+    <span class="flex items-center gap-1"><span class="inline-block h-2 w-4 rounded bg-[#16a34a]"></span> Half Kelly (safer)</span>
+    <span class="flex items-center gap-1"><span class="inline-block h-2 w-4 rounded bg-[#4f46e5]"></span> Full Kelly (fastest growth)</span>
+    <span class="flex items-center gap-1"><span class="inline-block h-2 w-4 rounded bg-[#e11d48]"></span> Double Kelly (reckless)</span>
+  </div>
+  <div class="mt-2 flex items-center gap-2">
+    <button data-resim class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Re-run 200 bets</button>
+    <span class="text-xs text-gray-400">log-scale bankroll · same coin flips for all three</span>
+  </div>
+  <p class="mt-2 text-xs text-gray-400">Education only, not financial or betting advice. Real markets aren't repeated identical bets.</p>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const pIn = root.querySelector('[data-in="p"]');
+    const bIn = root.querySelector('[data-in="b"]');
+    const chart = root.querySelector("[data-chart]");
+    const N = 200;
+    let flips = [];
+
+    function newFlips() { flips = []; for (let i = 0; i < N; i++) flips.push(Math.random()); }
+
+    function kelly(p, b) { const q = 1 - p; return (b * p - q) / b; }
+
+    function simulate(frac, p, b) {
+      let bank = 1; const path = [1];
+      for (let i = 0; i < N; i++) {
+        const stake = Math.max(0, frac) * bank;
+        if (flips[i] < p) bank += stake * b; else bank -= stake;
+        if (bank < 1e-9) bank = 1e-9;
+        path.push(bank);
+      }
+      return path;
+    }
+
+    function render() {
+      const p = +pIn.value, b = +bIn.value;
+      const f = kelly(p, b);
+      root.querySelector('[data-out="p"]').textContent = Math.round(p * 100) + "%";
+      root.querySelector('[data-out="b"]').textContent = b.toFixed(1) + "×";
+      root.querySelector('[data-out="f"]').textContent = f <= 0 ? "0% (no edge — don't bet)" : (f * 100).toFixed(1) + "%";
+      root.querySelector('[data-out="note"]').textContent =
+        f <= 0 ? "With these odds the bet is unfavourable; Kelly says sit out." : "Expected value is positive — Kelly maximises long-run growth at this fraction.";
+
+      const full = simulate(f, p, b);
+      const half = simulate(f / 2, p, b);
+      const dbl = simulate(f * 2, p, b);
+      const all = [...full, ...half, ...dbl].filter((v) => v > 0);
+      const lmax = Math.log10(Math.max(...all)), lmin = Math.log10(Math.min(...all, 0.001));
+      const W = 440, X0 = 12, H = 180, Y0 = 200;
+      const sx = (i) => X0 + (i / N) * W;
+      const sy = (v) => { const l = Math.log10(Math.max(v, 1e-3)); return Y0 - ((l - lmin) / (lmax - lmin || 1)) * H; };
+      const path = (arr, col) => '<path d="' + arr.map((v, i) => (i ? "L" : "M") + sx(i).toFixed(1) + " " + sy(v).toFixed(1)).join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2"/>';
+      let s = '<line x1="' + X0 + '" y1="' + sy(1) + '" x2="' + (X0 + W) + '" y2="' + sy(1) + '" stroke="currentColor" stroke-dasharray="4 4" stroke-opacity="0.3"/>';
+      s += '<text x="' + (X0 + 2) + '" y="' + (sy(1) - 3) + '" font-size="9" fill="currentColor" opacity="0.5">start</text>';
+      s += path(half, "#16a34a") + path(full, "#4f46e5") + path(dbl, "#e11d48");
+      chart.innerHTML = s;
+    }
+
+    pIn.addEventListener("input", render);
+    bIn.addEventListener("input", render);
+    root.querySelector("[data-resim]").addEventListener("click", () => { newFlips(); render(); });
+    newFlips(); render();
+  })();
+</script>

@@ -104,13 +104,29 @@ The site is **static**, so there's no server to maintain — yet it still stores
 | Real, shared, persistent comments & reactions | **GitHub Discussions via Giscus** | The durable backend. Enable once (see above). |
 | Demo community (members, sample threads) | `src/lib/community.ts` | Seed data, clearly labelled "Demo" in the UI. Edit freely. |
 
-**Want a true shared database** (e.g. global like counts, accounts)? Add [Supabase](https://supabase.com) (generous free tier):
+**Want true shared like counts** across all visitors? The 💙 like button on every article already supports [Supabase](https://supabase.com) (free tier). It uses a per-visitor localStorage fallback until you add keys — then counts go global automatically.
 
-1. Create a project, add a `comments`/`reactions` table, and copy the project URL + anon key.
-2. `npm i @supabase/supabase-js`, then create a client in `src/lib/` and read/write from the relevant components.
-3. The anon key is safe to ship in a static site; protect data with Row Level Security policies.
+1. Create a Supabase project. In the SQL editor, run:
 
-This is intentionally **optional** — Giscus + localStorage already cover comments, reactions and personalization for free, with nothing to run or pay for.
+   ```sql
+   create table article_likes (slug text primary key, likes int not null default 0);
+   alter table article_likes enable row level security;
+   create policy "read" on article_likes for select using (true);
+
+   create or replace function toggle_like(article_slug text, delta int)
+   returns int language plpgsql security definer as $$
+   declare new_count int;
+   begin
+     insert into article_likes(slug, likes) values (article_slug, greatest(delta,0))
+       on conflict (slug) do update set likes = greatest(article_likes.likes + delta, 0)
+       returning likes into new_count;
+     return new_count;
+   end; $$;
+   ```
+
+2. Paste your project URL + anon key into `SUPABASE` in [`src/consts.ts`](src/consts.ts) and redeploy.
+
+The anon key is safe to ship in a static site; RLS keeps data locked down. This is **optional** — Giscus + localStorage already cover comments, reactions and personalization for free.
 
 ## 🌐 Custom domain (optional)
 

@@ -6,6 +6,7 @@ export const SITE = {
   description:
     "Polymath is a free, open knowledge hub exploring AI, machine learning, data science, mathematics, physics, cryptography, finance, history, science and technology — with a community that discusses, questions and learns together.",
   url: "https://ankitgupta1729.github.io",
+  urlShort: "ankitgupta1729.github.io",
   author: "Ankit Gupta",
   email: "ankitgupta1729@gmail.com",
   locale: "en",
@@ -19,6 +20,15 @@ export const GISCUS = {
   repoId: "", // <-- fill from giscus.app
   category: "Comments",
   categoryId: "", // <-- fill from giscus.app
+};
+
+// Optional: a real shared "likes" database via Supabase (free tier). Leave
+// blank to use a per-visitor localStorage fallback (great for demo/showcase).
+// When set, like counts are global and persist across all visitors.
+// Setup SQL is documented in the README.
+export const SUPABASE = {
+  url: "", // e.g. "https://xxxx.supabase.co"
+  anonKey: "", // the public anon key (safe to ship; protect with RLS)
 };
 
 export const SOCIAL = {

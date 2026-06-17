@@ -2,11 +2,13 @@
 title: "Correlation Is Not Causation: The Most Important Stats Lesson"
 description: "Ice cream sales and drownings rise together — but ice cream isn't the killer. A practical guide to the trap that fools experts, headlines, and algorithms alike."
 category: "data-science"
-tags: ["statistics", "causality", "reasoning", "bias"]
+tags: ["statistics", "causality", "reasoning", "bias", "interactive"]
 author: "Ankit Gupta"
 pubDate: 2026-06-09
 heroEmoji: "🔗"
 ---
+
+import LinearRegression from "../../components/widgets/LinearRegression.astro";
 
 "Correlation is not causation" is the most repeated phrase in statistics — and the most ignored in practice. Two things moving together feels like one causing the other. Resisting that feeling is one of the most valuable habits you can build.
 
@@ -38,6 +40,12 @@ Jumping straight to #1 is the error. Spurious correlations are easy to find — 
 - **Randomized controlled trials.** Randomly assign who gets the treatment. Randomization breaks the link to confounders, which is why RCTs are the gold standard in medicine.
 - **Natural experiments.** When randomization isn't possible, find situations where something changed "as if" at random (a policy that applied to one region but not a neighboring one).
 - **Control for confounders.** Statistically adjust for known third factors — though you can only adjust for the ones you thought to measure.
+
+## Measure it yourself
+
+Correlation is quantified by fitting a line and looking at how tightly the data hugs it (the R² value). Click to scatter your own points and watch the best-fit line and R² respond — then notice that a strong fit still says **nothing** about which variable causes which:
+
+<LinearRegression />
 
 ## Why it matters more than ever
 
