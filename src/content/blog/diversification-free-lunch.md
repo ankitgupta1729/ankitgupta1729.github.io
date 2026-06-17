@@ -1,0 +1,50 @@
+---
+title: "Diversification: The Only Free Lunch in Investing"
+description: "There's a way to reduce risk without reducing expected return. It's not magic — it's math — and it's the single most reliable idea in finance."
+category: "finance"
+tags: ["investing", "diversification", "risk", "portfolio"]
+author: "Ankit Gupta"
+pubDate: 2026-06-01
+heroEmoji: "🧺"
+---
+
+Economist Harry Markowitz, who won a Nobel Prize for it, called diversification "the only free lunch in investing." In a field full of trade-offs, it's the rare idea that lets you lower risk *without* sacrificing expected return. Here's why it works and how to use it.
+
+## Don't put all your eggs in one basket
+
+The folk wisdom is right, but the math is more interesting than the proverb. Imagine two investments, each with the same expected return and the same risk. If you split your money between them — and they don't move in perfect lockstep — your *expected return stays the same*, but your *overall risk drops*. You got something (less risk) for nothing (no return given up). That's the free lunch.
+
+## The key word: correlation
+
+The benefit comes entirely from assets **not moving together**. The statistic that measures this is **correlation**, ranging from +1 (move identically) to −1 (move oppositely).
+
+- Two stocks in the same industry: highly correlated — they crash together, so combining them helps little.
+- Stocks and government bonds: often weakly or negatively correlated — when stocks fall, bonds frequently hold or rise, cushioning the blow.
+
+The lower the correlation between your holdings, the more risk diversification removes. Mixing assets that zig when others zag is the whole game.
+
+## What you can and can't diversify away
+
+Risk comes in two flavors:
+
+- **Idiosyncratic risk** — specific to one company (a scandal, a bad product). This you *can* diversify away. Hold 30 stocks instead of one and a single blow-up barely dents you.
+- **Systematic (market) risk** — affects everything at once (a recession, a pandemic). This you *cannot* diversify away by owning more stocks, because they all fall together.
+
+Diversification eliminates the risk you aren't compensated for (idiosyncratic) and leaves the risk the market actually pays you to bear (systematic). That's exactly the point.
+
+## How people actually do it
+
+- **Across companies:** owning hundreds of stocks via a low-cost index fund — instant diversification for almost no effort.
+- **Across asset classes:** stocks, bonds, real estate, sometimes commodities.
+- **Across geographies:** domestic and international markets, which don't always move together.
+- **Across time:** investing steadily (dollar-cost averaging) rather than all at once.
+
+## The limits
+
+Diversification is powerful but not omnipotent. In severe crises, correlations spike toward 1 — "everything falls together" — precisely when you'd most want the cushion. And you can over-diversify into a soup of overlapping funds that just replicates the market at higher cost. The goal isn't owning *everything*; it's owning things that behave *differently*.
+
+## The takeaway
+
+You don't get rewarded for taking risks you could have eliminated for free. Spreading bets across uncorrelated assets is the closest thing investing has to a guaranteed improvement — boring, unglamorous, and quietly responsible for more sound portfolios than any hot stock tip ever was.
+
+*This is education, not financial advice. What does your diversification strategy look like? Compare notes below.*

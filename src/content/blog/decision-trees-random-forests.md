@@ -1,0 +1,61 @@
+---
+title: "Decision Trees and Random Forests, Explained Simply"
+description: "One of the most intuitive ideas in machine learning — asking a series of yes/no questions — scales into one of the most reliable. Here's how, and why a 'forest' beats a single tree."
+category: "machine-learning"
+tags: ["decision-trees", "random-forest", "ensembles", "fundamentals"]
+author: "Ankit Gupta"
+pubDate: 2026-06-12
+heroEmoji: "🌳"
+---
+
+If you've ever played 20 Questions, you already understand decision trees — the most human-readable model in machine learning. And the trick that turns them from "decent" to "state of the art on tabular data" is beautifully simple: build a lot of them and let them vote.
+
+## A decision tree is just questions
+
+A decision tree predicts by asking a sequence of yes/no questions and following the branches:
+
+```
+Is the email from a known contact?
+├─ Yes → Not spam
+└─ No → Does it contain "free money"?
+        ├─ Yes → Spam
+        └─ No → Does it have 5+ links?
+                ├─ Yes → Spam
+                └─ No → Not spam
+```
+
+Each internal node is a question about one feature; each leaf is a prediction. During training, the algorithm chooses questions that best **split** the data into purer groups — at every step it picks the question that most reduces "mixed-ness" (measured by Gini impurity or entropy).
+
+The huge advantage: you can read the whole thing. Unlike a neural network, a decision tree explains exactly *why* it predicted what it did.
+
+## The fatal flaw: trees overfit
+
+Left unchecked, a tree will keep asking questions until each leaf contains a single training example. It memorizes the data — including the noise — and then performs terribly on anything new. This is classic [overfitting](/blog/bias-variance-tradeoff/): great on training data, bad in the real world.
+
+You can prune trees or limit their depth, but there's a more powerful fix.
+
+## Random forests: wisdom of the crowd
+
+A **random forest** trains hundreds of decision trees and averages their predictions (or takes a majority vote). Two clever sources of randomness make this work:
+
+1. **Bagging:** each tree trains on a random sample of the data (drawn with replacement), so no two trees see exactly the same examples.
+2. **Feature randomness:** at each split, a tree may only consider a random subset of features.
+
+This forces the trees to be *different* from one another. Each individual tree is mediocre and overfits in its own way — but their errors are largely uncorrelated, so when you average them, the mistakes cancel out and the signal remains. It's the statistical version of asking a diverse crowd instead of one expert.
+
+## Why practitioners love them
+
+- **Strong out of the box** on tabular data — often beating deep learning on spreadsheets.
+- **Minimal tuning** required compared to neural networks.
+- **Handle mixed data** (numbers and categories) and missing values gracefully.
+- **Feature importance** for free — they tell you which inputs mattered most.
+
+## The trade-off
+
+You lose the single tree's perfect interpretability — you can't easily read 500 trees at once. And for unstructured data like images, text, or audio, deep learning still wins decisively. But for the structured, tabular data that runs most of the business world, random forests (and their cousins, gradient-boosted trees) remain a first-rate default.
+
+## The takeaway
+
+Start with the intuition of 20 Questions, add the discipline of a crowd, and you get a model that's reliable, low-maintenance, and hard to beat on everyday data. Sometimes the best ideas in machine learning are also the simplest.
+
+*Random forests or gradient boosting — which is your go-to for tabular data? Make the case below.*

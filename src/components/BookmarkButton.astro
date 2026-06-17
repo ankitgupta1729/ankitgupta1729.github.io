@@ -1,0 +1,56 @@
+---
+// Save-for-later button. Stores article metadata in localStorage so the
+// /reading-list page can render saved items. No backend required.
+interface Props {
+  id: string;
+  title: string;
+  category: string;
+  emoji: string;
+  description: string;
+}
+const { id, title, category, emoji, description } = Astro.props;
+const meta = JSON.stringify({ id, title, category, emoji, description, url: `/blog/${id}/` });
+---
+
+<button
+  id="bookmark-btn"
+  data-meta={meta}
+  class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/15 dark:text-gray-200 dark:hover:text-white"
+>
+  <span id="bookmark-icon">🔖</span>
+  <span id="bookmark-label">Save for later</span>
+</button>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById("bookmark-btn");
+    if (!btn) return;
+    var KEY = "reading-list";
+    var meta = JSON.parse(btn.getAttribute("data-meta"));
+
+    function read() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
+    }
+    function saved() {
+      return read().some(function (x) { return x.id === meta.id; });
+    }
+    function render() {
+      var is = saved();
+      document.getElementById("bookmark-icon").textContent = is ? "✅" : "🔖";
+      document.getElementById("bookmark-label").textContent = is ? "Saved" : "Save for later";
+      btn.classList.toggle("border-brand-400", is);
+      btn.classList.toggle("text-brand-600", is);
+    }
+    btn.addEventListener("click", function () {
+      var list = read();
+      if (saved()) {
+        list = list.filter(function (x) { return x.id !== meta.id; });
+      } else {
+        list.unshift(meta);
+      }
+      localStorage.setItem(KEY, JSON.stringify(list));
+      render();
+    });
+    render();
+  })();
+</script>

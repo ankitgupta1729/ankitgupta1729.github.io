@@ -1,0 +1,114 @@
+---
+import { NEWSLETTER, SOCIAL, SITE } from "../consts";
+
+interface Props {
+  variant?: "card" | "inline";
+}
+const { variant = "card" } = Astro.props;
+
+const action =
+  NEWSLETTER.actionUrl ||
+  (NEWSLETTER.buttondownUser
+    ? `https://buttondown.com/api/emails/embed-subscribe/${NEWSLETTER.buttondownUser}`
+    : "");
+const configured = !!action;
+---
+
+<section
+  class:list={[
+    "overflow-hidden rounded-3xl border p-8 sm:p-10",
+    variant === "card"
+      ? "border-brand-200/50 bg-gradient-to-br from-brand-50 to-pink-50 dark:border-white/10 dark:from-brand-900/30 dark:to-pink-900/20"
+      : "border-gray-200 bg-white dark:border-white/10 dark:bg-white/[0.03]",
+  ]}
+>
+  <div class="mx-auto max-w-xl text-center">
+    <div class="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-brand-600 text-2xl text-white">✉️</div>
+    <h2 class="font-serif text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">{NEWSLETTER.title}</h2>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">{NEWSLETTER.blurb}</p>
+
+    {
+      configured ? (
+        <form
+          action={action}
+          method="post"
+          target="_blank"
+          class="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row"
+        >
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="you@example.com"
+            class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 dark:border-white/15 dark:bg-white/5 dark:text-white"
+          />
+          <button
+            type="submit"
+            class="shrink-0 rounded-xl bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-700"
+          >
+            Subscribe
+          </button>
+        </form>
+      ) : (
+        <div class="mx-auto mt-6 flex max-w-md flex-col items-center gap-3">
+          <div class="flex w-full gap-3">
+            <input
+              id="nl-email"
+              type="email"
+              placeholder="you@example.com"
+              class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 dark:border-white/15 dark:bg-white/5 dark:text-white"
+            />
+            <button
+              id="nl-btn"
+              class="shrink-0 rounded-xl bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-700"
+            >
+              Notify me
+            </button>
+          </div>
+          <p id="nl-msg" class="hidden text-sm font-medium text-brand-700 dark:text-brand-300"></p>
+          <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <span>or follow instantly:</span>
+            <a href={SOCIAL.rss} class="font-semibold text-brand-600 hover:underline dark:text-brand-300">RSS</a>
+            <span>·</span>
+            <a href={SOCIAL.github} target="_blank" rel="noopener" class="font-semibold text-brand-600 hover:underline dark:text-brand-300">GitHub</a>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+{
+  !configured && (
+    <script is:inline define:vars={{ email: SITE.email }}>
+      {`
+      (function () {
+        var btn = document.getElementById('nl-btn');
+        var input = document.getElementById('nl-email');
+        var msg = document.getElementById('nl-msg');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          var v = (input.value || '').trim();
+          if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v)) {
+            msg.textContent = 'Please enter a valid email.';
+            msg.classList.remove('hidden');
+            return;
+          }
+          // No backend yet: save interest locally and open a pre-filled email.
+          try {
+            var list = JSON.parse(localStorage.getItem('newsletter:pending') || '[]');
+            if (list.indexOf(v) === -1) list.push(v);
+            localStorage.setItem('newsletter:pending', JSON.stringify(list));
+          } catch (e) {}
+          msg.textContent = 'Thanks! Opening your email app to confirm…';
+          msg.classList.remove('hidden');
+          window.location.href =
+            'mailto:' + email + '?subject=' + encodeURIComponent('Subscribe me to Polymath') +
+            '&body=' + encodeURIComponent('Please add ' + v + ' to the Polymath newsletter.');
+          input.value = '';
+        });
+      })();
+      `}
+    </script>
+  )
+}

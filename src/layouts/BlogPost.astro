@@ -2,16 +2,21 @@
 import BaseLayout from "./BaseLayout.astro";
 import ReactionBar from "../components/ReactionBar.astro";
 import Comments from "../components/Comments.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import BookmarkButton from "../components/BookmarkButton.astro";
+import Newsletter from "../components/Newsletter.astro";
 import { formatDate, categoryBySlug } from "../lib/utils";
 import type { CollectionEntry } from "astro:content";
+import type { MarkdownHeading } from "astro";
 
 interface Props {
   post: CollectionEntry<"blog">;
   minutes: number;
   related: CollectionEntry<"blog">[];
+  headings: MarkdownHeading[];
 }
 
-const { post, minutes, related } = Astro.props;
+const { post, minutes, related, headings } = Astro.props;
 const { title, description, category, tags, author, pubDate, updatedDate, heroEmoji } =
   post.data;
 const cat = categoryBySlug(category);
@@ -57,7 +62,12 @@ const cat = categoryBySlug(category);
         </div>
         <div class="ml-auto text-4xl" aria-hidden="true">{heroEmoji}</div>
       </div>
+      <div class="mt-4">
+        <BookmarkButton id={post.id} title={title} category={category} emoji={heroEmoji} description={description} />
+      </div>
     </header>
+
+    <TableOfContents headings={headings} />
 
     <div
       class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:scroll-mt-24 prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 prose-img:rounded-xl dark:prose-invert dark:prose-a:text-brand-300 dark:prose-pre:border-white/10"
@@ -70,9 +80,12 @@ const cat = categoryBySlug(category);
       tags.length > 0 && (
         <div class="mt-10 flex flex-wrap gap-2">
           {tags.map((t) => (
-            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 dark:bg-white/5 dark:text-gray-300">
+            <a
+              href={`/tags/${t}`}
+              class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600 transition hover:bg-brand-100 hover:text-brand-700 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+            >
               #{t}
-            </span>
+            </a>
           ))}
         </div>
       )
@@ -102,6 +115,10 @@ const cat = categoryBySlug(category);
         </section>
       )
     }
+
+    <div class="mt-12">
+      <Newsletter variant="inline" />
+    </div>
 
     <Comments />
   </article>

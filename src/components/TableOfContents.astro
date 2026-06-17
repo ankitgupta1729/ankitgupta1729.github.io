@@ -1,0 +1,38 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+const { headings } = Astro.props;
+// Show H2 and H3 only — deep nesting hurts more than it helps.
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  toc.length >= 3 && (
+    <details
+      open
+      class="group mb-8 rounded-2xl border border-gray-200 bg-gray-50/60 p-5 dark:border-white/10 dark:bg-white/[0.03]"
+    >
+      <summary class="flex cursor-pointer list-none items-center justify-between font-semibold text-gray-900 dark:text-white">
+        <span class="flex items-center gap-2">📑 On this page</span>
+        <span class="text-gray-400 transition group-open:rotate-180">▾</span>
+      </summary>
+      <nav class="mt-4">
+        <ul class="space-y-2 text-sm">
+          {toc.map((h) => (
+            <li class={h.depth === 3 ? "ml-4" : ""}>
+              <a
+                href={`#${h.slug}`}
+                class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-300"
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </details>
+  )
+}

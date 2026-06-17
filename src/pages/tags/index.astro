@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
+const counts = new Map<string, number>();
+for (const p of posts) for (const t of p.data.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+const tags = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+const max = Math.max(...tags.map(([, c]) => c), 1);
+---
+
+<BaseLayout title="Tags" description="Browse Polymath articles by tag.">
+  <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">Tags</h1>
+    <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">
+      {tags.length} tags across {posts.length} articles. Bigger = more articles.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      {
+        tags.map(([tag, count]) => {
+          const scale = 0.9 + (count / max) * 0.9;
+          return (
+            <a
+              href={`/tags/${tag}`}
+              class="rounded-full border border-gray-200 px-4 py-2 font-medium text-gray-700 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300 dark:hover:text-white"
+              style={`font-size:${scale}rem`}
+            >
+              #{tag} <span class="text-gray-400">{count}</span>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>

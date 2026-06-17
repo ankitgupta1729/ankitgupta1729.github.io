@@ -1,0 +1,50 @@
+---
+title: "Correlation Is Not Causation: The Most Important Stats Lesson"
+description: "Ice cream sales and drownings rise together — but ice cream isn't the killer. A practical guide to the trap that fools experts, headlines, and algorithms alike."
+category: "data-science"
+tags: ["statistics", "causality", "reasoning", "bias"]
+author: "Ankit Gupta"
+pubDate: 2026-06-09
+heroEmoji: "🔗"
+---
+
+"Correlation is not causation" is the most repeated phrase in statistics — and the most ignored in practice. Two things moving together feels like one causing the other. Resisting that feeling is one of the most valuable habits you can build.
+
+## The classic example
+
+Across a year, ice cream sales and drowning deaths rise and fall together. They're strongly correlated. Does ice cream cause drowning? Of course not. A third factor — **summer heat** — drives both. People buy more ice cream *and* swim more when it's hot.
+
+That hidden third factor is called a **confounder**, and confounders are everywhere.
+
+## The three things a correlation could mean
+
+When A and B move together, there are several possibilities, and the data alone can't tell you which:
+
+1. **A causes B** (smoking → cancer)
+2. **B causes A** (the reverse)
+3. **A third thing C causes both** (heat → ice cream *and* swimming)
+4. **Pure coincidence** (with enough variables, some will correlate by chance)
+
+Jumping straight to #1 is the error. Spurious correlations are easy to find — the number of films an actor appears in correlates with all sorts of unrelated trends if you go looking.
+
+## Why it fools us
+
+- **Stories are seductive.** "X causes Y" is a tidy narrative; "X and Y share a hidden cause" is not.
+- **Reverse causation hides in plain sight.** Studies once found that people who exercise are healthier — but partly because healthy people are *able* to exercise.
+- **Selection effects.** If you only measure a biased slice of the world, patterns appear that don't generalize.
+
+## How to actually establish causation
+
+- **Randomized controlled trials.** Randomly assign who gets the treatment. Randomization breaks the link to confounders, which is why RCTs are the gold standard in medicine.
+- **Natural experiments.** When randomization isn't possible, find situations where something changed "as if" at random (a policy that applied to one region but not a neighboring one).
+- **Control for confounders.** Statistically adjust for known third factors — though you can only adjust for the ones you thought to measure.
+
+## Why it matters more than ever
+
+Machine learning models are correlation machines by design. They find patterns that predict well — but a model that learns "patients examined by this expensive scanner are sicker" hasn't learned that the scanner causes illness; it's learned that doctors order scans for sick people. Deploy that naively and you'll make terrible decisions. The difference between *predicting* and *intervening* is exactly the difference between correlation and causation.
+
+## The takeaway
+
+Before you accept "X causes Y," ask: could Y cause X? Could something else cause both? Could this be chance? Building that reflex won't make you cynical — it'll make you one of the few people who reliably tells real findings from statistical mirages.
+
+*What's the most misleading "X causes Y" headline you've seen recently? Drop it below.*

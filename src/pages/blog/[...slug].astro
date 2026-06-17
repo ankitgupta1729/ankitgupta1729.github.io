@@ -18,10 +18,10 @@ export async function getStaticPaths() {
 }
 
 const { post, related } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 const minutes = readingTime(post.body ?? "");
 ---
 
-<BlogPost post={post} minutes={minutes} related={related}>
+<BlogPost post={post} minutes={minutes} related={related} headings={headings}>
   <Content />
 </BlogPost>

@@ -98,18 +98,70 @@ const ogImage = new URL(image, SITE.url).toString();
     </main>
     <Footer />
 
-    <!-- Reading progress + scroll reveal -->
+    <!-- Back to top -->
+    <button
+      id="back-to-top"
+      aria-label="Back to top"
+      class="fixed bottom-6 right-6 z-40 grid h-11 w-11 translate-y-4 place-items-center rounded-full bg-brand-600 text-white opacity-0 shadow-lg transition hover:bg-brand-700 pointer-events-none"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"></path></svg>
+    </button>
+
+    <!-- Reading progress, back-to-top, copy-code, keyboard shortcut -->
     <script is:inline>
       (function () {
         const bar = document.getElementById("reading-progress");
+        const toTop = document.getElementById("back-to-top");
         function onScroll() {
           const h = document.documentElement;
           const max = h.scrollHeight - h.clientHeight;
           const p = max > 0 ? h.scrollTop / max : 0;
           if (bar) bar.style.transform = `scaleX(${p})`;
+          if (toTop) {
+            const show = h.scrollTop > 600;
+            toTop.style.opacity = show ? "1" : "0";
+            toTop.style.transform = show ? "none" : "translateY(1rem)";
+            toTop.style.pointerEvents = show ? "auto" : "none";
+          }
         }
         document.addEventListener("scroll", onScroll, { passive: true });
         onScroll();
+        toTop?.addEventListener("click", () =>
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        );
+
+        // Copy buttons on code blocks
+        document.querySelectorAll("article pre").forEach((pre) => {
+          pre.style.position = "relative";
+          const btn = document.createElement("button");
+          btn.textContent = "Copy";
+          btn.setAttribute("aria-label", "Copy code");
+          btn.style.cssText =
+            "position:absolute;top:.5rem;right:.5rem;font-size:.7rem;font-weight:600;padding:.25rem .5rem;border-radius:.4rem;background:rgba(127,127,127,.18);color:inherit;border:0;cursor:pointer;opacity:0;transition:opacity .15s";
+          pre.addEventListener("mouseenter", () => (btn.style.opacity = "1"));
+          pre.addEventListener("mouseleave", () => (btn.style.opacity = "0"));
+          btn.addEventListener("click", async () => {
+            const code = pre.querySelector("code");
+            try {
+              await navigator.clipboard.writeText(code ? code.innerText : pre.innerText);
+              btn.textContent = "Copied!";
+              setTimeout(() => (btn.textContent = "Copy"), 1200);
+            } catch (e) {}
+          });
+          pre.appendChild(btn);
+        });
+
+        // Press "/" to jump to search (unless typing in a field)
+        document.addEventListener("keydown", (e) => {
+          if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+          const t = e.target;
+          const typing = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
+          if (typing) return;
+          if (location.pathname !== "/search") {
+            e.preventDefault();
+            location.href = "/search";
+          }
+        });
       })();
     </script>
   </body>

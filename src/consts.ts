@@ -52,3 +52,16 @@ export const NAV = [
   { name: "Search", href: "/search" },
   { name: "About", href: "/about" },
 ];
+
+// Newsletter signup. The form works out-of-the-box with Buttondown's free
+// plan: create an account at https://buttondown.com and set your username
+// below. If left blank, the signup gracefully becomes an RSS/follow card so
+// nothing is ever broken. (Mailchimp/ConvertKit also expose a POST URL —
+// set `actionUrl` directly to use any provider.)
+export const NEWSLETTER = {
+  buttondownUser: "", // e.g. "ankitgupta" → posts to buttondown.com/api/...
+  actionUrl: "", // optional: full form action URL for any provider (overrides buttondownUser)
+  title: "Get one good idea a week",
+  blurb:
+    "A short, ad-free digest of new Polymath articles across AI, science, maths and more. No spam, unsubscribe anytime.",
+};
