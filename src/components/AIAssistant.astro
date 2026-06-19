@@ -4,15 +4,15 @@ import { AI, SITE } from "../consts";
 import { categoryName } from "../lib/utils";
 
 // Build a small client-side knowledge index from the articles. The assistant
-// embeds these on-device, retrieves the most relevant, and writes a grounded
-// answer — all in the browser via Transformers.js (free Hugging Face models).
+// embeds these on-device, retrieves the most relevant, and a free open-source
+// chat model writes a grounded answer — all in the browser via Transformers.js.
 const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
 const docs = posts.map((p) => ({
   id: p.id,
   url: `/blog/${p.id}/`,
   title: p.data.title,
   category: categoryName(p.data.category),
-  text: `${p.data.title}. ${p.data.description} Topic: ${categoryName(p.data.category)}. Tags: ${(p.data.tags || []).join(", ")}.`,
+  text: `${p.data.title}. ${p.data.description} Topic: ${categoryName(p.data.category)}.`,
 }));
 
 const suggestions = [
@@ -35,10 +35,10 @@ const suggestions = [
 
     <div
       id="ai-panel"
-      class="fixed bottom-24 left-4 right-4 z-50 hidden max-h-[70vh] w-auto flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl sm:left-6 sm:right-auto sm:w-[400px] dark:border-white/10 dark:bg-ink"
+      class="fixed bottom-24 left-4 right-4 z-50 hidden max-h-[72vh] w-auto flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl sm:left-6 sm:right-auto sm:w-[400px] dark:border-white/10 dark:bg-ink"
       data-cdn={AI.cdn}
       data-embed={AI.embedModel}
-      data-gen={AI.genModel}
+      data-config={JSON.stringify({ webgpu: AI.chatWebGPU, wasm: AI.chatWASM })}
       data-docs={JSON.stringify(docs)}
     >
       <div class="flex items-center justify-between border-b border-gray-200 bg-gradient-to-r from-brand-600 to-pink-500 px-4 py-3 text-white dark:border-white/10">
@@ -46,7 +46,7 @@ const suggestions = [
           <span class="grid h-8 w-8 place-items-center rounded-full bg-white/20 text-lg">🦉</span>
           <div>
             <p class="text-sm font-bold leading-none">Ask Poly</p>
-            <p class="text-[11px] opacity-80">AI assistant · runs in your browser</p>
+            <p class="text-[11px] opacity-80" id="ai-sub">AI assistant · runs in your browser</p>
           </div>
         </div>
         <button id="ai-close" aria-label="Close" class="rounded-lg p-1 text-white/80 hover:bg-white/20 hover:text-white">✕</button>
@@ -54,8 +54,8 @@ const suggestions = [
 
       <div id="ai-messages" class="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
         <div class="rounded-2xl rounded-tl-sm bg-gray-100 p-3 text-gray-700 dark:bg-white/5 dark:text-gray-200">
-          Hi! I'm <b>Poly</b> 🦉 — a free AI assistant running entirely on your device (no servers, no cost). Ask me about anything on this site and I'll find the best article and explain it.
-          <span class="mt-1 block text-xs text-gray-400">First question downloads a small model once (~100MB), then it's instant & offline.</span>
+          Hi! I'm <b>Poly</b> 🦉 — a free, open-source AI running entirely on your device (no servers, no cost). Say hi, or ask me anything about what's on this site.
+          <span class="mt-1 block text-xs text-gray-400">First real question loads a small chat model once (cached after). On WebGPU devices it uses Llama 3.2.</span>
         </div>
       </div>
 
@@ -67,10 +67,10 @@ const suggestions = [
 
       <div class="border-t border-gray-200 p-3 dark:border-white/10">
         <div class="flex items-end gap-2">
-          <textarea id="ai-input" rows="1" placeholder="Ask anything…" class="max-h-24 flex-1 resize-none rounded-xl border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15"></textarea>
+          <textarea id="ai-input" rows="1" placeholder="Say hi or ask a question…" class="max-h-24 flex-1 resize-none rounded-xl border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15"></textarea>
           <button id="ai-send" class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-600 text-white transition hover:bg-brand-700 disabled:opacity-50" aria-label="Send">➤</button>
         </div>
-        <p class="mt-1.5 text-center text-[10px] text-gray-400">Powered by Transformers.js + Hugging Face · answers are AI-generated, verify what matters</p>
+        <p class="mt-1.5 text-center text-[10px] text-gray-400">Open-source models via Transformers.js · answers are AI-generated, verify what matters</p>
       </div>
     </div>
 
@@ -78,18 +78,20 @@ const suggestions = [
       (function () {
         const fab = document.getElementById("ai-fab");
         const panel = document.getElementById("ai-panel");
+        if (!fab || !panel) return;
         const closeBtn = document.getElementById("ai-close");
         const msgs = document.getElementById("ai-messages");
         const input = document.getElementById("ai-input");
         const send = document.getElementById("ai-send");
-        if (!fab || !panel) return;
+        const sub = document.getElementById("ai-sub");
 
         const CDN = panel.getAttribute("data-cdn");
         const EMBED = panel.getAttribute("data-embed");
-        const GEN = panel.getAttribute("data-gen");
+        const CFG = JSON.parse(panel.getAttribute("data-config"));
         const DOCS = JSON.parse(panel.getAttribute("data-docs") || "[]");
 
-        let extractor = null, generator = null, docVecs = null, loading = false, ready = false;
+        let extractor = null, generator = null, docVecs = null, loading = false, ready = false, device = "wasm", modelName = "";
+        const history = [];
 
         function open() { panel.classList.remove("hidden"); panel.classList.add("flex"); input.focus(); }
         function close() { panel.classList.add("hidden"); panel.classList.remove("flex"); }
@@ -106,7 +108,8 @@ const suggestions = [
           msgs.scrollTop = msgs.scrollHeight;
           return el;
         }
-        function esc(s) { return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+        function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+        function fmt(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>"); }
 
         async function ensureModels(statusEl) {
           if (ready) return true;
@@ -114,64 +117,95 @@ const suggestions = [
           loading = true;
           try {
             const tf = await import(CDN);
-            const setPct = (label) => (p) => { if (p && p.status === "progress" && statusEl) statusEl.innerHTML = "⏳ " + label + " " + Math.round(p.progress || 0) + "%"; };
+            const hasGPU = typeof navigator !== "undefined" && !!navigator.gpu;
+            const choice = hasGPU ? CFG.webgpu : CFG.wasm;
+            device = hasGPU ? "webgpu" : "wasm";
+            modelName = choice.model.split("/").pop();
+            const prog = (label) => (p) => { if (p && p.status === "progress" && statusEl) statusEl.innerHTML = "⏳ " + label + " " + Math.round(p.progress || 0) + "%"; };
+
             statusEl.innerHTML = "⏳ Loading search model…";
-            extractor = await tf.pipeline("feature-extraction", EMBED, { progress_callback: setPct("search model") });
-            statusEl.innerHTML = "⏳ Indexing articles…";
+            extractor = await tf.pipeline("feature-extraction", EMBED, { progress_callback: prog("search index") });
             const out = await extractor(DOCS.map((d) => d.text), { pooling: "mean", normalize: true });
             docVecs = out.tolist();
-            statusEl.innerHTML = "⏳ Loading writer model (one-time)…";
+
+            statusEl.innerHTML = "⏳ Loading " + modelName + " (one-time)…";
             try {
-              generator = await tf.pipeline("text2text-generation", GEN, { progress_callback: setPct("writer model") });
-            } catch (e) { generator = null; } // retrieval-only fallback
-            ready = true;
-            loading = false;
-            return true;
+              generator = await tf.pipeline("text-generation", choice.model, { device: device, dtype: choice.dtype, progress_callback: prog(modelName) });
+            } catch (e1) {
+              // Fallback to the small WASM model if the preferred one fails.
+              device = "wasm"; modelName = CFG.wasm.model.split("/").pop();
+              statusEl.innerHTML = "⏳ Loading " + modelName + "…";
+              generator = await tf.pipeline("text-generation", CFG.wasm.model, { device: "wasm", dtype: CFG.wasm.dtype, progress_callback: prog(modelName) });
+            }
+            sub.textContent = modelName + " · " + device;
+            ready = true; loading = false; return true;
           } catch (e) {
             loading = false;
-            statusEl.innerHTML = "⚠️ Couldn't load the AI model (check your connection). I can still point you to articles by keyword.";
+            statusEl.innerHTML = "⚠️ Couldn't load the model (connection/browser support). I'll still point you to relevant articles.";
             return false;
           }
         }
 
         function dot(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
-
         function keywordTop(q) {
-          const words = q.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
-          return DOCS.map((d) => ({ d, score: words.reduce((n, w) => n + (d.text.toLowerCase().includes(w) ? 1 : 0), 0) }))
-            .sort((a, b) => b.score - a.score).slice(0, 3).filter((x) => x.score > 0).map((x) => x.d);
+          const w = q.toLowerCase().split(/\W+/).filter((x) => x.length > 3);
+          return DOCS.map((d) => ({ d, s: w.reduce((n, x) => n + (d.text.toLowerCase().includes(x) ? 1 : 0), 0) }))
+            .sort((a, b) => b.s - a.s).filter((x) => x.s > 0).slice(0, 3).map((x) => x.d);
         }
+        function sourcesHtml(top) {
+          if (!top.length) return "";
+          return '<div class="mt-2 border-t border-gray-200 pt-2 dark:border-white/10"><p class="mb-1 text-xs font-semibold text-gray-400">📚 Related reading</p>' +
+            top.map((d) => '<a href="' + d.url + '" class="block text-xs font-medium text-brand-600 hover:underline dark:text-brand-300">→ ' + esc(d.title) + '</a>').join("") + '</div>';
+        }
+
+        const GREET = /^\s*(hi|hii+|hey|hello|yo|sup|hola|namaste|howdy|good\s*(morning|afternoon|evening)|what'?s up|how are you|who are you|what can you do|help)\b/i;
 
         async function answer(q) {
           bubble("user", esc(q));
-          const thinking = bubble("assistant", "…");
+          history.push({ role: "user", content: q });
+
+          // Friendly instant reply for greetings / small talk — no model needed.
+          if (GREET.test(q) || q.trim().length < 3) {
+            const reply = "Hey! 👋 I'm <b>Poly</b>, your guide to this site. Ask me things like:<br>• \"Explain the Monty Hall problem\"<br>• \"How do neural networks learn?\"<br>• \"What is RSA encryption?\"<br><br>I'll find the best article and explain it in plain language.";
+            const el = bubble("assistant", reply);
+            history.push({ role: "assistant", content: "Greeting — offered help and examples." });
+            msgs.scrollTop = msgs.scrollHeight;
+            return;
+          }
+
+          const thinking = bubble("assistant", "<span class='inline-block animate-pulse'>Thinking…</span>");
           const ok = await ensureModels(thinking);
 
           let top = [];
           if (ok && extractor && docVecs) {
-            const qv = (await extractor([q], { pooling: "mean", normalize: true })).tolist()[0];
-            top = DOCS.map((d, i) => ({ d, score: dot(qv, docVecs[i]) })).sort((a, b) => b.score - a.score).slice(0, 3).map((x) => x.d);
+            try {
+              const qv = (await extractor([q], { pooling: "mean", normalize: true })).tolist()[0];
+              top = DOCS.map((d, i) => ({ d, s: dot(qv, docVecs[i]) })).sort((a, b) => b.s - a.s).slice(0, 3).map((x) => x.d);
+            } catch (e) { top = keywordTop(q); }
           } else {
             top = keywordTop(q);
           }
 
-          const sources = top.length
-            ? '<div class="mt-2 border-t border-gray-200 pt-2 dark:border-white/10"><p class="mb-1 text-xs font-semibold text-gray-400">📚 Related reading</p>' +
-              top.map((d) => '<a href="' + d.url + '" class="block text-xs font-medium text-brand-600 hover:underline dark:text-brand-300">→ ' + esc(d.title) + '</a>').join("") + '</div>'
-            : "";
-
-          if (ok && generator && top.length) {
+          if (ok && generator) {
             try {
-              const ctx = top.map((d) => d.title + ": " + d.text).join("\n");
-              const prompt = "You are Poly, a friendly assistant for the " + siteName + " learning site. Using the context, answer the question clearly in 2-4 sentences. If the context is unrelated, say you're not sure and suggest the closest topic.\n\nContext:\n" + ctx + "\n\nQuestion: " + q + "\nAnswer:";
-              const out = await generator(prompt, { max_new_tokens: 200, temperature: 0.3, repetition_penalty: 1.3 });
-              const text = (out[0].generated_text || "").trim() || "Here's what I found that's most relevant:";
-              thinking.innerHTML = esc(text) + sources;
+              thinking.innerHTML = "<span class='inline-block animate-pulse'>Writing…</span>";
+              const ctx = top.map((d) => "- " + d.title + ": " + d.text).join("\n");
+              const messages = [
+                { role: "system", content: "You are Poly, a warm, concise assistant for the " + siteName + " learning website. Answer in 2-4 clear sentences using the context when relevant. If the question is general, answer helpfully anyway. Context articles:\n" + ctx },
+                ...history.slice(-5),
+              ];
+              const out = await generator(messages, { max_new_tokens: 220, do_sample: true, temperature: 0.6, top_p: 0.9, repetition_penalty: 1.2 });
+              let g = out[0].generated_text;
+              let text = Array.isArray(g) ? (g[g.length - 1].content || "") : String(g);
+              text = text.trim();
+              if (!text) text = "Here's what I found that's most relevant:";
+              history.push({ role: "assistant", content: text });
+              thinking.innerHTML = fmt(text) + sourcesHtml(top);
             } catch (e) {
-              thinking.innerHTML = (top.length ? "Here are the most relevant articles I found:" : "I'm not sure about that one yet.") + sources;
+              thinking.innerHTML = (top.length ? "Here are the most relevant articles I found:" : "I couldn't generate an answer, but try these:") + sourcesHtml(top);
             }
           } else {
-            thinking.innerHTML = (top.length ? "Here are the most relevant articles I found:" : "I couldn't match that to an article — try rephrasing, or browse the Topics page.") + sources;
+            thinking.innerHTML = (top.length ? "Here are the most relevant articles I found:" : "I couldn't match that — try rephrasing or browse the Topics page.") + sourcesHtml(top);
           }
           msgs.scrollTop = msgs.scrollHeight;
         }
@@ -179,8 +213,7 @@ const suggestions = [
         function submit() {
           const q = input.value.trim();
           if (!q || loading) return;
-          input.value = "";
-          input.style.height = "auto";
+          input.value = ""; input.style.height = "auto";
           answer(q);
         }
         send.addEventListener("click", submit);

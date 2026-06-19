@@ -93,7 +93,7 @@ Every article and the forum use a **custom, in-app comment box** — threaded re
 
 ## 🤖 AI assistant ("Ask Poly")
 
-A floating assistant on every page runs **free Hugging Face models entirely in the visitor's browser** via [Transformers.js](https://huggingface.co/docs/transformers.js) — no API key, no server, no cost. It embeds the article index on-device (`all-MiniLM-L6-v2`), retrieves the most relevant pieces, and writes a grounded answer (`LaMini-Flan-T5-77M`), citing the source articles. The first question downloads the models once (~100 MB) and caches them; afterwards it works instantly and offline. Configure or disable it via `AI` in [`src/consts.ts`](src/consts.ts).
+A floating assistant on every page runs **free, open-source chat models entirely in the visitor's browser** via [Transformers.js](https://huggingface.co/docs/transformers.js) — no API key, no server, no cost. It picks the best model for the device: **Llama-3.2-1B-Instruct** on WebGPU (Chrome/Edge), or the lighter **SmolLM2-360M-Instruct** via WASM everywhere else. It embeds the article index on-device (`all-MiniLM-L6-v2`) for retrieval (RAG), then the chat model writes a grounded, conversational answer and cites the source articles. Greetings ("hi") get an instant reply; real questions load the model once (cached afterwards). Configure or disable via `AI` in [`src/consts.ts`](src/consts.ts).
 
 ## 🗄️ Data & storage (how "saving things" works)
 

@@ -191,9 +191,7 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
         try { await supabase.auth.signInWithOAuth({ provider, options: { redirectTo: location.href } }); } catch (e) { showErr("Could not start " + provider + " login."); }
       } else {
         const label = provider.charAt(0).toUpperCase() + provider.slice(1);
-        const u = { id: "demo-" + provider, email: provider + "@demo.local", name: label + " User", avatar: dice(provider) };
-        localStorage.setItem("polyUser", JSON.stringify(u));
-        setUser(u); closeModal();
+        showErr("🔒 Real " + label + " sign-in activates once the site owner connects an auth provider (Supabase). It can't run on a static demo because OAuth needs a server-side secret. For now, use the email demo sign-in below.");
       }
     }));
 

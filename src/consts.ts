@@ -21,13 +21,17 @@ export const SUPABASE = {
   anonKey: "", // the public anon key (safe to ship; protect with RLS)
 };
 
-// In-browser AI assistant ("Ask Poly") — runs free Hugging Face models via
-// Transformers.js entirely on the visitor's device. No API key, no cost.
+// In-browser AI assistant ("Ask Poly") — runs free, open-source chat models
+// via Transformers.js entirely on the visitor's device. No API key, no cost.
+// Picks the best model for the device: real Llama-3.2 when WebGPU is available,
+// otherwise the smaller SmolLM2 (runs anywhere via WASM). Both are open-source
+// instruct/chat models, so they answer conversationally (incl. "hi").
 export const AI = {
   enabled: true,
   cdn: "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0",
-  embedModel: "Xenova/all-MiniLM-L6-v2", // ~25MB, semantic search over articles
-  genModel: "Xenova/LaMini-Flan-T5-77M", // ~80MB, writes grounded answers
+  embedModel: "Xenova/all-MiniLM-L6-v2", // semantic search over articles (RAG)
+  chatWebGPU: { model: "onnx-community/Llama-3.2-1B-Instruct", dtype: "q4f16" },
+  chatWASM: { model: "HuggingFaceTB/SmolLM2-360M-Instruct", dtype: "q4" },
 };
 
 export const SOCIAL = {
