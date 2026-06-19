@@ -176,36 +176,41 @@ const suggestions = [
           const thinking = bubble("assistant", "<span class='inline-block animate-pulse'>Thinking…</span>");
           const ok = await ensureModels(thinking);
 
-          let top = [];
+          // Rank articles; keep scores so we can attach the most relevant links.
+          let scored = [];
           if (ok && extractor && docVecs) {
             try {
               const qv = (await extractor([q], { pooling: "mean", normalize: true })).tolist()[0];
-              top = DOCS.map((d, i) => ({ d, s: dot(qv, docVecs[i]) })).sort((a, b) => b.s - a.s).slice(0, 3).map((x) => x.d);
-            } catch (e) { top = keywordTop(q); }
+              scored = DOCS.map((d, i) => ({ d, s: dot(qv, docVecs[i]) })).sort((a, b) => b.s - a.s);
+            } catch (e) { scored = keywordTop(q).map((d) => ({ d, s: 1 })); }
           } else {
-            top = keywordTop(q);
+            scored = keywordTop(q).map((d) => ({ d, s: 1 }));
           }
+          // Strongly-related links (good match); fall back to the single best.
+          let links = scored.filter((x) => x.s > 0.3).slice(0, 3).map((x) => x.d);
+          if (!links.length && scored.length) links = [scored[0].d];
+          const topForCtx = scored.slice(0, 3).map((x) => x.d);
 
           if (ok && generator) {
             try {
               thinking.innerHTML = "<span class='inline-block animate-pulse'>Writing…</span>";
-              const ctx = top.map((d) => "- " + d.title + ": " + d.text).join("\n");
+              const ctx = topForCtx.map((d) => "- " + d.title + ": " + d.text).join("\n");
               const messages = [
-                { role: "system", content: "You are Poly, a warm, concise assistant for the " + siteName + " learning website. Answer in 2-4 clear sentences using the context when relevant. If the question is general, answer helpfully anyway. Context articles:\n" + ctx },
+                { role: "system", content: "You are Poly, a knowledgeable and friendly assistant on the " + siteName + " learning site. Answer the user's question directly and accurately using your OWN knowledge — give a real explanation, not just a referral. Be clear and concise (about 3-6 sentences). The following site articles may be relevant background you can draw on or mention, but always answer the question itself:\n" + ctx },
                 ...history.slice(-5),
               ];
-              const out = await generator(messages, { max_new_tokens: 220, do_sample: true, temperature: 0.6, top_p: 0.9, repetition_penalty: 1.2 });
+              const out = await generator(messages, { max_new_tokens: 256, do_sample: true, temperature: 0.7, top_p: 0.9, repetition_penalty: 1.2 });
               let g = out[0].generated_text;
               let text = Array.isArray(g) ? (g[g.length - 1].content || "") : String(g);
               text = text.trim();
-              if (!text) text = "Here's what I found that's most relevant:";
+              if (!text) text = "Here's the most relevant reading I found:";
               history.push({ role: "assistant", content: text });
-              thinking.innerHTML = fmt(text) + sourcesHtml(top);
+              thinking.innerHTML = fmt(text) + sourcesHtml(links);
             } catch (e) {
-              thinking.innerHTML = (top.length ? "Here are the most relevant articles I found:" : "I couldn't generate an answer, but try these:") + sourcesHtml(top);
+              thinking.innerHTML = "Sorry, I had trouble writing that. Here's relevant reading:" + sourcesHtml(links.length ? links : topForCtx);
             }
           } else {
-            thinking.innerHTML = (top.length ? "Here are the most relevant articles I found:" : "I couldn't match that — try rephrasing or browse the Topics page.") + sourcesHtml(top);
+            thinking.innerHTML = "Here's the most relevant reading I found:" + sourcesHtml(links.length ? links : topForCtx);
           }
           msgs.scrollTop = msgs.scrollHeight;
         }

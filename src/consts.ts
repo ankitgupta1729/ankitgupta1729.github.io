@@ -21,6 +21,15 @@ export const SUPABASE = {
   anonKey: "sb_publishable_zIXsjL-F4dixk81WlVwWkQ_rU6YclKM", // publishable/anon key — safe to ship; protected by RLS
 };
 
+// Login options. List ONLY the social providers you've actually enabled in
+// Supabase (Authentication → Providers). Anything not listed here is hidden,
+// so visitors never hit a "provider is not enabled" error page.
+// e.g. once GitHub works, use: providers: ["github"]
+export const AUTH = {
+  emailPassword: true,
+  providers: [] as ("google" | "github" | "facebook")[],
+};
+
 // In-browser AI assistant ("Ask Poly") — runs free, open-source chat models
 // via Transformers.js entirely on the visitor's device. No API key, no cost.
 // Picks the best model for the device: real Llama-3.2 when WebGPU is available,
