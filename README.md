@@ -141,11 +141,44 @@ The site is **static**, so there's no server to maintain — yet it still stores
    returns void language sql security definer as $$
      update comments set likes = likes + 1 where id = comment_id;
    $$;
+
+   -- User-written articles
+   create table user_posts (
+     id uuid primary key default gen_random_uuid(),
+     author_id uuid,
+     author_name text,
+     title text not null,
+     slug text,
+     category text,
+     tags text[],
+     emoji text,
+     body text not null,
+     published boolean not null default false,
+     created_at timestamptz not null default now()
+   );
+   alter table user_posts enable row level security;
+   create policy "read published" on user_posts for select using (published or auth.uid() = author_id);
+   create policy "insert own"      on user_posts for insert with check (auth.uid() = author_id);
+   create policy "update own"      on user_posts for update using (auth.uid() = author_id);
+   create policy "delete own"      on user_posts for delete using (auth.uid() = author_id);
    ```
 
 2. Paste your project URL + anon key into `SUPABASE` in [`src/consts.ts`](src/consts.ts) and redeploy.
 
 The anon key is safe to ship in a static site; RLS keeps data locked down. This is **optional** — localStorage + the demo seed already make comments and likes work out of the box.
+
+## 🔐 Accounts & login (normal + social)
+
+The header **Sign in** button and the `/write` editor use the same `SUPABASE` config above. With keys set, you get **real accounts**:
+
+- **Email + password** registration and sign-in (Supabase Auth).
+- **Social login** — Google, GitHub, Facebook (and more). Enable each provider in **Supabase → Authentication → Providers**, paste the provider's OAuth client ID/secret, and add your site URL to the allowed redirect list. No code changes needed — the buttons already call `signInWithOAuth`.
+
+Without keys, the site runs in **demo mode**: accounts and articles are stored only in the visitor's browser (clearly labelled), so the full UX — sign-in modal, writing, publishing, "My posts" — works immediately for showcasing.
+
+## ✍️ Writing articles
+
+Signed-in users can visit **/write** to compose articles in a Markdown + LaTeX editor with a formatting toolbar and a live side-by-side preview (math via KaTeX, rendering via marked + DOMPurify). Posts appear under **/my-posts**; with Supabase they're saved to the `user_posts` table (and become a shared, global feed), otherwise they're kept locally.
 
 ## 🌐 Custom domain (optional)
 

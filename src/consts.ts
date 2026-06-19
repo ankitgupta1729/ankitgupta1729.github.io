@@ -70,8 +70,8 @@ export const NAV = [
   { name: "Home", href: "/" },
   { name: "Articles", href: "/blog" },
   { name: "Topics", href: "/categories" },
-  { name: "Community", href: "/community" },
   { name: "Forum", href: "/forum" },
+  { name: "Write", href: "/write" },
   { name: "Search", href: "/search" },
   { name: "About", href: "/about" },
 ];

@@ -1,6 +1,7 @@
 ---
 import { SITE, NAV } from "../consts";
 import ThemeToggle from "./ThemeToggle.astro";
+import AuthWidget from "./AuthWidget.astro";
 
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
@@ -40,6 +41,7 @@ const isActive = (href: string) =>
     </div>
 
     <div class="flex items-center gap-2">
+      <AuthWidget />
       <ThemeToggle />
       <button
         id="mobile-menu-btn"

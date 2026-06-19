@@ -112,6 +112,14 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
     nameIn.value = localStorage.getItem(NAME) || "";
     avatarImg.src = dice(nameIn.value || "you");
     nameIn.addEventListener("input", () => { localStorage.setItem(NAME, nameIn.value); avatarImg.src = dice(nameIn.value || "you"); });
+
+    // If signed in, comment as that user.
+    function syncAuth(u) {
+      if (u && u.name) { nameIn.value = u.name; nameIn.readOnly = true; nameIn.classList.add("opacity-70"); avatarImg.src = u.avatar || dice(u.name); }
+      else { nameIn.readOnly = false; nameIn.classList.remove("opacity-70"); }
+    }
+    if (window.PolyAuth) window.PolyAuth.onChange(syncAuth);
+    document.addEventListener("polyauth", (e) => syncAuth(e.detail));
     bodyIn.addEventListener("input", () => { countEl.textContent = bodyIn.value.length + " / 1000"; });
 
     function readLocal() { try { return JSON.parse(localStorage.getItem(LSC) || "[]"); } catch (e) { return []; } }
