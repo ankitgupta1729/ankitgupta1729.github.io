@@ -27,8 +27,8 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
 </div>
 
 <!-- Auth modal -->
-<div id="auth-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-  <div class="w-full max-w-sm overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-ink">
+<div id="auth-modal" class="fixed inset-0 z-[60] hidden items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm">
+  <div class="my-auto max-h-[92vh] w-full max-w-sm overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-ink">
     <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-white/10">
       <h3 id="auth-title" class="text-lg font-bold text-gray-900 dark:text-white">Welcome back</h3>
       <button id="auth-modal-close" class="rounded-lg p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5">✕</button>
@@ -79,6 +79,11 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
   (function () {
     const root = document.getElementById("auth-root");
     if (!root) return;
+    // The header has a backdrop-filter, which makes position:fixed anchor to
+    // the header instead of the viewport. Move the modal to <body> so it
+    // centers in the real viewport.
+    const modalEl = document.getElementById("auth-modal");
+    if (modalEl && modalEl.parentElement !== document.body) document.body.appendChild(modalEl);
     const dice = (s) => "https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(s || "you") + "&radius=50";
     const $ = (id) => document.getElementById(id);
     let supabase = null;
