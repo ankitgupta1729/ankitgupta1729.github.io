@@ -63,6 +63,7 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
         try {
           const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
           const sb = createClient(url, key);
+          await sb.auth.getSession(); // ensure the signed-in JWT is attached for RLS
           const { data } = await sb.from("user_posts").select("*").eq("author_id", user.id).order("created_at", { ascending: false });
           return (data || []).map((r) => ({ id: r.id, title: r.title, emoji: r.emoji, category: r.category, body: r.body, createdAt: r.created_at, published: r.published }));
         } catch (e) { return []; }

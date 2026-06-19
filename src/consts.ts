@@ -17,8 +17,8 @@ export const SITE = {
 // When set, like counts are global and persist across all visitors.
 // Setup SQL is documented in the README.
 export const SUPABASE = {
-  url: "", // e.g. "https://xxxx.supabase.co"
-  anonKey: "", // the public anon key (safe to ship; protect with RLS)
+  url: "https://bcgpurvuwmvljbqmaqwm.supabase.co",
+  anonKey: "sb_publishable_zIXsjL-F4dixk81WlVwWkQ_rU6YclKM", // publishable/anon key — safe to ship; protected by RLS
 };
 
 // In-browser AI assistant ("Ask Poly") — runs free, open-source chat models
