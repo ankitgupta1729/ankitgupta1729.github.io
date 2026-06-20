@@ -27,7 +27,7 @@ export const SUPABASE = {
 // e.g. once GitHub works, use: providers: ["github"]
 export const AUTH = {
   emailPassword: true,
-  providers: [] as ("google" | "github" | "facebook")[],
+  providers: ["github"] as ("google" | "github" | "facebook")[],
 };
 
 // In-browser AI assistant ("Ask Poly") — runs free, open-source chat models
