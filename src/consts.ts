@@ -82,10 +82,10 @@ export function unsplash(id: string, w = 1200): string {
 export const NAV = [
   { name: "Home", href: "/" },
   { name: "Articles", href: "/blog" },
+  { name: "Posts", href: "/posts" },
   { name: "Topics", href: "/categories" },
   { name: "Forum", href: "/forum" },
   { name: "Write", href: "/write" },
-  { name: "Search", href: "/search" },
   { name: "About", href: "/about" },
 ];
 

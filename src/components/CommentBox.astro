@@ -113,10 +113,12 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
     avatarImg.src = dice(nameIn.value || "you");
     nameIn.addEventListener("input", () => { localStorage.setItem(NAME, nameIn.value); avatarImg.src = dice(nameIn.value || "you"); });
 
-    // If signed in, comment as that user.
+    // If signed in, comment as that user (with their real avatar).
+    let currentUser = null;
     function syncAuth(u) {
+      currentUser = u || null;
       if (u && u.name) { nameIn.value = u.name; nameIn.readOnly = true; nameIn.classList.add("opacity-70"); avatarImg.src = u.avatar || dice(u.name); }
-      else { nameIn.readOnly = false; nameIn.classList.remove("opacity-70"); }
+      else { nameIn.readOnly = false; nameIn.classList.remove("opacity-70"); avatarImg.src = dice(nameIn.value || "you"); }
     }
     if (window.PolyAuth) window.PolyAuth.onChange(syncAuth);
     document.addEventListener("polyauth", (e) => syncAuth(e.detail));
@@ -149,7 +151,7 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
           const r = await api("comments?slug=eq." + encodeURIComponent(slug) + "&select=*&order=created_at.asc");
           const rows = await r.json();
           loading.classList.add("hidden");
-          return rows.map((x) => ({ id: x.id, parentId: x.parent_id, name: x.name, role: "", avatar: dice(x.name), body: x.body, likes: x.likes || 0, createdAt: x.created_at, seed: false }));
+          return rows.map((x) => ({ id: x.id, parentId: x.parent_id, name: x.name, role: "", avatar: x.avatar_url || dice(x.name), body: x.body, likes: x.likes || 0, createdAt: x.created_at, seed: false }));
         } catch (e) { loading.classList.add("hidden"); }
         return [];
       }
@@ -229,7 +231,13 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
       const nm = (name || "").trim() || "Anonymous";
       localStorage.setItem(NAME, nm);
       if (live) {
-        try { await api("comments", { method: "POST", body: JSON.stringify({ slug, parent_id: parentId || null, name: nm, body }) }); } catch (e) {}
+        try {
+          const base = { slug, parent_id: parentId || null, name: nm, body };
+          const av = currentUser && currentUser.avatar;
+          let r = await api("comments", { method: "POST", body: JSON.stringify(av ? Object.assign({ avatar_url: av }, base) : base) });
+          // If the avatar_url column doesn't exist yet, retry without it.
+          if (!r.ok && av) await api("comments", { method: "POST", body: JSON.stringify(base) });
+        } catch (e) {}
       } else {
         const local = readLocal();
         local.push({ id: "loc-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6), parentId: parentId || null, name: nm, role: "", body, likes: 0, createdAt: new Date().toISOString(), byMe: true, local: true });

@@ -129,10 +129,13 @@ The site is **static**, so there's no server to maintain — yet it still stores
      slug text not null,
      parent_id uuid references comments(id) on delete cascade,
      name text not null,
+     avatar_url text,
      body text not null,
      likes int not null default 0,
      created_at timestamptz not null default now()
    );
+   -- (if the table already exists, instead run:)
+   -- alter table comments add column if not exists avatar_url text;
    alter table comments enable row level security;
    create policy "read"   on comments for select using (true);
    create policy "insert" on comments for insert with check (char_length(body) between 1 and 1000);
