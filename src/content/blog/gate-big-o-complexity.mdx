@@ -1,0 +1,67 @@
+---
+title: "Big-O & Time Complexity for GATE CS, Made Intuitive"
+description: "Big-O is the most-tested topic in GATE CS algorithms. Here's how to read, compare and derive complexities with confidence — no rote memorisation."
+category: "technology"
+tags: ["algorithms", "complexity", "gate", "exam-prep"]
+exams: ["gate"]
+author: "Ankit Gupta"
+pubDate: 2026-06-21
+heroEmoji: "⚙️"
+---
+
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+Big-O notation answers one question: **as input size $n$ grows, how does the work grow?** GATE tests this relentlessly — in recurrences, loops, and data-structure operations. Get the intuition and you'll solve these in seconds.
+
+## What Big-O really means
+
+Big-O describes the **growth rate**, ignoring constants and lower-order terms. $3n^2 + 5n + 9$ is $O(n^2)$ because, for large $n$, the $n^2$ term dominates and constants don't matter.
+
+The order you must know cold (slowest-growing to fastest):
+
+$$O(1) < O(\log n) < O(n) < O(n\log n) < O(n^2) < O(2^n) < O(n!)$$
+
+<Callout type="key">
+$O(\log n)$ appears whenever you **halve** the problem each step (binary search, balanced BSTs). $O(n\log n)$ is the signature of good comparison sorts (merge sort, heap sort) — and the proven lower bound for comparison-based sorting.
+</Callout>
+
+## Reading loops
+
+- One loop to $n$: $O(n)$.
+- Nested loops, each to $n$: $O(n^2)$.
+- A loop where the index **doubles** (`i *= 2`): $O(\log n)$.
+- Halving the range each step: $O(\log n)$.
+
+## Recurrences & the Master Theorem
+
+Divide-and-conquer recurrences `T(n) = a·T(n/b) + f(n)` are GATE staples. Compare `f(n)` with `n^(log_b a)`:
+
+- If `f(n)` is **smaller** ⇒ `T(n) = Θ(n^(log_b a))`.
+- If they **match** ⇒ `T(n) = Θ(n^(log_b a) · log n)`.
+- If `f(n)` is **bigger** (regularity holds) ⇒ `T(n) = Θ(f(n))`.
+
+Example: merge sort `T(n) = 2·T(n/2) + O(n)` → `n^(log₂2) = n` matches `f(n) = n` → **Θ(n log n)**. ✓
+
+<Callout type="warning">
+Don't confuse **O, Θ, Ω**. O is an upper bound (≤), Ω a lower bound (≥), Θ a tight bound (both). GATE deliberately mixes them in tricky options — read the symbol carefully.
+</Callout>
+
+## Common operation complexities (memorise the table)
+
+- Array access $O(1)$, search $O(n)$.
+- Hash table average $O(1)$, worst $O(n)$.
+- Balanced BST insert/search/delete $O(\log n)$.
+- Heap insert/extract $O(\log n)$, build-heap $O(n)$.
+
+## Quick check
+
+<Quiz questions={[
+  { q: "A loop with i = 1; i *= 2; until i ≥ n runs how many times?", options: ["n", "log₂ n", "n²"], answer: 1, explain: "Doubling reaches n in about log₂ n steps." },
+  { q: "T(n) = 2T(n/2) + n solves to…", options: ["Θ(n)", "Θ(n log n)", "Θ(n²)"], answer: 1, explain: "Master theorem case 2: n^{log₂2}=n matches f(n)=n." },
+  { q: "Which is the tight-bound symbol?", options: ["O", "Ω", "Θ"], answer: 2, explain: "Θ means bounded above AND below." }
+]} />
+
+Build a mental "growth ladder" and always reduce expressions to their dominant term. That habit turns most GATE complexity questions into a glance.
+
+*Have a recurrence you can't crack? Drop it in [Doubts](/doubts).*

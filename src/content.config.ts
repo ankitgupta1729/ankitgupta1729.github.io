@@ -8,6 +8,7 @@ const blog = defineCollection({
     description: z.string(),
     category: z.string(),
     tags: z.array(z.string()).default([]),
+    exams: z.array(z.string()).default([]),
     author: z.string().default("Ankit Gupta"),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),

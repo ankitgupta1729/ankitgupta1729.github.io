@@ -242,6 +242,57 @@ language sql security definer as $$ select slug, count(*) from comments group by
 
 **Editor image upload** also needs a public Storage bucket: Supabase → **Storage → New bucket** → name it `post-images` → toggle **Public** → Create.
 
+### Exam-prep SQL (Doubts Q&A + mock-test progress)
+
+Powers the `/doubts` Q&A and saves mock-test attempts for signed-in users. Without it, both work in demo mode (localStorage + seed).
+
+```sql
+-- Questions
+create table if not exists questions (
+  id uuid primary key default gen_random_uuid(),
+  title text not null, body text,
+  exam text, tags text[],
+  author_id uuid, author_name text,
+  votes int not null default 0,
+  status text not null default 'open',
+  accepted_answer_id uuid,
+  created_at timestamptz default now()
+);
+alter table questions enable row level security;
+create policy "read"   on questions for select using (true);
+create policy "insert" on questions for insert with check (char_length(title) between 1 and 200);
+create policy "update own" on questions for update using (auth.uid() = author_id);
+
+-- Answers
+create table if not exists answers (
+  id uuid primary key default gen_random_uuid(),
+  question_id uuid references questions(id) on delete cascade,
+  body text not null,
+  author_id uuid, author_name text,
+  votes int not null default 0,
+  created_at timestamptz default now()
+);
+alter table answers enable row level security;
+create policy "read"   on answers for select using (true);
+create policy "insert" on answers for insert with check (char_length(body) between 1 and 8000);
+
+create or replace function vote_question(row_id uuid, delta int)
+returns void language sql security definer as $$ update questions set votes = greatest(votes + delta, 0) where id = row_id; $$;
+create or replace function vote_answer(row_id uuid, delta int)
+returns void language sql security definer as $$ update answers set votes = greatest(votes + delta, 0) where id = row_id; $$;
+
+-- Mock-test attempts (per user progress)
+create table if not exists quiz_attempts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade,
+  slug text, title text, exam text,
+  score int, total int,
+  created_at timestamptz default now()
+);
+alter table quiz_attempts enable row level security;
+create policy "own" on quiz_attempts for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+```
+
 ## 🔐 Accounts & login (normal + social)
 
 The header **Sign in** button and the `/write` editor use the same `SUPABASE` config above. With keys set, you get **real accounts**:

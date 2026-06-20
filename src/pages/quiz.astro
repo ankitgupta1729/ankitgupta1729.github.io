@@ -1,0 +1,169 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { QUIZZES } from "../lib/quizzes";
+import { EXAMS } from "../consts";
+const examMap = Object.fromEntries(EXAMS.map((e) => [e.slug, e.name]));
+---
+
+<BaseLayout title="Mock test" description="Attempt a timed mock test.">
+  <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <a href="/mock-tests" class="text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">← All mock tests</a>
+    <p id="qz-missing" class="mt-6 hidden rounded-2xl border border-dashed border-gray-300 p-12 text-center text-gray-500 dark:border-white/10">Test not found. <a href="/mock-tests" class="text-brand-600">Browse tests →</a></p>
+    <div id="qz-root" class="mt-6"></div>
+  </section>
+
+  <!-- sticky timer -->
+  <div id="qz-bar" class="fixed bottom-6 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-4 rounded-full border border-gray-200 bg-white px-5 py-2.5 shadow-xl dark:border-white/10 dark:bg-ink">
+    <span id="qz-timer" class="font-mono text-sm font-bold text-gray-900 dark:text-white">--:--</span>
+    <span id="qz-progress" class="text-xs text-gray-500"></span>
+    <button id="qz-submit" class="rounded-full bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Submit</button>
+  </div>
+</BaseLayout>
+
+<script is:inline define:vars={{ quizzes: QUIZZES, examMap }}>
+  (function () {
+    const id = new URLSearchParams(location.search).get("id");
+    const quiz = quizzes.find((q) => q.slug === id);
+    const root = document.getElementById("qz-root");
+    const bar = document.getElementById("qz-bar");
+    if (!quiz) { document.getElementById("qz-missing").classList.remove("hidden"); return; }
+
+    const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    let answers = new Array(quiz.questions.length).fill(-1);
+    let submitted = false, timeLeft = quiz.minutes * 60, timer = null;
+
+    function startScreen() {
+      root.innerHTML =
+        '<div class="rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-white/10 dark:bg-white/[0.03]">' +
+          '<h1 class="font-serif text-3xl font-bold text-gray-900 dark:text-white">' + esc(quiz.title) + '</h1>' +
+          '<p class="mt-2 text-gray-500 dark:text-gray-400">' + esc(examMap[quiz.exam] || quiz.exam) + ' · ' + esc(quiz.subject) + ' · ' + quiz.difficulty + '</p>' +
+          '<div class="mx-auto mt-5 grid max-w-sm grid-cols-2 gap-4">' +
+            '<div class="rounded-xl bg-gray-50 p-3 dark:bg-white/5"><div class="text-2xl font-extrabold text-gray-900 dark:text-white">' + quiz.questions.length + '</div><div class="text-xs text-gray-500">Questions</div></div>' +
+            '<div class="rounded-xl bg-gray-50 p-3 dark:bg-white/5"><div class="text-2xl font-extrabold text-gray-900 dark:text-white">' + quiz.minutes + '</div><div class="text-xs text-gray-500">Minutes</div></div>' +
+          '</div>' +
+          '<p class="mx-auto mt-4 max-w-md text-sm text-gray-500 dark:text-gray-400">No negative marking. The timer auto-submits when it runs out. Good luck! 🍀</p>' +
+          '<button id="qz-start" class="mt-6 rounded-xl bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-700">Start test →</button>' +
+        '</div>';
+      document.getElementById("qz-start").addEventListener("click", begin);
+    }
+
+    function begin() {
+      renderQuestions();
+      bar.classList.remove("hidden"); bar.classList.add("flex");
+      timer = setInterval(() => {
+        timeLeft--;
+        const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+        document.getElementById("qz-timer").textContent = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+        document.getElementById("qz-timer").style.color = timeLeft < 30 ? "#ef4444" : "";
+        if (timeLeft <= 0) submit();
+      }, 1000);
+      document.getElementById("qz-timer").textContent = quiz.minutes + ":00";
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const done = answers.filter((a) => a >= 0).length;
+      document.getElementById("qz-progress").textContent = done + "/" + quiz.questions.length;
+    }
+
+    function renderQuestions() {
+      root.innerHTML = '<h1 class="mb-6 font-serif text-2xl font-bold text-gray-900 dark:text-white">' + esc(quiz.title) + '</h1>' +
+        quiz.questions.map((q, qi) =>
+          '<div class="mb-6 rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]" data-q="' + qi + '">' +
+            '<p class="font-semibold text-gray-900 dark:text-white">' + (qi + 1) + ". " + esc(q.q) + '</p>' +
+            '<div class="mt-3 space-y-2">' +
+              q.options.map((opt, oi) =>
+                '<button data-pick="' + qi + ":" + oi + '" class="block w-full rounded-lg border border-gray-200 px-3 py-2 text-left text-sm transition hover:border-brand-400 dark:border-white/10">' + esc(opt) + '</button>'
+              ).join("") +
+            '</div>' +
+            '<p class="mt-2 hidden text-sm" data-exp="' + qi + '"></p>' +
+          '</div>'
+        ).join("") +
+        '<div class="h-20"></div>';
+      root.querySelectorAll("[data-pick]").forEach((b) => b.addEventListener("click", () => {
+        if (submitted) return;
+        const [qi, oi] = b.getAttribute("data-pick").split(":").map(Number);
+        answers[qi] = oi;
+        root.querySelectorAll('[data-q="' + qi + '"] [data-pick]').forEach((x) => x.classList.remove("border-brand-500", "bg-brand-50", "dark:bg-brand-900/30", "font-semibold"));
+        b.classList.add("border-brand-500", "bg-brand-50", "dark:bg-brand-900/30", "font-semibold");
+        updateProgress();
+      }));
+    }
+
+    async function submit() {
+      if (submitted) return;
+      submitted = true;
+      clearInterval(timer);
+      bar.classList.add("hidden");
+      let score = 0;
+      const topic = {};
+      quiz.questions.forEach((q, qi) => {
+        const correct = answers[qi] === q.answer;
+        if (correct) score++;
+        topic[q.topic] = topic[q.topic] || { c: 0, t: 0 };
+        topic[q.topic].t++; if (correct) topic[q.topic].c++;
+        // mark options
+        root.querySelectorAll('[data-q="' + qi + '"] [data-pick]').forEach((b) => {
+          const oi = +b.getAttribute("data-pick").split(":")[1];
+          b.disabled = true;
+          if (oi === q.answer) b.classList.add("border-green-500", "bg-green-50", "dark:bg-green-900/30", "font-semibold");
+          else if (oi === answers[qi]) b.classList.add("border-rose-400", "bg-rose-50", "dark:bg-rose-900/30");
+        });
+        const exp = root.querySelector('[data-exp="' + qi + '"]');
+        exp.innerHTML = (answers[qi] === q.answer ? "✅ " : (answers[qi] < 0 ? "⚪ Skipped. " : "❌ ")) + esc(q.explain);
+        exp.className = "mt-2 text-sm text-gray-600 dark:text-gray-400";
+      });
+
+      const pct = Math.round((score / quiz.questions.length) * 100);
+      const weak = Object.entries(topic).filter(([, v]) => v.c / v.t < 0.6).map(([k]) => k);
+      const strong = Object.entries(topic).filter(([, v]) => v.c / v.t >= 0.8).map(([k]) => k);
+      const verdict = pct >= 80 ? "Excellent! 🌟" : pct >= 60 ? "Good effort 👍" : pct >= 40 ? "Keep practising 💪" : "Time to revise 📚";
+
+      const result =
+        '<div class="mb-6 rounded-2xl border border-brand-200/50 bg-gradient-to-br from-brand-50 to-pink-50 p-6 text-center dark:border-white/10 dark:from-brand-900/30 dark:to-pink-900/20">' +
+          '<p class="text-sm font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-300">Your score</p>' +
+          '<p class="text-5xl font-extrabold text-gray-900 dark:text-white">' + score + '<span class="text-2xl text-gray-400">/' + quiz.questions.length + '</span></p>' +
+          '<p class="mt-1 text-lg font-bold" style="color:' + (pct >= 60 ? "#16a34a" : pct >= 40 ? "#d97706" : "#dc2626") + '">' + pct + "% · " + verdict + '</p>' +
+          '<div class="mx-auto mt-4 max-w-md text-left text-sm">' +
+            '<p class="font-semibold text-gray-900 dark:text-white">Topic breakdown</p>' +
+            Object.entries(topic).map(([k, v]) => {
+              const tp = Math.round((v.c / v.t) * 100);
+              return '<div class="mt-1 flex items-center gap-2"><span class="w-32 shrink-0 text-gray-600 dark:text-gray-300">' + esc(k) + '</span>' +
+                '<span class="h-2 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-white/10"><span class="block h-full" style="width:' + tp + '%;background:' + (tp >= 60 ? "#22c55e" : "#f59e0b") + '"></span></span>' +
+                '<span class="w-10 text-right text-xs text-gray-500">' + tp + '%</span></div>';
+            }).join("") +
+          '</div>' +
+          '<div class="mx-auto mt-4 max-w-md rounded-xl bg-white/60 p-3 text-left text-sm dark:bg-white/5">' +
+            '<p class="font-semibold text-gray-900 dark:text-white">💡 Suggestions</p>' +
+            (weak.length ? '<p class="mt-1 text-gray-600 dark:text-gray-400">Revise: <b>' + weak.map(esc).join(", ") + '</b>. Read the <a href="/exams/' + quiz.exam + '" class="text-brand-600 underline">' + esc(examMap[quiz.exam] || "exam") + ' guides</a> or <a href="/doubts?exam=' + quiz.exam + '" class="text-brand-600 underline">ask a doubt</a>.</p>' : '<p class="mt-1 text-gray-600 dark:text-gray-400">Great coverage across topics — try a harder set next!</p>') +
+            (strong.length ? '<p class="mt-1 text-gray-600 dark:text-gray-400">Strong in: <b>' + strong.map(esc).join(", ") + '</b> 🎉</p>' : "") +
+          '</div>' +
+          '<div class="mt-5 flex flex-wrap justify-center gap-3">' +
+            '<button onclick="location.reload()" class="rounded-xl bg-brand-600 px-5 py-2.5 font-semibold text-white hover:bg-brand-700">Retake</button>' +
+            '<a href="/mock-tests" class="rounded-xl border border-gray-300 px-5 py-2.5 font-semibold text-gray-800 dark:border-white/15 dark:text-gray-100">More tests</a>' +
+          '</div>' +
+        '</div>';
+      root.insertAdjacentHTML("afterbegin", result);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Save attempt (local always; Supabase if signed in)
+      try {
+        const arr = JSON.parse(localStorage.getItem("quizAttempts") || "[]");
+        arr.push({ slug: quiz.slug, title: quiz.title, exam: quiz.exam, score, total: quiz.questions.length, at: Date.now() });
+        localStorage.setItem("quizAttempts", JSON.stringify(arr.slice(-50)));
+      } catch (e) {}
+      try {
+        const u = window.PolyAuth && window.PolyAuth.user;
+        if (u && u.id && window.polyDB) { const sb = await window.polyDB(); if (sb) await sb.from("quiz_attempts").insert({ user_id: u.id, slug: quiz.slug, title: quiz.title, exam: quiz.exam, score, total: quiz.questions.length }); }
+      } catch (e) {}
+    }
+
+    document.getElementById("qz-submit").addEventListener("click", () => {
+      const done = answers.filter((a) => a >= 0).length;
+      if (done < quiz.questions.length && !confirm("You've answered " + done + " of " + quiz.questions.length + ". Submit anyway?")) return;
+      submit();
+    });
+
+    startScreen();
+  })();
+</script>

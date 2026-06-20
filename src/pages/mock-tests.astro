@@ -1,0 +1,87 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { QUIZZES } from "../lib/quizzes";
+import { EXAMS, examBySlug } from "../consts";
+
+const exams = EXAMS.filter((e) => QUIZZES.some((q) => q.exam === e.slug));
+const diffColor = { Easy: "#22c55e", Medium: "#f59e0b", Hard: "#ef4444" };
+---
+
+<BaseLayout title="Mock tests" description="Timed mock tests and quizzes with instant scoring, explanations and performance feedback.">
+  <section class="aurora">
+    <div class="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6">
+      <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">Mock tests &amp; quizzes 📝</h1>
+      <p class="mx-auto mt-3 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        Test yourself under timed conditions. Get instant scoring, detailed explanations, per-topic analysis, and tips to improve.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div id="mt-filter" class="mb-6 flex flex-wrap gap-2">
+      <button data-filter="all" class="filter-chip active">All exams</button>
+      {exams.map((e) => <button data-filter={e.slug} class="filter-chip">{e.icon} {e.name}</button>)}
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        QUIZZES.map((quiz) => {
+          const e = examBySlug(quiz.exam);
+          return (
+            <div data-quiz data-exam={quiz.exam} class="card-lift flex flex-col rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+              <div class="flex items-center justify-between">
+                <span class="rounded-full px-2.5 py-1 text-xs font-semibold" style={`background:${e?.color}1a;color:${e?.color}`}>{e?.icon} {e?.name}</span>
+                <span class="rounded-full px-2 py-0.5 text-xs font-semibold" style={`background:${diffColor[quiz.difficulty]}1a;color:${diffColor[quiz.difficulty]}`}>{quiz.difficulty}</span>
+              </div>
+              <h3 class="mt-3 text-lg font-bold text-gray-900 dark:text-white">{quiz.title}</h3>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{quiz.subject} · {quiz.questions.length} questions · {quiz.minutes} min</p>
+              <p data-best={quiz.slug} class="mt-2 hidden text-sm font-semibold text-brand-600 dark:text-brand-300"></p>
+              <a href={`/quiz?id=${quiz.slug}`} class="mt-4 rounded-xl bg-brand-600 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-brand-700">Start test →</a>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <!-- Recent attempts -->
+    <div id="mt-history" class="mt-12 hidden">
+      <h2 class="mb-4 font-serif text-2xl font-bold text-gray-900 dark:text-white">Your recent attempts</h2>
+      <div id="mt-history-list" class="space-y-2"></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    // Best scores per quiz
+    let attempts = [];
+    try { attempts = JSON.parse(localStorage.getItem("quizAttempts") || "[]"); } catch (e) {}
+    const best = {};
+    attempts.forEach((a) => { const pct = Math.round((a.score / a.total) * 100); if (best[a.slug] === undefined || pct > best[a.slug]) best[a.slug] = pct; });
+    Object.keys(best).forEach((slug) => { const el = document.querySelector('[data-best="' + slug + '"]'); if (el) { el.textContent = "🏅 Best: " + best[slug] + "%"; el.classList.remove("hidden"); } });
+
+    // Filter
+    const chips = document.querySelectorAll("#mt-filter .filter-chip");
+    chips.forEach((chip) => chip.addEventListener("click", () => {
+      chips.forEach((c) => c.classList.remove("active")); chip.classList.add("active");
+      const f = chip.getAttribute("data-filter");
+      document.querySelectorAll("[data-quiz]").forEach((c) => { c.style.display = (f === "all" || c.getAttribute("data-exam") === f) ? "" : "none"; });
+    }));
+    const pre = new URLSearchParams(location.search).get("exam");
+    if (pre) { const c = document.querySelector('#mt-filter [data-filter="' + pre + '"]'); if (c) c.click(); }
+
+    // Recent attempts
+    if (attempts.length) {
+      document.getElementById("mt-history").classList.remove("hidden");
+      const recent = attempts.slice(-8).reverse();
+      document.getElementById("mt-history-list").innerHTML = recent.map((a) => {
+        const pct = Math.round((a.score / a.total) * 100);
+        const color = pct >= 70 ? "#22c55e" : pct >= 40 ? "#f59e0b" : "#ef4444";
+        return '<div class="flex items-center gap-3 rounded-xl border border-gray-200 p-3 text-sm dark:border-white/10">' +
+          '<span class="font-semibold text-gray-900 dark:text-white">' + a.title + '</span>' +
+          '<span class="ml-auto font-bold" style="color:' + color + '">' + a.score + '/' + a.total + ' (' + pct + '%)</span>' +
+          '<a href="/quiz?id=' + a.slug + '" class="text-brand-600 hover:underline dark:text-brand-300">Retry</a></div>';
+      }).join("");
+    }
+  })();
+</script>

@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { EXAMS } from "../consts";
+const examOpts = EXAMS.map((e) => ({ slug: e.slug, name: e.name }));
+---
+
+<BaseLayout title="Doubts — ask & answer" description="A student Q&A community. Ask your doubts, answer others, vote and accept the best solutions.">
+  <section class="aurora">
+    <div class="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6">
+      <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">Doubts 💬</h1>
+      <p class="mx-auto mt-3 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        Stuck on a concept or a problem? Ask here. Get answers you can vote on, accept the best one, and help others by answering theirs.
+      </p>
+      <button id="ask-toggle" class="mt-5 rounded-xl bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-700">+ Ask a question</button>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <!-- Ask form -->
+    <form id="ask-form" class="mb-8 hidden rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+      <h2 class="mb-3 text-lg font-bold text-gray-900 dark:text-white">Ask a question</h2>
+      <input id="q-title" required maxlength="200" placeholder="Be specific — e.g. 'Why is angular momentum conserved here?'" class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15" />
+      <textarea id="q-body" rows="5" placeholder="Explain your doubt. Markdown + LaTeX supported, e.g. $E = mc^2$ or $$\int_0^1 x\,dx$$" class="mt-3 w-full resize-y rounded-lg border border-gray-300 bg-transparent px-3 py-2 font-mono text-sm outline-none focus:border-brand-500 dark:border-white/15"></textarea>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <select id="q-exam" class="rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm dark:border-white/15">
+          <option value="">General</option>
+          {examOpts.map((e) => <option value={e.slug}>{e.name}</option>)}
+        </select>
+        <input id="q-tags" placeholder="Tags (comma separated)" class="flex-1 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm dark:border-white/15" />
+      </div>
+      <div class="mt-3 flex items-center justify-between">
+        <span id="q-asname" class="text-xs text-gray-400"></span>
+        <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Post question</button>
+      </div>
+      <p id="q-msg" class="mt-2 hidden text-sm font-medium"></p>
+    </form>
+
+    <!-- Controls -->
+    <div class="mb-5 flex flex-wrap items-center gap-3">
+      <input id="d-search" placeholder="🔍 Search questions…" class="flex-1 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15" />
+      <select id="d-exam" class="rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm dark:border-white/15">
+        <option value="">All exams</option>
+        {examOpts.map((e) => <option value={e.slug}>{e.name}</option>)}
+      </select>
+      <div class="flex gap-1 rounded-lg bg-gray-100 p-1 text-xs font-semibold dark:bg-white/5">
+        <button data-sort="new" class="rounded-md px-2.5 py-1">Newest</button>
+        <button data-sort="votes" class="rounded-md px-2.5 py-1">Top</button>
+        <button data-sort="unanswered" class="rounded-md px-2.5 py-1">Unanswered</button>
+      </div>
+    </div>
+
+    <div id="d-skeleton" class="space-y-3">
+      {[0, 1, 2].map(() => (
+        <div class="flex gap-4 rounded-xl border border-gray-200 p-4 dark:border-white/10"><div class="skeleton h-12 w-12 rounded-lg"></div><div class="flex-1"><div class="skeleton h-4 w-2/3"></div><div class="skeleton mt-2 h-3 w-full"></div></div></div>
+      ))}
+    </div>
+    <div id="d-list" class="space-y-3"></div>
+    <p id="d-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500 dark:border-white/10">No questions match. Be the first to ask!</p>
+  </section>
+</BaseLayout>
+
+<script is:inline src="/poly-qa.js"></script>
+<script is:inline define:vars={{ examMap: Object.fromEntries(EXAMS.map((e) => [e.slug, e.name])) }}>
+  (function () {
+    const listEl = document.getElementById("d-list");
+    const skel = document.getElementById("d-skeleton");
+    const emptyEl = document.getElementById("d-empty");
+    let all = [], answerCounts = {}, sort = "new";
+    const url = new URLSearchParams(location.search);
+    let examFilter = url.get("exam") || "";
+
+    const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const strip = (s) => esc((s || "").replace(/[#*_`$>\[\]()]/g, "").replace(/\s+/g, " ").trim().slice(0, 160));
+    const rel = (iso) => { const d = Date.now() - new Date(iso).getTime(); const days = Math.floor(d / 86400000); if (days > 0) return days + "d ago"; const h = Math.floor(d / 3600000); if (h > 0) return h + "h ago"; return "just now"; };
+
+    function user() { return (window.PolyAuth && window.PolyAuth.user) || null; }
+    function syncName() { const u = user(); document.getElementById("q-asname").textContent = u ? "Posting as " + u.name : "Posting anonymously — sign in to attach your name"; }
+    if (window.PolyAuth) window.PolyAuth.onChange(syncName);
+    document.addEventListener("polyauth", syncName);
+
+    document.getElementById("ask-toggle").addEventListener("click", () => {
+      const f = document.getElementById("ask-form"); f.classList.toggle("hidden"); if (!f.classList.contains("hidden")) document.getElementById("q-title").focus();
+    });
+    if (examFilter) document.getElementById("d-exam").value = examFilter;
+
+    function render() {
+      skel.classList.add("hidden");
+      const term = (document.getElementById("d-search").value || "").toLowerCase();
+      let rows = all.filter((q) => (!examFilter || q.exam === examFilter) && (!term || (q.title + " " + (q.tags || []).join(" ")).toLowerCase().includes(term)));
+      if (sort === "votes") rows.sort((a, b) => (b.votes || 0) - (a.votes || 0));
+      else if (sort === "unanswered") rows = rows.filter((q) => !(answerCounts[q.id] > 0)).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      else rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      emptyEl.classList.toggle("hidden", rows.length > 0);
+      listEl.innerHTML = rows.map((q) => {
+        const ac = answerCounts[q.id] || 0;
+        const solved = q.status === "solved";
+        return (
+          '<a href="/question?id=' + encodeURIComponent(q.id) + '" class="card-lift flex gap-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">' +
+            '<div class="flex shrink-0 flex-col items-center gap-1 text-center text-xs text-gray-500">' +
+              '<span class="rounded-lg border border-gray-200 px-2 py-1 font-bold dark:border-white/10">▲ ' + (q.votes || 0) + '</span>' +
+              '<span class="' + (solved ? "rounded-lg bg-green-100 px-2 py-1 font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300" : "rounded-lg border border-gray-200 px-2 py-1 dark:border-white/10") + '">' + (solved ? "✓ " : "") + ac + " ans</span>" +
+            '</div>' +
+            '<div class="min-w-0 flex-1">' +
+              '<h3 class="truncate font-bold text-gray-900 dark:text-white">' + esc(q.title) + '</h3>' +
+              '<p class="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">' + strip(q.body) + '</p>' +
+              '<div class="mt-2 flex flex-wrap items-center gap-2 text-xs">' +
+                (q.exam && examMap[q.exam] ? '<span class="rounded-full bg-brand-50 px-2 py-0.5 font-medium text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">' + esc(examMap[q.exam]) + '</span>' : '') +
+                (q.tags || []).map((t) => '<span class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-500 dark:bg-white/5 dark:text-gray-400">#' + esc(t) + '</span>').join("") +
+                '<span class="text-gray-400">· ' + esc(q.author_name || "Anonymous") + ' · ' + rel(q.created_at) + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</a>'
+        );
+      }).join("");
+    }
+
+    async function refresh() {
+      all = await window.PolyQA.listQuestions();
+      // answer counts (best-effort)
+      answerCounts = {};
+      await Promise.all(all.map(async (q) => { try { answerCounts[q.id] = (await window.PolyQA.listAnswers(q.id)).length; } catch (e) { answerCounts[q.id] = 0; } }));
+      render();
+    }
+
+    document.getElementById("d-search").addEventListener("input", render);
+    document.getElementById("d-exam").addEventListener("change", (e) => { examFilter = e.target.value; render(); });
+    document.querySelectorAll("[data-sort]").forEach((b) => b.addEventListener("click", () => {
+      sort = b.getAttribute("data-sort");
+      document.querySelectorAll("[data-sort]").forEach((x) => x.classList.remove("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10"));
+      b.classList.add("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10");
+      render();
+    }));
+    document.querySelector('[data-sort="new"]').classList.add("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10");
+
+    document.getElementById("ask-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("q-title").value.trim();
+      const body = document.getElementById("q-body").value.trim();
+      if (!title) return;
+      const u = user();
+      const q = { title, body, exam: document.getElementById("q-exam").value || null, tags: document.getElementById("q-tags").value.split(",").map((t) => t.trim()).filter(Boolean), author_id: u && u.id, author_name: u && u.name };
+      const msg = document.getElementById("q-msg");
+      const { data, error } = await window.PolyQA.createQuestion(q);
+      if (error) { msg.textContent = error.message || "Couldn't post."; msg.style.color = "#e11d48"; msg.classList.remove("hidden"); return; }
+      location.href = "/question?id=" + encodeURIComponent(data.id);
+    });
+
+    syncName(); refresh();
+  })();
+</script>

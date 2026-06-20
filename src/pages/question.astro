@@ -1,0 +1,160 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { EXAMS } from "../consts";
+---
+
+<BaseLayout title="Question" description="A student doubt on Polymath.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css" />
+
+  <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <a href="/doubts" class="text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">← All doubts</a>
+    <p id="q-loading" class="mt-6 text-center text-gray-400">Loading…</p>
+    <p id="q-missing" class="mt-6 hidden rounded-2xl border border-dashed border-gray-300 p-12 text-center text-gray-500 dark:border-white/10">This question couldn't be found.</p>
+    <div id="q-wrap" class="hidden"></div>
+  </section>
+</BaseLayout>
+
+<script is:inline src="/poly-qa.js"></script>
+<script is:inline define:vars={{ examMap: Object.fromEntries(EXAMS.map((e) => [e.slug, e.name])) }}>
+  (function () {
+    const id = new URLSearchParams(location.search).get("id");
+    const loading = document.getElementById("q-loading");
+    const missing = document.getElementById("q-missing");
+    const wrap = document.getElementById("q-wrap");
+
+    const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const dice = (s) => "https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(s || "anon") + "&radius=50";
+    const rel = (iso) => { const d = Date.now() - new Date(iso).getTime(); const days = Math.floor(d / 86400000); if (days > 0) return days + "d ago"; const h = Math.floor(d / 3600000); if (h > 0) return h + "h ago"; return "just now"; };
+
+    let _libs = null;
+    async function libs() {
+      if (_libs) return _libs;
+      const [m, d, k] = await Promise.all([import("https://esm.sh/marked@12"), import("https://esm.sh/dompurify@3"), import("https://esm.sh/katex@0.16")]);
+      _libs = { marked: m.marked, DOMPurify: d.default, katex: k.default };
+      return _libs;
+    }
+    async function md(src) {
+      const { marked, DOMPurify, katex } = await libs();
+      const store = []; const stash = (h) => { store.push(h); return " B" + (store.length - 1) + " "; };
+      src = (src || "").replace(/\$\$([\s\S]+?)\$\$/g, (m, x) => { try { return stash(katex.renderToString(x.trim(), { displayMode: true, output: "html", throwOnError: false })); } catch (e) { return m; } });
+      src = src.replace(/\$([^\$\n]+?)\$/g, (m, x) => { try { return stash(katex.renderToString(x.trim(), { output: "html", throwOnError: false })); } catch (e) { return m; } });
+      let html = marked.parse(src, { breaks: true }).replace(/ B(\d+) /g, (m, i) => store[+i]);
+      return DOMPurify.sanitize(html, { ADD_TAGS: ["span"], ADD_ATTR: ["class", "style", "aria-hidden"] });
+    }
+
+    function user() { return (window.PolyAuth && window.PolyAuth.user) || null; }
+    const voted = (k) => { try { return JSON.parse(localStorage.getItem("qav") || "{}")[k] || 0; } catch (e) { return 0; } };
+    function setVoted(k, v) { let o = {}; try { o = JSON.parse(localStorage.getItem("qav") || "{}"); } catch (e) {} o[k] = v; localStorage.setItem("qav", JSON.stringify(o)); }
+
+    let q, answers = [], live = false;
+
+    function voteBox(kind, row, qid) {
+      const key = kind + ":" + row.id;
+      const v = voted(key);
+      return (
+        '<div class="flex shrink-0 flex-col items-center gap-1">' +
+          '<button data-v="up" data-k="' + kind + '" data-id="' + row.id + '" class="grid h-8 w-8 place-items-center rounded-lg border ' + (v === 1 ? "border-brand-500 text-brand-600" : "border-gray-200 text-gray-500 dark:border-white/10") + '">▲</button>' +
+          '<span class="text-sm font-bold text-gray-700 dark:text-gray-200" data-count="' + key + '">' + (row.votes || 0) + '</span>' +
+          '<button data-v="down" data-k="' + kind + '" data-id="' + row.id + '" class="grid h-8 w-8 place-items-center rounded-lg border ' + (v === -1 ? "border-rose-400 text-rose-600" : "border-gray-200 text-gray-500 dark:border-white/10") + '">▼</button>' +
+        '</div>'
+      );
+    }
+
+    async function render() {
+      const u = user();
+      const canAccept = !live || (u && q.author_id && u.id === q.author_id);
+      let html =
+        '<div class="flex gap-4 border-b border-gray-200 pb-6 dark:border-white/10">' +
+          voteBox("q", q, q.id) +
+          '<div class="min-w-0 flex-1">' +
+            (q.status === "solved" ? '<span class="mb-2 inline-block rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300">✓ Solved</span>' : "") +
+            '<h1 class="font-serif text-2xl font-bold text-gray-900 dark:text-white">' + esc(q.title) + '</h1>' +
+            '<div class="prose prose-sm mt-3 max-w-none dark:prose-invert" id="q-body"></div>' +
+            '<div class="mt-3 flex flex-wrap items-center gap-2 text-xs">' +
+              (q.exam && examMap[q.exam] ? '<a href="/exams/' + q.exam + '" class="rounded-full bg-brand-50 px-2 py-0.5 font-medium text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">' + esc(examMap[q.exam]) + '</a>' : "") +
+              (q.tags || []).map((t) => '<span class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-500 dark:bg-white/5 dark:text-gray-400">#' + esc(t) + '</span>').join("") +
+              '<span class="ml-auto flex items-center gap-1.5 text-gray-400"><img src="' + dice(q.author_name) + '" class="h-5 w-5 rounded-full"/> ' + esc(q.author_name || "Anonymous") + ' · ' + rel(q.created_at) + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<h2 class="mt-6 mb-3 text-lg font-bold text-gray-900 dark:text-white">' + answers.length + ' Answer' + (answers.length === 1 ? "" : "s") + '</h2>' +
+        '<div id="ans-list" class="space-y-4"></div>' +
+        '<div class="mt-8 rounded-2xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">' +
+          '<h3 class="mb-2 font-bold text-gray-900 dark:text-white">Your answer</h3>' +
+          '<textarea id="ans-body" rows="5" placeholder="Explain clearly. Markdown + LaTeX supported." class="w-full resize-y rounded-lg border border-gray-300 bg-transparent px-3 py-2 font-mono text-sm outline-none focus:border-brand-500 dark:border-white/15"></textarea>' +
+          '<div class="mt-2 flex items-center justify-between"><input id="ans-name" placeholder="Your name" class="w-40 rounded-lg border border-gray-300 bg-transparent px-2 py-1.5 text-sm dark:border-white/15"/><button id="ans-post" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Post answer</button></div>' +
+        '</div>';
+      wrap.innerHTML = html;
+      wrap.classList.remove("hidden");
+      document.getElementById("q-body").innerHTML = await md(q.body);
+      if (window.polyHighlight) window.polyHighlight(document.getElementById("q-body"));
+      if (u) document.getElementById("ans-name").value = u.name;
+
+      // answers (accepted first, then votes)
+      const sorted = answers.slice().sort((a, b) => (b.id === q.accepted_answer_id ? 1 : 0) - (a.id === q.accepted_answer_id ? 1 : 0) || (b.votes || 0) - (a.votes || 0));
+      const al = document.getElementById("ans-list");
+      al.innerHTML = sorted.map((a) => {
+        const accepted = a.id === q.accepted_answer_id;
+        return (
+          '<div class="flex gap-4 rounded-2xl border ' + (accepted ? "border-green-300 bg-green-50/40 dark:border-green-500/30 dark:bg-green-900/10" : "border-gray-200 dark:border-white/10") + ' p-4">' +
+            voteBox("a", a, q.id) +
+            '<div class="min-w-0 flex-1">' +
+              (accepted ? '<span class="mb-1 inline-block text-xs font-semibold text-green-700 dark:text-green-300">✓ Accepted answer</span>' : "") +
+              '<div class="prose prose-sm max-w-none dark:prose-invert ans-body"></div>' +
+              '<div class="mt-2 flex items-center gap-2 text-xs text-gray-400"><img src="' + dice(a.author_name) + '" class="h-5 w-5 rounded-full"/> ' + esc(a.author_name || "Anonymous") + ' · ' + rel(a.created_at) +
+                (canAccept && !accepted ? ' <button data-accept="' + a.id + '" class="ml-auto rounded-lg border border-green-400 px-2 py-0.5 font-semibold text-green-700 hover:bg-green-50 dark:text-green-300">✓ Accept</button>' : "") +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join("");
+      // render answer bodies (markdown)
+      const bodies = al.querySelectorAll(".ans-body");
+      for (let i = 0; i < sorted.length; i++) { bodies[i].innerHTML = await md(sorted[i].body); if (window.polyHighlight) window.polyHighlight(bodies[i]); }
+
+      bindVotes(); bindAccept();
+      document.getElementById("ans-post").addEventListener("click", postAnswer);
+    }
+
+    function bindVotes() {
+      wrap.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", async () => {
+        const kind = b.getAttribute("data-k"), rid = b.getAttribute("data-id"), dir = b.getAttribute("data-v") === "up" ? 1 : -1;
+        const key = kind + ":" + rid;
+        const cur = voted(key);
+        let delta;
+        if (cur === dir) { delta = -dir; setVoted(key, 0); } // toggle off
+        else { delta = dir - cur; setVoted(key, dir); }
+        const row = kind === "q" ? q : answers.find((a) => a.id === rid);
+        if (row) row.votes = Math.max(0, (row.votes || 0) + delta);
+        await window.PolyQA.vote(kind, rid, delta, q.id);
+        render();
+      }));
+    }
+    function bindAccept() {
+      wrap.querySelectorAll("[data-accept]").forEach((b) => b.addEventListener("click", async () => {
+        await window.PolyQA.accept(q.id, b.getAttribute("data-accept"));
+        q = await window.PolyQA.getQuestion(id);
+        render();
+      }));
+    }
+    async function postAnswer() {
+      const body = document.getElementById("ans-body").value.trim();
+      if (!body) return;
+      const u = user();
+      const name = (document.getElementById("ans-name").value || "").trim() || (u && u.name) || "Anonymous";
+      await window.PolyQA.createAnswer({ question_id: q.id, body, author_id: u && u.id, author_name: name });
+      answers = await window.PolyQA.listAnswers(q.id);
+      render();
+    }
+
+    (async () => {
+      if (!id) { loading.classList.add("hidden"); missing.classList.remove("hidden"); return; }
+      live = await window.PolyQA.isLive();
+      q = await window.PolyQA.getQuestion(id);
+      loading.classList.add("hidden");
+      if (!q) { missing.classList.remove("hidden"); return; }
+      answers = await window.PolyQA.listAnswers(id);
+      render();
+    })();
+  })();
+</script>

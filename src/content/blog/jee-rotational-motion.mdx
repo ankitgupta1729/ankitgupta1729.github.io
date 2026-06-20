@@ -1,0 +1,64 @@
+---
+title: "Rotational Motion for JEE: Torque, Inertia & Angular Momentum"
+description: "The whole of rotational mechanics rests on one beautiful analogy with linear motion. Master that mapping and JEE rotation problems stop being scary."
+category: "physics"
+tags: ["mechanics", "rotation", "jee", "exam-prep"]
+exams: ["iit-jee", "neet"]
+author: "Ankit Gupta"
+pubDate: 2026-06-21
+heroEmoji: "🌀"
+---
+
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+Most students find rotational motion intimidating. The secret JEE toppers know: **every rotational quantity is just the linear one with a twist.** Learn the analogy once and half the formulas come for free.
+
+## The master analogy
+
+| Linear | Rotational | Link |
+|---|---|---|
+| mass $m$ | moment of inertia $I$ | how mass is *spread out* |
+| force $F$ | torque $\tau = rF\sin\theta$ | what causes change |
+| velocity $v$ | angular velocity $\omega$ | $v = r\omega$ |
+| momentum $p = mv$ | angular momentum $L = I\omega$ | conserved when no external torque |
+| $F = ma$ | $\tau = I\alpha$ | Newton's 2nd law |
+| KE $= \tfrac12 mv^2$ | KE $= \tfrac12 I\omega^2$ | energy |
+
+<Callout type="key">
+Moment of inertia $I = \sum m_i r_i^2$ depends on the **axis** — the same body has different $I$ about different axes. Mass far from the axis counts much more (it's squared). That's why a figure skater spins faster when they pull their arms in: $I$ drops, and since $L = I\omega$ is conserved, $\omega$ shoots up.
+</Callout>
+
+## Torque: the rotational "push"
+
+Torque measures how effectively a force *rotates* something:
+
+$$\tau = r F \sin\theta$$
+
+Push a door near the hinges (small $r$) and nothing happens; push at the handle, perpendicular ($\theta = 90°$), and it swings easily. JEE loves this: maximize torque ⇒ apply force far from the axis, perpendicular to the lever arm.
+
+## Angular momentum conservation — the JEE favourite
+
+When net external torque is zero, $L = I\omega$ stays constant. This single idea cracks a huge class of problems: collisions on turntables, the skater, a person walking on a rotating platform. **Spot "no external torque" and write $I_1\omega_1 = I_2\omega_2$.**
+
+## Rolling without slipping
+
+A rolling body has both translation and rotation. The key constraint is $v = r\omega$, and its kinetic energy splits:
+
+$$KE = \tfrac12 m v^2 + \tfrac12 I\omega^2$$
+
+<Callout type="tip">
+On an incline, a body's acceleration depends only on the shape factor $I/mr^2$ — **not** on its mass or radius. So a ring ($I = mr^2$) always loses the race to a solid sphere ($I = \tfrac25 mr^2$), no matter their sizes. Memorise the order: sphere > disc > ring.
+</Callout>
+
+## Quick check
+
+<Quiz questions={[
+  { q: "Why does a skater spin faster pulling arms in?", options: ["Energy is created", "I decreases, so ω increases to conserve L", "Torque increases"], answer: 1, explain: "L = Iω is conserved with no external torque; smaller I ⇒ larger ω." },
+  { q: "Which reaches the bottom of an incline first (rolling)?", options: ["Ring", "Solid sphere", "They tie"], answer: 1, explain: "Smaller I/mr² (sphere = 2/5) means more energy goes to translation." },
+  { q: "Torque is maximum when the force is…", options: ["Along the radius", "Perpendicular to the lever arm", "Zero"], answer: 1, explain: "τ = rF sinθ is largest at θ = 90°." }
+]} />
+
+Practice with the analogy table beside you. Once the linear↔rotational mapping is automatic, you'll *derive* formulas instead of memorising them — exactly what JEE Advanced rewards.
+
+*Stuck on a specific rotation problem? Post it in [Doubts](/doubts) and the community will help.*

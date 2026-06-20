@@ -1,0 +1,54 @@
+---
+title: "The Pigeonhole Principle: A Tiny Idea Behind Big Proofs (ISI/CMI)"
+description: "One of the simplest yet most powerful tools in olympiad and ISI/CMI entrance maths. Learn to spot when 'too many objects, too few boxes' cracks a problem."
+category: "mathematics"
+tags: ["combinatorics", "proofs", "isi", "olympiad", "exam-prep"]
+exams: ["isi-cmi", "iit-jee"]
+author: "Ankit Gupta"
+pubDate: 2026-06-21
+heroEmoji: "🕳️"
+---
+
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+The pigeonhole principle sounds almost too obvious to be useful: **if you put $n+1$ pigeons into $n$ holes, some hole has at least two pigeons.** Yet it powers some of the most elegant proofs in ISI/CMI and olympiad maths. The skill is *recognising* the pigeons and the holes.
+
+## The statement
+
+- **Simple form:** $n+1$ objects in $n$ boxes ⇒ some box has ≥ 2 objects.
+- **Generalised form:** $N$ objects in $n$ boxes ⇒ some box has at least $\lceil N/n \rceil$ objects.
+
+<Callout type="key">
+The entire game is **choosing the boxes cleverly.** The objects are usually given; your creativity goes into defining categories (remainders, pairs, regions, sums…) so that "two in one box" means exactly what you want to prove.
+</Callout>
+
+## Classic examples
+
+**1. Same remainder.** Among any 13 integers, two leave the same remainder mod 12 (boxes = 12 remainders). Their difference is divisible by 12.
+
+**2. Friends at a party.** In any group of $n \ge 2$ people, two have the same number of friends within the group. (Boxes = possible friend-counts $0..n-1$, but $0$ and $n-1$ can't both occur — so really $n-1$ boxes for $n$ people.)
+
+**3. Points in a square.** Place 5 points in a unit square; two are within `√2⁄2 ≈ 0.707` of each other. (Divide the square into 4 smaller squares — 5 points, 4 boxes.)
+
+<Callout type="tip">
+ISI/CMI red flag: whenever a problem says "show that **there exist** two … with some shared property," try pigeonhole first. The phrase *there exist two* is practically a signal.
+</Callout>
+
+## A worked ISI-style problem
+
+*Prove that among any 6 people, either 3 mutually know each other or 3 mutually don't.*
+
+Pick one person $A$. They have 5 relationships (know / don't know) — by pigeonhole, at least 3 are the same type, say $A$ knows $B, C, D$. If any two of $B,C,D$ know each other, that pair plus $A$ form a "mutual-knowing" triple. If none do, then $B,C,D$ are a "mutual-stranger" triple. Either way, done. (This is the famous $R(3,3)=6$ Ramsey result.)
+
+## Quick check
+
+<Quiz questions={[
+  { q: "Among any 13 people, at least two share a birth month because…", options: ["months are random", "13 people, 12 months → pigeonhole", "everyone has a birthday"], answer: 1, explain: "13 objects, 12 boxes ⇒ some box has ≥2." },
+  { q: "The generalised principle guarantees some box has at least…", options: ["N/n exactly", "⌈N/n⌉", "n/N"], answer: 1, explain: "Ceiling of N/n is the guaranteed minimum maximum." },
+  { q: "Which phrase most often signals a pigeonhole proof?", options: ["'compute the value'", "'there exist two with the same…'", "'find the maximum'"], answer: 1, explain: "Existence of a coincidence is the hallmark." }
+]} />
+
+Pigeonhole rewards a particular kind of cleverness: inventing the right boxes. Do 15–20 varied problems and your eye for "objects vs boxes" becomes instinctive — exactly the muscle ISI/CMI tests.
+
+*Want a harder pigeonhole challenge worked out? Ask in [Doubts](/doubts).*

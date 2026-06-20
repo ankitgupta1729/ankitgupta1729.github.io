@@ -82,12 +82,26 @@ export function unsplash(id: string, w = 1200): string {
 export const NAV = [
   { name: "Home", href: "/" },
   { name: "Articles", href: "/blog" },
-  { name: "Posts", href: "/posts" },
-  { name: "Topics", href: "/categories" },
-  { name: "Forum", href: "/forum" },
+  { name: "Exams", href: "/exams" },
+  { name: "Doubts", href: "/doubts" },
+  { name: "Mock Tests", href: "/mock-tests" },
   { name: "Write", href: "/write" },
   { name: "About", href: "/about" },
 ];
+
+// Competitive-exam prep hub. `slug` drives /exams/<slug>.
+export const EXAMS = [
+  { slug: "iit-jee", name: "IIT-JEE", icon: "🧮", color: "#6366f1", blurb: "Physics, Chemistry & Mathematics for JEE Main & Advanced.", subjects: ["Physics", "Chemistry", "Mathematics"] },
+  { slug: "neet", name: "NEET", icon: "🧬", color: "#22c55e", blurb: "Biology, Physics & Chemistry for medical entrance.", subjects: ["Biology", "Physics", "Chemistry"] },
+  { slug: "gate", name: "GATE", icon: "⚙️", color: "#0ea5e9", blurb: "Engineering, CS & maths for GATE.", subjects: ["Computer Science", "Mathematics", "ECE", "Mechanical"] },
+  { slug: "isi-cmi", name: "ISI / CMI", icon: "📐", color: "#8b5cf6", blurb: "Statistics & mathematics olympiad-style entrance.", subjects: ["Mathematics", "Statistics"] },
+  { slug: "cat", name: "CAT", icon: "📊", color: "#ec4899", blurb: "Quant, DILR & verbal for MBA admissions.", subjects: ["Quant", "DILR", "VARC"] },
+  { slug: "upsc", name: "UPSC", icon: "🏛️", color: "#a16207", blurb: "Foundations for civil-services aspirants.", subjects: ["Polity", "History", "Economy", "Science & Tech"] },
+];
+
+export function examBySlug(slug: string) {
+  return EXAMS.find((e) => e.slug === slug);
+}
 
 // Newsletter signup. The form works out-of-the-box with Buttondown's free
 // plan: create an account at https://buttondown.com and set your username
