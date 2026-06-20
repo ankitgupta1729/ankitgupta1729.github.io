@@ -31,6 +31,13 @@ const ogImage = new URL(image, SITE.url).toString();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#6366f1" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Polymath" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{pageTitle}</title>
@@ -204,6 +211,20 @@ const ogImage = new URL(image, SITE.url).toString();
             }
           });
         } catch (e) {}
+      })();
+
+      // Register service worker (installable PWA + offline reading)
+      if ("serviceWorker" in navigator && location.protocol === "https:") {
+        window.addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
+      }
+
+      // "Install app" button — shown only when the browser offers installation
+      (function () {
+        let deferred = null;
+        const btn = document.getElementById("install-app");
+        window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; if (btn) { btn.classList.remove("hidden"); btn.classList.add("inline-flex"); } });
+        btn?.addEventListener("click", async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; btn.classList.add("hidden"); });
+        window.addEventListener("appinstalled", () => btn && btn.classList.add("hidden"));
       })();
     </script>
   </body>
