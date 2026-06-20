@@ -1,0 +1,109 @@
+---
+import { getCollection } from "astro:content";
+import { NAV, CATEGORIES } from "../consts";
+import { categoryName } from "../lib/utils";
+
+const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
+const index = [
+  ...NAV.map((n) => ({ t: n.name, s: "Page", u: n.href, k: "page" })),
+  { t: "Reading list", s: "Page", u: "/reading-list", k: "page" },
+  { t: "Tags", s: "Page", u: "/tags", k: "page" },
+  { t: "Community", s: "Page", u: "/community", k: "page" },
+  ...CATEGORIES.map((c) => ({ t: c.name, s: "Topic", u: `/categories/${c.slug}`, k: "topic", i: c.icon })),
+  ...posts.map((p) => ({ t: p.data.title, s: categoryName(p.data.category), u: `/blog/${p.id}/`, k: "article", i: p.data.heroEmoji })),
+];
+---
+
+<div
+  id="cmdk"
+  class="fixed inset-0 z-[70] hidden items-start justify-center bg-black/40 p-4 pt-[12vh] backdrop-blur-sm"
+  data-index={JSON.stringify(index)}
+>
+  <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-ink">
+    <div class="flex items-center gap-2 border-b border-gray-200 px-4 dark:border-white/10">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-400"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+      <input id="cmdk-input" type="text" placeholder="Search articles, topics, pages…" class="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-gray-400" />
+      <kbd class="hidden rounded border border-gray-200 px-1.5 py-0.5 text-[10px] text-gray-400 sm:inline dark:border-white/10">esc</kbd>
+    </div>
+    <ul id="cmdk-results" class="max-h-[55vh] overflow-y-auto p-2"></ul>
+    <div class="flex items-center justify-between border-t border-gray-200 px-4 py-2 text-[11px] text-gray-400 dark:border-white/10">
+      <span><kbd class="rounded border border-gray-200 px-1 dark:border-white/10">↑</kbd> <kbd class="rounded border border-gray-200 px-1 dark:border-white/10">↓</kbd> to navigate</span>
+      <span><kbd class="rounded border border-gray-200 px-1 dark:border-white/10">↵</kbd> to open</span>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const modal = document.getElementById("cmdk");
+    if (!modal) return;
+    if (modal.parentElement !== document.body) document.body.appendChild(modal);
+    const input = document.getElementById("cmdk-input");
+    const results = document.getElementById("cmdk-results");
+    const INDEX = JSON.parse(modal.getAttribute("data-index") || "[]");
+    let items = [];
+    let active = 0;
+
+    const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const iconFor = (k) => k === "article" ? "📄" : k === "topic" ? "🗂️" : "↗";
+
+    function search(q) {
+      q = q.trim().toLowerCase();
+      if (!q) return INDEX.filter((x) => x.k !== "article").slice(0, 8).concat(INDEX.filter((x) => x.k === "article").slice(0, 4));
+      const scored = [];
+      for (const x of INDEX) {
+        const t = x.t.toLowerCase();
+        let s = -1;
+        if (t === q) s = 100;
+        else if (t.startsWith(q)) s = 80;
+        else if (t.includes(q)) s = 50;
+        else if ((x.s || "").toLowerCase().includes(q)) s = 20;
+        if (s >= 0) scored.push({ x, s });
+      }
+      return scored.sort((a, b) => b.s - a.s).slice(0, 12).map((r) => r.x);
+    }
+
+    function render() {
+      if (!items.length) {
+        results.innerHTML = '<li class="px-3 py-6 text-center text-sm text-gray-400">No matches</li>';
+        return;
+      }
+      results.innerHTML = items.map((x, i) =>
+        '<li><a href="' + x.u + '" data-i="' + i + '" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ' + (i === active ? "bg-brand-50 dark:bg-white/10" : "") + '">' +
+          '<span class="text-base">' + (x.i || iconFor(x.k)) + '</span>' +
+          '<span class="flex-1 truncate font-medium text-gray-900 dark:text-white">' + esc(x.t) + '</span>' +
+          '<span class="shrink-0 text-xs text-gray-400">' + esc(x.s) + '</span>' +
+        '</a></li>'
+      ).join("");
+      const act = results.querySelector('[data-i="' + active + '"]');
+      if (act) act.scrollIntoView({ block: "nearest" });
+    }
+
+    function open() {
+      modal.classList.remove("hidden"); modal.classList.add("flex");
+      input.value = ""; items = search(""); active = 0; render();
+      setTimeout(() => input.focus(), 20);
+    }
+    function close() { modal.classList.add("hidden"); modal.classList.remove("flex"); }
+    function isOpen() { return !modal.classList.contains("hidden"); }
+    window.PolyPalette = { open };
+
+    input.addEventListener("input", () => { items = search(input.value); active = 0; render(); });
+    results.addEventListener("mousemove", (e) => { const a = e.target.closest("[data-i]"); if (a) { active = +a.getAttribute("data-i"); render(); } });
+    modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+
+    document.addEventListener("keydown", (e) => {
+      const tag = (e.target && e.target.tagName) || "";
+      const typing = tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable);
+      // Open with Cmd/Ctrl+K, or "/" when not typing
+      if ((e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing && !isOpen())) {
+        e.preventDefault(); open(); return;
+      }
+      if (!isOpen()) return;
+      if (e.key === "Escape") { e.preventDefault(); close(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+      else if (e.key === "Enter") { const x = items[active]; if (x) location.href = x.u; }
+    });
+  })();
+</script>

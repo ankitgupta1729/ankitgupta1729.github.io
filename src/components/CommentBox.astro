@@ -82,7 +82,20 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
 
   <div data-list class="space-y-4"></div>
   <p data-empty class="hidden rounded-xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500 dark:border-white/10">Be the first to comment ✍️</p>
-  <p data-loading class="hidden text-center text-sm text-gray-400">Loading comments…</p>
+  <div data-loading class="hidden space-y-4">
+    {[0, 1].map(() => (
+      <div class="rounded-2xl border border-gray-200 p-4 dark:border-white/10">
+        <div class="flex items-start gap-3">
+          <div class="skeleton h-10 w-10 shrink-0 rounded-full"></div>
+          <div class="flex-1">
+            <div class="skeleton h-4 w-32"></div>
+            <div class="skeleton mt-2 h-3 w-full"></div>
+            <div class="skeleton mt-1.5 h-3 w-4/5"></div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
 </section>
 
 <script is:inline define:vars={{ uid }}>

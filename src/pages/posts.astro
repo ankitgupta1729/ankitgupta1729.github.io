@@ -20,10 +20,21 @@ const nameMap = Object.fromEntries(CATEGORIES.map((c) => [c.slug, c.name]));
   </section>
 
   <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6" data-live={live ? "1" : ""}>
-    <p id="pf-loading" class="text-center text-gray-400">Loading posts…</p>
     <p id="pf-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-12 text-center text-gray-500 dark:border-white/10">
       No community posts yet. <a href="/write" class="font-semibold text-brand-600">Be the first to publish →</a>
     </p>
+    <div id="pf-skeleton" class="grid gap-5 sm:grid-cols-2">
+      {[0, 1, 2, 3].map(() => (
+        <div class="rounded-2xl border border-gray-200 p-5 dark:border-white/10">
+          <div class="skeleton h-5 w-20"></div>
+          <div class="skeleton mt-3 h-8 w-8 rounded-full"></div>
+          <div class="skeleton mt-2 h-5 w-3/4"></div>
+          <div class="skeleton mt-3 h-3 w-full"></div>
+          <div class="skeleton mt-1.5 h-3 w-5/6"></div>
+          <div class="skeleton mt-4 h-7 w-7 rounded-full"></div>
+        </div>
+      ))}
+    </div>
     <div id="pf-list" class="grid gap-5 sm:grid-cols-2"></div>
 
     <!-- Reader -->
@@ -37,7 +48,7 @@ const nameMap = Object.fromEntries(CATEGORIES.map((c) => [c.slug, c.name]));
 <script is:inline define:vars={{ live, url: SUPABASE.url, key: SUPABASE.anonKey, colorMap, nameMap }}>
   (function () {
     const listEl = document.getElementById("pf-list");
-    const loadingEl = document.getElementById("pf-loading");
+    const loadingEl = document.getElementById("pf-skeleton");
     const emptyEl = document.getElementById("pf-empty");
     const reader = document.getElementById("pf-reader");
     const articleEl = document.getElementById("pf-article");

@@ -19,6 +19,15 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
       <button id="mp-signin" class="mt-4 rounded-xl bg-brand-600 px-5 py-2.5 font-semibold text-white transition hover:bg-brand-700">Sign in</button>
     </div>
 
+    <div id="mp-skeleton" class="hidden space-y-4">
+      {[0, 1].map(() => (
+        <div class="rounded-2xl border border-gray-200 p-5 dark:border-white/10">
+          <div class="skeleton h-7 w-7 rounded-full"></div>
+          <div class="skeleton mt-2 h-5 w-2/3"></div>
+          <div class="skeleton mt-2 h-3 w-32"></div>
+        </div>
+      ))}
+    </div>
     <div id="mp-list" class="space-y-4"></div>
     <p id="mp-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500 dark:border-white/10">No posts yet. <a href="/write" class="font-semibold text-brand-600">Write your first →</a></p>
 
@@ -81,11 +90,14 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
     }
 
     let posts = [];
+    const skeletonEl = document.getElementById("mp-skeleton");
     async function load(user) {
       gate.classList.toggle("hidden", !!user);
       listEl.classList.toggle("hidden", !user);
-      if (!user) { emptyEl.classList.add("hidden"); return; }
+      if (!user) { emptyEl.classList.add("hidden"); skeletonEl.classList.add("hidden"); return; }
+      skeletonEl.classList.remove("hidden");
       posts = await getPosts(user);
+      skeletonEl.classList.add("hidden");
       emptyEl.classList.toggle("hidden", posts.length > 0);
       listEl.innerHTML = posts.map((p) =>
         '<div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">' +

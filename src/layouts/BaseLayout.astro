@@ -3,6 +3,7 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import AIAssistant from "../components/AIAssistant.astro";
+import CommandPalette from "../components/CommandPalette.astro";
 import { SITE } from "../consts";
 
 interface Props {
@@ -90,13 +91,14 @@ const ogImage = new URL(image, SITE.url).toString();
     />
   </head>
   <body class="min-h-screen flex flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-lg focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">Skip to content</a>
     <div
       id="reading-progress"
       class="fixed top-0 left-0 z-50 h-1 w-full bg-gradient-to-r from-brand-500 via-pink-500 to-teal-400"
     >
     </div>
     <Header />
-    <main class="flex-1">
+    <main id="main" class="flex-1 page-enter">
       <slot />
     </main>
     <Footer />
@@ -111,6 +113,7 @@ const ogImage = new URL(image, SITE.url).toString();
     </button>
 
     <AIAssistant />
+    <CommandPalette />
 
     <!-- Reading progress, back-to-top, copy-code, keyboard shortcut -->
     <script is:inline>
@@ -156,16 +159,26 @@ const ogImage = new URL(image, SITE.url).toString();
           pre.appendChild(btn);
         });
 
-        // Press "/" to jump to search (unless typing in a field)
-        document.addEventListener("keydown", (e) => {
-          if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
-          const t = e.target;
-          const typing = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
-          if (typing) return;
-          if (location.pathname !== "/search") {
+        // Hover anchor links on article headings (click to copy section URL)
+        document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach((h) => {
+          const a = document.createElement("a");
+          a.href = "#" + h.id;
+          a.className = "heading-anchor";
+          a.setAttribute("aria-label", "Link to this section");
+          a.textContent = "#";
+          a.addEventListener("click", (e) => {
             e.preventDefault();
-            location.href = "/search";
-          }
+            const url = location.origin + location.pathname + "#" + h.id;
+            history.replaceState(null, "", "#" + h.id);
+            h.scrollIntoView({ behavior: "smooth" });
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(url).then(() => {
+                a.textContent = "✓";
+                setTimeout(() => (a.textContent = "#"), 1000);
+              }).catch(() => {});
+            }
+          });
+          h.appendChild(a);
         });
       })();
     </script>

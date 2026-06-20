@@ -41,6 +41,15 @@ const isActive = (href: string) =>
     </div>
 
     <div class="flex items-center gap-2">
+      <button
+        id="palette-trigger"
+        aria-label="Search (press / or Cmd-K)"
+        class="hidden items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm text-gray-500 transition hover:border-brand-400 hover:text-brand-600 sm:flex dark:border-white/10 dark:text-gray-400"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+        <span class="hidden md:inline">Search</span>
+        <kbd class="hidden rounded border border-gray-200 px-1 text-[10px] md:inline dark:border-white/10">⌘K</kbd>
+      </button>
       <AuthWidget />
       <ThemeToggle />
       <button
@@ -77,5 +86,6 @@ const isActive = (href: string) =>
     const btn = document.getElementById("mobile-menu-btn");
     const menu = document.getElementById("mobile-menu");
     btn?.addEventListener("click", () => menu?.classList.toggle("hidden"));
+    document.getElementById("palette-trigger")?.addEventListener("click", () => window.PolyPalette && window.PolyPalette.open());
   })();
 </script>
