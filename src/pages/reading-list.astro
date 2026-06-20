@@ -64,5 +64,26 @@ const nameMap = Object.fromEntries(CATEGORIES.map((c) => [c.slug, c.name]));
       });
     }
     render();
+
+    // Merge cross-device bookmarks from Supabase when signed in.
+    async function syncFromRemote() {
+      try {
+        var u = window.PolyAuth && window.PolyAuth.user;
+        if (!u || !u.id || !window.polyDB) return;
+        var sb = await window.polyDB();
+        if (!sb) return;
+        var res = await sb.from("bookmarks").select("*").eq("user_id", u.id).order("created_at", { ascending: false });
+        if (res.error || !res.data) return;
+        var have = {};
+        list.forEach(function (x) { have[x.id] = true; });
+        res.data.forEach(function (r) {
+          if (!have[r.slug]) list.push({ id: r.slug, title: r.title, category: r.category, emoji: r.emoji, description: r.description, url: "/blog/" + r.slug + "/" });
+        });
+        save();
+        render();
+      } catch (e) {}
+    }
+    if (window.PolyAuth) window.PolyAuth.onChange(function (u) { if (u) syncFromRemote(); });
+    document.addEventListener("polyauth", function (e) { if (e.detail) syncFromRemote(); });
   })();
 </script>

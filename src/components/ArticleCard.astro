@@ -15,6 +15,7 @@ interface Props {
 
 const { url, title, description, category, pubDate, heroEmoji = "📖", tags = [], minutes, featured = false } = Astro.props;
 const cat = categoryBySlug(category);
+const slug = url.replace(/^\/blog\//, "").replace(/\/$/, "");
 ---
 
 <article
@@ -53,7 +54,10 @@ const cat = categoryBySlug(category);
     <p class="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{description}</p>
 
     <div class="mt-4 flex items-center justify-between">
-      <time class="text-xs text-gray-400">{formatDate(pubDate)}</time>
+      <div class="flex items-center gap-2 text-xs text-gray-400">
+        <time>{formatDate(pubDate)}</time>
+        <span data-counts data-slug={slug} class="hidden items-center gap-2"></span>
+      </div>
       <a href={url} class="text-sm font-semibold text-brand-600 transition group-hover:translate-x-0.5 dark:text-brand-300">
         Read →
       </a>

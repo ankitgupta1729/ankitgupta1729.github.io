@@ -181,6 +181,30 @@ const ogImage = new URL(image, SITE.url).toString();
           h.appendChild(a);
         });
       })();
+
+      // Engagement counts (💬 comments · ❤️ likes) on article cards
+      (async function () {
+        const els = document.querySelectorAll("[data-counts]");
+        if (!els.length || !window.polyDB) return;
+        try {
+          const sb = await window.polyDB();
+          if (!sb) return;
+          const [cc, al] = await Promise.all([
+            sb.rpc("comment_counts"),
+            sb.from("article_likes").select("slug,likes"),
+          ]);
+          const cmap = {}; (cc.data || []).forEach((r) => (cmap[r.slug] = r.n));
+          const lmap = {}; (al.data || []).forEach((r) => (lmap[r.slug] = r.likes));
+          els.forEach((el) => {
+            const s = el.getAttribute("data-slug");
+            const c = cmap[s] || 0, l = lmap[s] || 0;
+            if (c || l) {
+              el.innerHTML = "<span>·</span>" + (c ? "<span>💬 " + c + "</span>" : "") + (l ? "<span>❤️ " + l + "</span>" : "");
+              el.classList.remove("hidden"); el.classList.add("flex");
+            }
+          });
+        } catch (e) {}
+      })();
     </script>
   </body>
 </html>

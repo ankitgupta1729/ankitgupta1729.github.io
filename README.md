@@ -170,6 +170,78 @@ The site is **static**, so there's no server to maintain — yet it still stores
 
 The anon key is safe to ship in a static site; RLS keeps data locked down. This is **optional** — localStorage + the demo seed already make comments and likes work out of the box.
 
+### Community features SQL (profiles, leaderboard, feedback, bookmarks)
+
+Run this once to power profile pages, the points leaderboard, the feedback board, and cross-device bookmarks. Everything degrades gracefully if you skip it.
+
+```sql
+-- Attribute comments to a user (for points). Existing rows stay anonymous.
+alter table comments add column if not exists author_id uuid;
+
+-- Profiles: one row per registered user
+create table if not exists profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  name text, avatar_url text, bio text,
+  created_at timestamptz default now()
+);
+alter table profiles enable row level security;
+create policy "read"       on profiles for select using (true);
+create policy "upsert own" on profiles for insert with check (auth.uid() = id);
+create policy "update own" on profiles for update using (auth.uid() = id);
+
+-- Feedback / suggestions board
+create table if not exists feedback (
+  id uuid primary key default gen_random_uuid(),
+  type text default 'suggestion',
+  title text not null,
+  body text,
+  author_id uuid,
+  author_name text,
+  votes int not null default 0,
+  status text default 'open',
+  created_at timestamptz default now()
+);
+alter table feedback enable row level security;
+create policy "read"   on feedback for select using (true);
+create policy "insert" on feedback for insert with check (char_length(title) between 1 and 200);
+
+create or replace function vote_feedback(fb_id uuid, delta int)
+returns int language plpgsql security definer as $$
+declare n int; begin
+  update feedback set votes = greatest(votes + delta, 0) where id = fb_id returning votes into n;
+  return n; end; $$;
+
+-- Cross-device bookmarks
+create table if not exists bookmarks (
+  user_id uuid references auth.users(id) on delete cascade,
+  slug text, title text, category text, emoji text, description text,
+  created_at timestamptz default now(),
+  primary key (user_id, slug)
+);
+alter table bookmarks enable row level security;
+create policy "own" on bookmarks for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Points leaderboard (posts ×10 + comments ×2 + feedback ×3)
+create or replace function leaderboard()
+returns table(id uuid, name text, avatar_url text, points bigint)
+language sql security definer as $$
+  select p.id, p.name, p.avatar_url,
+    coalesce(po.c,0)*10 + coalesce(cm.c,0)*2 + coalesce(fb.c,0)*3 as points
+  from profiles p
+  left join (select author_id, count(*) c from user_posts where published group by author_id) po on po.author_id = p.id
+  left join (select author_id, count(*) c from comments where author_id is not null group by author_id) cm on cm.author_id = p.id
+  left join (select author_id, count(*) c from feedback group by author_id) fb on fb.author_id = p.id
+  order by points desc nulls last limit 50;
+$$;
+
+-- Comment counts per article (for cards / trending)
+create or replace function comment_counts()
+returns table(slug text, n bigint)
+language sql security definer as $$ select slug, count(*) from comments group by slug; $$;
+```
+
+**Editor image upload** also needs a public Storage bucket: Supabase → **Storage → New bucket** → name it `post-images` → toggle **Public** → Create.
+
 ## 🔐 Accounts & login (normal + social)
 
 The header **Sign in** button and the `/write` editor use the same `SUPABASE` config above. With keys set, you get **real accounts**:

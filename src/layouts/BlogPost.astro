@@ -133,4 +133,8 @@ const cat = categoryBySlug(category);
       <Newsletter variant="inline" />
     </div>
   </article>
+
+  <script is:inline define:vars={{ lastRead: { id: post.id, title, emoji: heroEmoji, category, url: `/blog/${post.id}/` } }}>
+    try { localStorage.setItem("lastRead", JSON.stringify(lastRead)); } catch (e) {}
+  </script>
 </BaseLayout>

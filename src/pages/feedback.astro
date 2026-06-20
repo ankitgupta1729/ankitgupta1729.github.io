@@ -1,0 +1,180 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SUPABASE } from "../consts";
+const live = !!(SUPABASE.url && SUPABASE.anonKey);
+---
+
+<BaseLayout title="Feedback & ideas" description="Suggest features, report bugs, and vote on what we build next.">
+  <section class="aurora">
+    <div class="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6">
+      <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">Feedback &amp; ideas</h1>
+      <p class="mx-auto mt-3 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        Help shape Polymath. Suggest a feature, report a bug, or upvote ideas you'd love to see. The most-voted ideas get built first.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6" data-live={live ? "1" : ""}>
+    <!-- Composer -->
+    <form id="fb-form" class="mb-8 rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+      <div class="flex flex-wrap gap-3">
+        <select id="fb-type" class="rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15">
+          <option value="suggestion">💡 Suggestion</option>
+          <option value="feature">✨ Feature request</option>
+          <option value="bug">🐛 Bug</option>
+        </select>
+        <input id="fb-title" required maxlength="200" placeholder="A short, clear title" class="flex-1 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15" />
+      </div>
+      <textarea id="fb-body" rows="3" maxlength="1000" placeholder="Add details (optional) — what problem does this solve?" class="mt-3 w-full resize-y rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15"></textarea>
+      <div class="mt-3 flex items-center justify-between">
+        <span id="fb-asname" class="text-xs text-gray-400"></span>
+        <button type="submit" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Submit idea</button>
+      </div>
+      <p id="fb-msg" class="mt-2 hidden text-sm font-medium"></p>
+    </form>
+
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white">Ideas board</h2>
+      <div class="flex gap-1 rounded-lg bg-gray-100 p-1 text-xs font-semibold dark:bg-white/5">
+        <button data-sort="top" class="rounded-md px-2.5 py-1">Top voted</button>
+        <button data-sort="new" class="rounded-md px-2.5 py-1">Newest</button>
+      </div>
+    </div>
+
+    <div id="fb-skeleton" class="space-y-3">
+      {[0, 1, 2].map(() => (
+        <div class="flex gap-3 rounded-xl border border-gray-200 p-4 dark:border-white/10">
+          <div class="skeleton h-12 w-12 rounded-lg"></div>
+          <div class="flex-1"><div class="skeleton h-4 w-2/3"></div><div class="skeleton mt-2 h-3 w-full"></div></div>
+        </div>
+      ))}
+    </div>
+    <div id="fb-list" class="space-y-3"></div>
+    <p id="fb-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500 dark:border-white/10">No ideas yet — be the first to suggest one ✨</p>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ live }}>
+  (function () {
+    const form = document.getElementById("fb-form");
+    const listEl = document.getElementById("fb-list");
+    const skel = document.getElementById("fb-skeleton");
+    const emptyEl = document.getElementById("fb-empty");
+    const msg = document.getElementById("fb-msg");
+    const asName = document.getElementById("fb-asname");
+    let sort = "top";
+    let items = [];
+
+    const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const rel = (iso) => { const d = Date.now() - new Date(iso).getTime(); const days = Math.floor(d / 86400000); if (days > 0) return days + "d ago"; const h = Math.floor(d / 3600000); if (h > 0) return h + "h ago"; return "just now"; };
+    const typeMeta = { suggestion: { icon: "💡", label: "Suggestion", c: "#6366f1" }, feature: { icon: "✨", label: "Feature", c: "#ec4899" }, bug: { icon: "🐛", label: "Bug", c: "#ef4444" } };
+    const statusMeta = { open: { label: "Open", c: "#64748b" }, planned: { label: "Planned", c: "#0ea5e9" }, done: { label: "Shipped", c: "#22c55e" } };
+
+    function votedSet() { try { return new Set(JSON.parse(localStorage.getItem("fbVotes") || "[]")); } catch (e) { return new Set(); } }
+    function saveVoted(s) { localStorage.setItem("fbVotes", JSON.stringify([...s])); }
+
+    function user() { return (window.PolyAuth && window.PolyAuth.user) || null; }
+    function syncName() { const u = user(); asName.textContent = u ? "Posting as " + u.name : "Posting anonymously — sign in to attach your name"; }
+    if (window.PolyAuth) window.PolyAuth.onChange(syncName);
+    document.addEventListener("polyauth", syncName);
+
+    // ---- local (demo) store ----
+    const LS = "fbLocal";
+    function readLocal() { try { return JSON.parse(localStorage.getItem(LS) || "null") || seed(); } catch (e) { return seed(); } }
+    function writeLocal(a) { localStorage.setItem(LS, JSON.stringify(a)); }
+    function seed() {
+      return [
+        { id: "s1", type: "feature", title: "Dark-mode code themes", body: "Let readers pick a syntax theme.", author_name: "Maya Rao", votes: 14, status: "planned", created_at: new Date(Date.now() - 6 * 864e5).toISOString() },
+        { id: "s2", type: "suggestion", title: "A weekly email digest", body: "Round up new articles every Friday.", author_name: "Sam Whitfield", votes: 9, status: "open", created_at: new Date(Date.now() - 3 * 864e5).toISOString() },
+      ];
+    }
+
+    async function fetchItems() {
+      if (live && window.polyDB) {
+        try {
+          const sb = await window.polyDB();
+          const { data, error } = await sb.from("feedback").select("*").order("created_at", { ascending: false });
+          if (!error) return data || [];
+        } catch (e) {}
+        return [];
+      }
+      return readLocal();
+    }
+
+    function render() {
+      skel.classList.add("hidden");
+      const voted = votedSet();
+      const sorted = items.slice().sort((a, b) => sort === "top" ? b.votes - a.votes : new Date(b.created_at) - new Date(a.created_at));
+      emptyEl.classList.toggle("hidden", sorted.length > 0);
+      listEl.innerHTML = sorted.map((it) => {
+        const tm = typeMeta[it.type] || typeMeta.suggestion;
+        const sm = statusMeta[it.status] || statusMeta.open;
+        const v = voted.has(it.id);
+        return (
+          '<div class="flex gap-3 rounded-xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">' +
+            '<button data-vote="' + it.id + '" class="flex h-14 w-12 shrink-0 flex-col items-center justify-center rounded-lg border transition ' + (v ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-900/30" : "border-gray-200 text-gray-600 hover:border-brand-400 dark:border-white/10 dark:text-gray-300") + '">' +
+              '<span class="text-sm">▲</span><span class="text-sm font-bold">' + it.votes + '</span>' +
+            '</button>' +
+            '<div class="min-w-0 flex-1">' +
+              '<div class="flex flex-wrap items-center gap-2 text-xs">' +
+                '<span class="rounded-full px-2 py-0.5 font-semibold" style="background:' + tm.c + '1a;color:' + tm.c + '">' + tm.icon + ' ' + tm.label + '</span>' +
+                '<span class="rounded-full px-2 py-0.5 font-medium" style="background:' + sm.c + '1a;color:' + sm.c + '">' + sm.label + '</span>' +
+              '</div>' +
+              '<h3 class="mt-1.5 font-bold text-gray-900 dark:text-white">' + esc(it.title) + '</h3>' +
+              (it.body ? '<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">' + esc(it.body) + '</p>' : '') +
+              '<p class="mt-2 text-xs text-gray-400">' + esc(it.author_name || "Anonymous") + ' · ' + rel(it.created_at) + '</p>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join("");
+      listEl.querySelectorAll("[data-vote]").forEach((b) => b.addEventListener("click", () => vote(b.getAttribute("data-vote"))));
+    }
+
+    async function vote(id) {
+      const voted = votedSet();
+      const delta = voted.has(id) ? -1 : 1;
+      const it = items.find((x) => x.id === id);
+      if (it) it.votes = Math.max(0, it.votes + delta);
+      if (delta > 0) voted.add(id); else voted.delete(id);
+      saveVoted(voted);
+      render();
+      if (live && window.polyDB) {
+        try { const sb = await window.polyDB(); await sb.rpc("vote_feedback", { fb_id: id, delta }); } catch (e) {}
+      } else { writeLocal(items); }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const type = document.getElementById("fb-type").value;
+      const title = document.getElementById("fb-title").value.trim();
+      const body = document.getElementById("fb-body").value.trim();
+      if (!title) return;
+      const u = user();
+      if (live && window.polyDB) {
+        try {
+          const sb = await window.polyDB();
+          const { error } = await sb.from("feedback").insert({ type, title, body, author_id: u && u.id, author_name: u && u.name });
+          if (error) { msg.textContent = error.message; msg.style.color = "#e11d48"; msg.classList.remove("hidden"); return; }
+        } catch (e) { msg.textContent = "Couldn't submit — try again."; msg.style.color = "#e11d48"; msg.classList.remove("hidden"); return; }
+      } else {
+        const arr = readLocal();
+        arr.unshift({ id: "loc-" + Date.now(), type, title, body, author_name: u && u.name, votes: 1, status: "open", created_at: new Date().toISOString() });
+        writeLocal(arr);
+      }
+      msg.textContent = "Thanks! Your idea is on the board 🎉"; msg.style.color = "#16a34a"; msg.classList.remove("hidden");
+      document.getElementById("fb-title").value = ""; document.getElementById("fb-body").value = "";
+      items = await fetchItems(); render();
+      setTimeout(() => msg.classList.add("hidden"), 2500);
+    });
+
+    document.querySelectorAll("[data-sort]").forEach((b) => b.addEventListener("click", () => {
+      sort = b.getAttribute("data-sort");
+      document.querySelectorAll("[data-sort]").forEach((x) => x.classList.remove("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10"));
+      b.classList.add("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10");
+      render();
+    }));
+    document.querySelector('[data-sort="top"]').classList.add("bg-white", "text-brand-600", "shadow-sm", "dark:bg-white/10");
+
+    (async () => { syncName(); items = await fetchItems(); render(); })();
+  })();
+</script>

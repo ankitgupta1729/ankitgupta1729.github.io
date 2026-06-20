@@ -21,6 +21,7 @@ const hasSocial = providers.length > 0;
       <p id="auth-menu-name" class="truncate text-sm font-semibold text-gray-900 dark:text-white"></p>
       <p id="auth-menu-email" class="truncate text-xs text-gray-400"></p>
     </div>
+    <a id="auth-menu-profile" href="/profile" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">👤 My profile</a>
     <a href="/write" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">✍️ Write an article</a>
     <a href="/my-posts" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">📝 My posts</a>
     <a href="/reading-list" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">📚 Reading list</a>
@@ -126,6 +127,7 @@ const hasSocial = providers.length > 0;
         $("auth-user-name").textContent = (u.name || "You").split(" ")[0];
         $("auth-menu-name").textContent = u.name || "You";
         $("auth-menu-email").textContent = u.email || "";
+        if (u.id) $("auth-menu-profile").href = "/profile?id=" + u.id;
       } else {
         $("auth-signin-btn").classList.remove("hidden");
         $("auth-user-btn").classList.add("hidden");
@@ -141,13 +143,36 @@ const hasSocial = providers.length > 0;
       return { id: su.id, email: su.email, name: m.full_name || m.name || m.user_name || (su.email || "").split("@")[0], avatar: m.avatar_url || dice(su.email) };
     }
 
+    // Shared Supabase client for the whole app (reused so the auth session
+    // is attached everywhere). Returns null in demo mode.
+    window.polyDB = async function () {
+      if (!live) return null;
+      if (window.PolySB) return window.PolySB;
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      window.PolySB = createClient(url, key);
+      return window.PolySB;
+    };
+
+    async function upsertProfile(u) {
+      if (!u) return;
+      try {
+        const sb = await window.polyDB();
+        if (sb) await sb.from("profiles").upsert({ id: u.id, name: u.name, avatar_url: u.avatar }, { onConflict: "id" });
+      } catch (e) {}
+    }
+
     async function initSupabase() {
       try {
-        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-        supabase = createClient(url, key);
+        supabase = await window.polyDB();
         const { data } = await supabase.auth.getSession();
-        setUser(normalize(data.session && data.session.user));
-        supabase.auth.onAuthStateChange((_e, session) => setUser(normalize(session && session.user)));
+        const u = normalize(data.session && data.session.user);
+        setUser(u);
+        upsertProfile(u);
+        supabase.auth.onAuthStateChange((_e, session) => {
+          const nu = normalize(session && session.user);
+          setUser(nu);
+          upsertProfile(nu);
+        });
       } catch (e) { console.warn("Supabase auth unavailable", e); }
     }
 

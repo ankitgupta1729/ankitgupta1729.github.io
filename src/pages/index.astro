@@ -14,6 +14,15 @@ const allPosts = (await getCollection("blog"))
 const featured = allPosts.find((p) => p.data.featured) ?? allPosts[0];
 const latest = allPosts.filter((p) => p.id !== featured?.id).slice(0, 6);
 const totalMinutes = allPosts.reduce((s, p) => s + readingTime(p.body ?? ""), 0);
+
+// Compact index for client-side Trending ranking.
+const articleIndex = allPosts.map((p) => ({
+  id: p.id,
+  url: `/blog/${p.id}/`,
+  title: p.data.title,
+  emoji: p.data.heroEmoji,
+  category: p.data.category,
+}));
 ---
 
 <BaseLayout>
@@ -47,6 +56,25 @@ const totalMinutes = allPosts.reduce((s, p) => s + readingTime(p.body ?? ""), 0)
         <Counter value={CATEGORIES.length} label="Topics" />
         <Counter value={totalMinutes} label="Min of reading" />
       </div>
+    </div>
+  </section>
+
+  <!-- Continue reading + Trending (client-populated) -->
+  <section id="home-dynamic" class="mx-auto max-w-6xl px-4 sm:px-6">
+    <div id="continue-reading" class="hidden pt-8">
+      <a id="cr-link" href="#" class="card-lift flex items-center gap-4 rounded-2xl border border-brand-200 bg-brand-50/50 p-4 dark:border-brand-500/30 dark:bg-brand-900/20">
+        <span id="cr-emoji" class="text-3xl"></span>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-300">↩ Continue reading</p>
+          <p id="cr-title" class="font-bold text-gray-900 dark:text-white"></p>
+        </div>
+        <span class="ml-auto text-sm font-semibold text-brand-600 dark:text-brand-300">Resume →</span>
+      </a>
+    </div>
+
+    <div id="trending" class="hidden pt-12">
+      <h2 class="mb-6 font-serif text-3xl font-bold text-gray-900 dark:text-white">🔥 Trending now</h2>
+      <div id="trending-list" class="grid gap-4 sm:grid-cols-3"></div>
     </div>
   </section>
 
@@ -141,4 +169,44 @@ const totalMinutes = allPosts.reduce((s, p) => s + readingTime(p.body ?? ""), 0)
       </div>
     </div>
   </section>
+
+  <script is:inline define:vars={{ articleIndex }}>
+    (function () {
+      const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+      // Continue reading
+      try {
+        const lr = JSON.parse(localStorage.getItem("lastRead") || "null");
+        if (lr && lr.url) {
+          document.getElementById("cr-emoji").textContent = lr.emoji || "📖";
+          document.getElementById("cr-title").textContent = lr.title;
+          document.getElementById("cr-link").href = lr.url;
+          document.getElementById("continue-reading").classList.remove("hidden");
+        }
+      } catch (e) {}
+
+      // Trending (by comments ×2 + likes)
+      (async function () {
+        if (!window.polyDB) return;
+        try {
+          const sb = await window.polyDB();
+          if (!sb) return;
+          const [cc, al] = await Promise.all([sb.rpc("comment_counts"), sb.from("article_likes").select("slug,likes")]);
+          const score = {};
+          (cc.data || []).forEach((r) => (score[r.slug] = (score[r.slug] || 0) + r.n * 2));
+          (al.data || []).forEach((r) => (score[r.slug] = (score[r.slug] || 0) + r.likes));
+          const ranked = articleIndex.map((a) => ({ a, s: score[a.id] || 0 })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3);
+          if (!ranked.length) return;
+          document.getElementById("trending-list").innerHTML = ranked.map((x, i) =>
+            '<a href="' + x.a.url + '" class="card-lift flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">' +
+              '<span class="text-2xl font-black text-gray-200 dark:text-white/20">' + (i + 1) + '</span>' +
+              '<span class="text-2xl">' + (x.a.emoji || "📖") + '</span>' +
+              '<span class="flex-1 font-bold leading-snug text-gray-900 dark:text-white">' + esc(x.a.title) + '</span>' +
+            '</a>'
+          ).join("");
+          document.getElementById("trending").classList.remove("hidden");
+        } catch (e) {}
+      })();
+    })();
+  </script>
 </BaseLayout>

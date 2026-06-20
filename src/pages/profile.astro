@@ -1,0 +1,123 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SUPABASE } from "../consts";
+const live = !!(SUPABASE.url && SUPABASE.anonKey);
+---
+
+<BaseLayout title="Profile" description="A Polymath community member.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css" />
+
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6" data-live={live ? "1" : ""}>
+    <p id="pr-loading" class="text-center text-gray-400">Loading profile…</p>
+    <div id="pr-card" class="hidden">
+      <div class="flex flex-col items-center text-center sm:flex-row sm:items-start sm:text-left">
+        <img id="pr-avatar" src="" alt="" width="88" height="88" class="h-22 w-22 rounded-full bg-gray-100 dark:bg-white/10" style="height:88px;width:88px" />
+        <div class="mt-3 sm:ml-5 sm:mt-0">
+          <div class="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+            <h1 id="pr-name" class="font-serif text-3xl font-bold text-gray-900 dark:text-white"></h1>
+            <span id="pr-points" class="rounded-full bg-brand-50 px-3 py-1 text-sm font-bold text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"></span>
+          </div>
+          <p id="pr-joined" class="mt-1 text-sm text-gray-400"></p>
+          <p id="pr-bio" class="mt-2 max-w-prose text-gray-600 dark:text-gray-300"></p>
+          <div id="pr-bio-edit" class="mt-2 hidden">
+            <textarea id="pr-bio-input" rows="2" maxlength="200" placeholder="Add a short bio…" class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm dark:border-white/15"></textarea>
+            <button id="pr-bio-save" class="mt-2 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Save bio</button>
+          </div>
+          <button id="pr-bio-toggle" class="mt-2 hidden text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">✎ Edit your bio</button>
+        </div>
+      </div>
+
+      <h2 class="mb-4 mt-10 text-xl font-bold text-gray-900 dark:text-white">Published articles</h2>
+      <div id="pr-posts" class="space-y-3"></div>
+      <p id="pr-noposts" class="hidden text-gray-500">No published articles yet.</p>
+    </div>
+    <p id="pr-missing" class="hidden rounded-2xl border border-dashed border-gray-300 p-12 text-center text-gray-500 dark:border-white/10">This profile couldn't be found.</p>
+
+    <div id="pr-reader" class="hidden">
+      <button id="pr-back" class="mb-4 text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">← Back to profile</button>
+      <article id="pr-article" class="prose prose-lg max-w-none dark:prose-invert"></article>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ live }}>
+  (function () {
+    const id = new URLSearchParams(location.search).get("id");
+    const loading = document.getElementById("pr-loading");
+    const card = document.getElementById("pr-card");
+    const missing = document.getElementById("pr-missing");
+    const reader = document.getElementById("pr-reader");
+    const articleEl = document.getElementById("pr-article");
+    document.getElementById("pr-back").addEventListener("click", () => { reader.classList.add("hidden"); card.classList.remove("hidden"); });
+    const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const dice = (s) => "https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(s || "user") + "&radius=50";
+
+    let _libs = null;
+    async function libs() {
+      if (_libs) return _libs;
+      const [m, d, k] = await Promise.all([import("https://esm.sh/marked@12"), import("https://esm.sh/dompurify@3"), import("https://esm.sh/katex@0.16")]);
+      _libs = { marked: m.marked, DOMPurify: d.default, katex: k.default };
+      return _libs;
+    }
+    async function render(src) {
+      const { marked, DOMPurify, katex } = await libs();
+      const store = []; const stash = (h) => { store.push(h); return " B" + (store.length - 1) + " "; };
+      src = src.replace(/\$\$([\s\S]+?)\$\$/g, (m, x) => { try { return stash(katex.renderToString(x.trim(), { displayMode: true, output: "html", throwOnError: false })); } catch (e) { return m; } });
+      src = src.replace(/\$([^\$\n]+?)\$/g, (m, x) => { try { return stash(katex.renderToString(x.trim(), { output: "html", throwOnError: false })); } catch (e) { return m; } });
+      let html = marked.parse(src, { breaks: true }).replace(/ B(\d+) /g, (m, i) => store[+i]);
+      return DOMPurify.sanitize(html, { ADD_TAGS: ["span"], ADD_ATTR: ["class", "style", "aria-hidden"] });
+    }
+
+    let posts = [];
+    async function openReader(pid) {
+      const p = posts.find((x) => x.id === pid); if (!p) return;
+      card.classList.add("hidden"); reader.classList.remove("hidden");
+      articleEl.innerHTML = "<h1>" + esc(p.title) + "</h1>" + (await render(p.body));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    (async () => {
+      if (!live || !id || !window.polyDB) { loading.classList.add("hidden"); missing.classList.remove("hidden"); return; }
+      try {
+        const sb = await window.polyDB();
+        const [{ data: prof }, { data: lb }, { data: pp }] = await Promise.all([
+          sb.from("profiles").select("*").eq("id", id).maybeSingle(),
+          sb.rpc("leaderboard"),
+          sb.from("user_posts").select("*").eq("author_id", id).eq("published", true).order("created_at", { ascending: false }),
+        ]);
+        loading.classList.add("hidden");
+        if (!prof) { missing.classList.remove("hidden"); return; }
+        const pts = ((lb || []).find((r) => r.id === id) || {}).points || 0;
+        document.getElementById("pr-avatar").src = prof.avatar_url || dice(prof.name);
+        document.getElementById("pr-name").textContent = prof.name || "Anonymous";
+        document.getElementById("pr-points").textContent = pts + " pts";
+        document.getElementById("pr-joined").textContent = "Joined " + new Date(prof.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+        document.getElementById("pr-bio").textContent = prof.bio || "";
+        posts = pp || [];
+        const wrap = document.getElementById("pr-posts");
+        document.getElementById("pr-noposts").classList.toggle("hidden", posts.length > 0);
+        wrap.innerHTML = posts.map((p) =>
+          '<div class="rounded-xl border border-gray-200 p-4 dark:border-white/10"><div class="text-2xl">' + (p.emoji || "📝") + '</div>' +
+          '<h3 class="mt-1 font-bold text-gray-900 dark:text-white">' + esc(p.title) + '</h3>' +
+          '<button data-read="' + p.id + '" class="mt-2 text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">Read →</button></div>'
+        ).join("");
+        wrap.querySelectorAll("[data-read]").forEach((b) => b.addEventListener("click", () => openReader(b.getAttribute("data-read"))));
+        card.classList.remove("hidden");
+
+        // Edit own bio
+        const me = window.PolyAuth && window.PolyAuth.user;
+        if (me && me.id === id) {
+          const toggle = document.getElementById("pr-bio-toggle");
+          const editor = document.getElementById("pr-bio-edit");
+          const input = document.getElementById("pr-bio-input");
+          toggle.classList.remove("hidden");
+          input.value = prof.bio || "";
+          toggle.addEventListener("click", () => { editor.classList.toggle("hidden"); });
+          document.getElementById("pr-bio-save").addEventListener("click", async () => {
+            try { await sb.from("profiles").update({ bio: input.value.trim() }).eq("id", id); document.getElementById("pr-bio").textContent = input.value.trim(); editor.classList.add("hidden"); } catch (e) {}
+          });
+        }
+      } catch (e) { loading.classList.add("hidden"); missing.classList.remove("hidden"); }
+    })();
+  })();
+</script>

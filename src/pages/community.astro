@@ -36,8 +36,27 @@ const totalLikes = COMMENTS.reduce(
     </div>
   </section>
 
+  <!-- Live points leaderboard (real contributors) -->
+  <section class="mx-auto max-w-3xl px-4 pt-12 sm:px-6">
+    <div class="mb-5 flex items-center justify-between">
+      <h2 class="font-serif text-2xl font-bold text-gray-900 dark:text-white">🏆 Leaderboard</h2>
+      <span class="text-xs text-gray-400">Posts ×10 · Comments ×2 · Ideas ×3</span>
+    </div>
+    <div id="lb-skeleton" class="space-y-2">
+      {[0, 1, 2].map(() => (
+        <div class="flex items-center gap-3 rounded-xl border border-gray-200 p-3 dark:border-white/10">
+          <div class="skeleton h-7 w-7 rounded-full"></div><div class="skeleton h-9 w-9 rounded-full"></div><div class="skeleton h-4 w-40"></div>
+        </div>
+      ))}
+    </div>
+    <ol id="lb-list" class="space-y-2"></ol>
+    <p id="lb-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500 dark:border-white/10">
+      No points yet — publish an article, comment, or suggest an idea to climb the board!
+    </p>
+  </section>
+
   <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-    <h2 class="mb-6 font-serif text-2xl font-bold text-gray-900 dark:text-white">Members</h2>
+    <h2 class="mb-6 font-serif text-2xl font-bold text-gray-900 dark:text-white">Featured members <span class="align-middle text-xs font-normal text-amber-600">· sample</span></h2>
     <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {
         MEMBERS.map((m) => (
@@ -112,4 +131,34 @@ const totalLikes = COMMENTS.reduce(
       </div>
     </div>
   </section>
+
+  <script is:inline>
+    (function () {
+      const skel = document.getElementById("lb-skeleton");
+      const list = document.getElementById("lb-list");
+      const empty = document.getElementById("lb-empty");
+      if (!list) return;
+      const esc = (s) => (s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const medal = (i) => ["🥇", "🥈", "🥉"][i] || (i + 1);
+      (async () => {
+        let rows = [];
+        try {
+          if (window.polyDB) {
+            const sb = await window.polyDB();
+            if (sb) { const { data } = await sb.rpc("leaderboard"); rows = (data || []).filter((r) => r.points > 0); }
+          }
+        } catch (e) {}
+        skel.classList.add("hidden");
+        if (!rows.length) { empty.classList.remove("hidden"); return; }
+        list.innerHTML = rows.map((r, i) =>
+          '<li class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-3 dark:border-white/10 dark:bg-white/[0.03]">' +
+            '<span class="grid h-7 w-7 place-items-center text-sm font-bold">' + medal(i) + '</span>' +
+            '<img src="' + (r.avatar_url || ("https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(r.name || "user"))) + '" alt="" width="36" height="36" class="h-9 w-9 rounded-full bg-gray-100 dark:bg-white/10"/>' +
+            '<a href="/profile?id=' + r.id + '" class="font-semibold text-gray-900 hover:text-brand-600 dark:text-white">' + esc(r.name || "Anonymous") + '</a>' +
+            '<span class="ml-auto rounded-full bg-brand-50 px-2.5 py-1 text-sm font-bold text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">' + r.points + ' pts</span>' +
+          '</li>'
+        ).join("");
+      })();
+    })();
+  </script>
 </BaseLayout>
