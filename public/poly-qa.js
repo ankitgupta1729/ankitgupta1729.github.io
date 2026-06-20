@@ -25,42 +25,48 @@ window.PolyQA = (function () {
   }
   function ensureSeed() { let q = read(LSQ, null); if (!q) q = seed(); return q; }
 
+  // Probe once: 'live' if the Supabase questions table exists, else 'demo'
+  // (localStorage + seed). This makes the Q&A useful immediately and upgrade
+  // automatically once the exam-prep SQL is run.
+  let _mode = null, _sb = null;
+  async function mode() {
+    if (_mode) return _mode;
+    _sb = await db();
+    if (!_sb) { _mode = "demo"; return _mode; }
+    try { const { error } = await _sb.from("questions").select("id").limit(1); _mode = error ? "demo" : "live"; }
+    catch (e) { _mode = "demo"; }
+    return _mode;
+  }
+
   return {
-    async isLive() { return !!(await db()); },
+    async isLive() { return (await mode()) === "live"; },
     async listQuestions() {
-      const sb = await db();
-      if (sb) { try { const { data } = await sb.from("questions").select("*").order("created_at", { ascending: false }); return data || []; } catch (e) { return []; } }
+      if (await mode() === "live") { const { data } = await _sb.from("questions").select("*").order("created_at", { ascending: false }); return data || []; }
       return ensureSeed();
     },
     async getQuestion(id) {
-      const sb = await db();
-      if (sb) { try { const { data } = await sb.from("questions").select("*").eq("id", id).maybeSingle(); return data; } catch (e) { return null; } }
+      if (await mode() === "live") { const { data } = await _sb.from("questions").select("*").eq("id", id).maybeSingle(); return data; }
       return ensureSeed().find((x) => x.id === id);
     },
     async createQuestion(q) {
-      const sb = await db();
-      if (sb) { try { const { data, error } = await sb.from("questions").insert(q).select().maybeSingle(); return { data, error }; } catch (e) { return { error: e }; } }
+      if (await mode() === "live") { const { data, error } = await _sb.from("questions").insert(q).select().maybeSingle(); return { data, error }; }
       const arr = ensureSeed(); const row = Object.assign({ id: uid("q-"), votes: 0, status: "open", accepted_answer_id: null, created_at: new Date().toISOString() }, q); arr.unshift(row); write(LSQ, arr); return { data: row };
     },
     async listAnswers(qid) {
-      const sb = await db();
-      if (sb) { try { const { data } = await sb.from("answers").select("*").eq("question_id", qid).order("votes", { ascending: false }); return data || []; } catch (e) { return []; } }
+      if (await mode() === "live") { const { data } = await _sb.from("answers").select("*").eq("question_id", qid).order("votes", { ascending: false }); return data || []; }
       return read("doubtsA:" + qid, []);
     },
     async createAnswer(a) {
-      const sb = await db();
-      if (sb) { try { const { data, error } = await sb.from("answers").insert(a).select().maybeSingle(); return { data, error }; } catch (e) { return { error: e }; } }
+      if (await mode() === "live") { const { data, error } = await _sb.from("answers").insert(a).select().maybeSingle(); return { data, error }; }
       const arr = read("doubtsA:" + a.question_id, []); const row = Object.assign({ id: uid("a-"), votes: 0, created_at: new Date().toISOString() }, a); arr.push(row); write("doubtsA:" + a.question_id, arr); return { data: row };
     },
     async vote(kind, id, delta, qid) {
-      const sb = await db();
-      if (sb) { try { await sb.rpc(kind === "q" ? "vote_question" : "vote_answer", { row_id: id, delta }); } catch (e) {} return; }
+      if (await mode() === "live") { try { await _sb.rpc(kind === "q" ? "vote_question" : "vote_answer", { row_id: id, delta }); } catch (e) {} return; }
       if (kind === "q") { const arr = ensureSeed(); const r = arr.find((x) => x.id === id); if (r) { r.votes = Math.max(0, (r.votes || 0) + delta); write(LSQ, arr); } }
       else { const k = "doubtsA:" + qid; const arr = read(k, []); const r = arr.find((x) => x.id === id); if (r) { r.votes = Math.max(0, (r.votes || 0) + delta); write(k, arr); } }
     },
     async accept(qid, aid) {
-      const sb = await db();
-      if (sb) { try { await sb.from("questions").update({ accepted_answer_id: aid, status: "solved" }).eq("id", qid); } catch (e) {} return; }
+      if (await mode() === "live") { try { await _sb.from("questions").update({ accepted_answer_id: aid, status: "solved" }).eq("id", qid); } catch (e) {} return; }
       const arr = ensureSeed(); const q = arr.find((x) => x.id === qid); if (q) { q.accepted_answer_id = aid; q.status = "solved"; write(LSQ, arr); }
     },
   };
