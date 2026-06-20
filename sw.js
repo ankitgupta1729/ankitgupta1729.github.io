@@ -1,6 +1,6 @@
 // Polymath service worker — installable PWA + offline reading.
 // Bump CACHE when you want to force-refresh caches.
-const CACHE = "polymath-v1";
+const CACHE = "polymath-v2";
 const CORE = ["/", "/offline.html", "/manifest.webmanifest", "/favicon.svg", "/icon-192.png"];
 
 self.addEventListener("install", (event) => {
@@ -35,17 +35,24 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets: cache-first, then network (and cache it).
-  event.respondWith(
-    caches.match(req).then((cached) =>
-      cached ||
-      fetch(req).then((res) => {
-        if (res.ok && (url.pathname.startsWith("/_astro/") || /\.(css|js|woff2?|png|svg|jpg|jpeg|webp|json)$/.test(url.pathname) || url.pathname.startsWith("/pagefind/"))) {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy));
-        }
+  // Immutable, content-hashed assets (and fonts/images): cache-first.
+  const immutable = url.pathname.startsWith("/_astro/") || url.pathname.startsWith("/pagefind/") || /\.(woff2?|png|jpg|jpeg|webp|gif|ico)$/.test(url.pathname);
+  if (immutable) {
+    event.respondWith(
+      caches.match(req).then((cached) => cached || fetch(req).then((res) => {
+        if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
         return res;
-      }).catch(() => cached)
-    )
+      }).catch(() => cached))
+    );
+    return;
+  }
+
+  // Everything else same-origin (non-hashed JS/CSS/JSON like /poly-qa.js):
+  // network-first so updates show immediately; fall back to cache offline.
+  event.respondWith(
+    fetch(req).then((res) => {
+      if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
+      return res;
+    }).catch(() => caches.match(req))
   );
 });
