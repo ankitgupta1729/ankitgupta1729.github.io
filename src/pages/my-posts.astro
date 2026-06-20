@@ -123,6 +123,7 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
       listEl.classList.add("hidden");
       reader.classList.remove("hidden");
       articleEl.innerHTML = '<h1>' + esc(p.title) + '</h1>' + (await render(p.body));
+      if (window.polyHighlight) window.polyHighlight(articleEl);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 

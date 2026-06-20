@@ -121,6 +121,13 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
     const NAME = "cbxName";
     const dice = (s) => "https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(s || "anon") + "&radius=50";
     const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    // Safe lightweight Markdown for comments (escape first, then allow a few tags).
+    const md = (s) => esc(s)
+      .replace(/`([^`]+)`/g, '<code class="rounded bg-gray-100 px-1 dark:bg-white/10">$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+      .replace(/(^|\s)_([^_]+)_(?=\s|$)/g, "$1<i>$2</i>")
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="text-brand-600 underline dark:text-brand-300">$1</a>')
+      .replace(/\n/g, "<br>");
 
     nameIn.value = localStorage.getItem(NAME) || "";
     avatarImg.src = dice(nameIn.value || "you");
@@ -194,7 +201,7 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
                   (c.byMe ? '<span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300">you</span>' : '') +
                   '<span class="text-xs text-gray-400">· ' + relTime(c.createdAt) + '</span>' +
                 '</div>' +
-                '<p class="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-gray-700 dark:text-gray-200">' + esc(c.body) + '</p>' +
+                '<p class="mt-1 text-sm leading-relaxed text-gray-700 dark:text-gray-200">' + md(c.body) + '</p>' +
                 '<div class="mt-2 flex items-center gap-3 text-xs font-semibold">' +
                   '<button data-like="' + c.id + '" class="inline-flex items-center gap-1 rounded-lg border px-2 py-1 transition ' + (c.mine ? "border-pink-400 text-pink-600" : "border-gray-200 text-gray-500 hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-400") + '">' + (c.mine ? "❤️" : "🤍") + ' <span>' + c.likes + '</span></button>' +
                   (isReply ? '' : '<button data-reply="' + c.id + '" class="text-gray-500 hover:text-brand-600 dark:text-gray-400">Reply</button>') +

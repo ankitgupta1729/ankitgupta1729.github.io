@@ -1,0 +1,90 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { readingTime } from "../lib/utils";
+
+const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
+const byId = new Map(posts.map((p) => [p.id, p]));
+
+const paths = [
+  {
+    icon: "🤖",
+    title: "Understand modern AI",
+    blurb: "From a single neuron to the models behind ChatGPT — in the right order.",
+    ids: ["neural-networks-the-idea", "gradient-descent-intuition", "attention-is-all-you-need-explained", "why-llms-hallucinate", "algorithmic-bias"],
+  },
+  {
+    icon: "📊",
+    title: "Think clearly with data",
+    blurb: "The statistical intuition that stops you fooling yourself.",
+    ids: ["bias-variance-tradeoff", "bayes-theorem-updating-beliefs", "correlation-is-not-causation", "simpsons-paradox", "monty-hall-problem"],
+  },
+  {
+    icon: "🔐",
+    title: "How the secure web works",
+    blurb: "The cryptography protecting every login, payment and message.",
+    ids: ["how-the-internet-actually-works", "hash-functions-explained", "how-rsa-encryption-works", "diffie-hellman-secret-in-public"],
+  },
+  {
+    icon: "⚛️",
+    title: "Reality, from atoms to cosmos",
+    blurb: "Physics ideas that rewire how you see the universe.",
+    ids: ["why-the-sky-is-blue", "special-relativity-time-dilation", "quantum-entanglement-demystified", "entropy-arrow-of-time"],
+  },
+  {
+    icon: "💰",
+    title: "Money that works for you",
+    blurb: "The two ideas that quietly build (or erode) wealth.",
+    ids: ["compound-interest-eighth-wonder", "diversification-free-lunch"],
+  },
+];
+---
+
+<BaseLayout title="Start here" description="New to Polymath? Follow a guided learning path through the best articles, in order.">
+  <section class="aurora">
+    <div class="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
+      <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">Start here 🧭</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        New here? These are curated reading paths — the best articles arranged in the order that builds understanding step by step. Pick a track and dive in.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <div class="space-y-10">
+      {
+        paths.map((path) => {
+          const items = path.ids.map((id) => byId.get(id)).filter(Boolean);
+          if (!items.length) return null;
+          return (
+            <div data-reveal class="rounded-3xl border border-gray-200 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/[0.03]">
+              <div class="flex items-center gap-3">
+                <span class="grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-2xl dark:bg-brand-900/30">{path.icon}</span>
+                <div>
+                  <h2 class="text-xl font-bold text-gray-900 dark:text-white">{path.title}</h2>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">{path.blurb}</p>
+                </div>
+              </div>
+              <ol class="mt-5 space-y-2">
+                {items.map((p, i) => (
+                  <li>
+                    <a href={`/blog/${p.id}/`} class="group flex items-center gap-3 rounded-xl border border-gray-100 p-3 transition hover:border-brand-300 dark:border-white/5 dark:hover:border-brand-500/40">
+                      <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">{i + 1}</span>
+                      <span class="text-xl">{p.data.heroEmoji}</span>
+                      <span class="flex-1 font-semibold text-gray-900 group-hover:text-brand-600 dark:text-white dark:group-hover:text-brand-300">{p.data.title}</span>
+                      <span class="hidden shrink-0 text-xs text-gray-400 sm:inline">{readingTime(p.body ?? "")} min</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div class="mt-10 text-center">
+      <a href="/blog" class="rounded-xl border border-gray-300 px-5 py-2.5 font-semibold text-gray-800 transition hover:border-brand-400 dark:border-white/15 dark:text-gray-100">Or browse all articles →</a>
+    </div>
+  </section>
+</BaseLayout>

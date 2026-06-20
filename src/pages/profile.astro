@@ -19,6 +19,7 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
           </div>
           <p id="pr-joined" class="mt-1 text-sm text-gray-400"></p>
           <p id="pr-bio" class="mt-2 max-w-prose text-gray-600 dark:text-gray-300"></p>
+          <div id="pr-badges" class="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start"></div>
           <div id="pr-bio-edit" class="mt-2 hidden">
             <textarea id="pr-bio-input" rows="2" maxlength="200" placeholder="Add a short bio…" class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm dark:border-white/15"></textarea>
             <button id="pr-bio-save" class="mt-2 rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Save bio</button>
@@ -73,6 +74,7 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
       const p = posts.find((x) => x.id === pid); if (!p) return;
       card.classList.add("hidden"); reader.classList.remove("hidden");
       articleEl.innerHTML = "<h1>" + esc(p.title) + "</h1>" + (await render(p.body));
+      if (window.polyHighlight) window.polyHighlight(articleEl);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -80,10 +82,12 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
       if (!live || !id || !window.polyDB) { loading.classList.add("hidden"); missing.classList.remove("hidden"); return; }
       try {
         const sb = await window.polyDB();
-        const [{ data: prof }, { data: lb }, { data: pp }] = await Promise.all([
+        const [{ data: prof }, { data: lb }, { data: pp }, cCount, fCount] = await Promise.all([
           sb.from("profiles").select("*").eq("id", id).maybeSingle(),
           sb.rpc("leaderboard"),
           sb.from("user_posts").select("*").eq("author_id", id).eq("published", true).order("created_at", { ascending: false }),
+          sb.from("comments").select("id", { count: "exact", head: true }).eq("author_id", id),
+          sb.from("feedback").select("id", { count: "exact", head: true }).eq("author_id", id),
         ]);
         loading.classList.add("hidden");
         if (!prof) { missing.classList.remove("hidden"); return; }
@@ -93,6 +97,25 @@ const live = !!(SUPABASE.url && SUPABASE.anonKey);
         document.getElementById("pr-points").textContent = pts + " pts";
         document.getElementById("pr-joined").textContent = "Joined " + new Date(prof.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" });
         document.getElementById("pr-bio").textContent = prof.bio || "";
+
+        // Achievements / badges
+        const nPosts = (pp || []).length;
+        const nComments = (cCount && cCount.count) || 0;
+        const nIdeas = (fCount && fCount.count) || 0;
+        const defs = [
+          { on: nPosts >= 1, icon: "✍️", label: "First article" },
+          { on: nPosts >= 5, icon: "📚", label: "Prolific writer" },
+          { on: nPosts >= 10, icon: "🏆", label: "Master author" },
+          { on: nComments >= 5, icon: "💬", label: "Conversationalist" },
+          { on: nComments >= 25, icon: "🗣️", label: "Community voice" },
+          { on: nIdeas >= 3, icon: "💡", label: "Idea machine" },
+          { on: pts >= 50, icon: "⭐", label: "Rising star" },
+          { on: pts >= 200, icon: "🌟", label: "Polymath" },
+        ].filter((b) => b.on);
+        document.getElementById("pr-badges").innerHTML = defs.length
+          ? defs.map((b) => '<span class="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 dark:border-white/10 dark:bg-white/5 dark:text-gray-200" title="' + b.label + '">' + b.icon + " " + b.label + "</span>").join("")
+          : '<span class="text-xs text-gray-400">No badges yet — publish, comment, or suggest ideas to earn them!</span>';
+
         posts = pp || [];
         const wrap = document.getElementById("pr-posts");
         document.getElementById("pr-noposts").classList.toggle("hidden", posts.length > 0);
