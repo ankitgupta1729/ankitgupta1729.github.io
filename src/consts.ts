@@ -83,8 +83,8 @@ export const NAV = [
   { name: "Home", href: "/" },
   { name: "Articles", href: "/blog" },
   { name: "Exams", href: "/exams" },
-  { name: "Doubts", href: "/doubts" },
-  { name: "Mock Tests", href: "/mock-tests" },
+  { name: "Frontiers", href: "/frontiers" },
+  { name: "Arcade", href: "/play" },
   { name: "Write", href: "/write" },
   { name: "About", href: "/about" },
 ];

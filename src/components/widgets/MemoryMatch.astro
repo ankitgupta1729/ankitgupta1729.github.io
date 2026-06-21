@@ -1,0 +1,61 @@
+---
+const uid = "mm" + Math.random().toString(36).slice(2, 8);
+---
+
+<div id={uid} class="not-prose rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+  <div class="mb-3 flex items-center justify-between">
+    <h4 class="m-0 flex items-center gap-2 font-bold text-gray-900 dark:text-white"><span class="text-xl">🧩</span> Memory Match</h4>
+    <div class="text-sm text-gray-500"><span data-moves>0</span> moves · <span data-found>0</span>/8</div>
+  </div>
+  <div data-board class="grid grid-cols-4 gap-2"></div>
+  <div class="mt-3 flex items-center justify-between">
+    <button data-new class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">New game</button>
+    <span data-win class="hidden text-sm font-bold text-green-600 dark:text-green-400"></span>
+  </div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const board = root.querySelector("[data-board]");
+    const EMOJIS = ["🚀", "🧠", "⚛️", "🔭", "🧬", "📐", "💡", "🎲"];
+    let deck = [], flipped = [], moves = 0, found = 0, lock = false;
+
+    function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
+    function start() {
+      deck = shuffle(EMOJIS.concat(EMOJIS).map((e, i) => ({ id: i, e, done: false })));
+      flipped = []; moves = 0; found = 0; lock = false;
+      root.querySelector("[data-moves]").textContent = 0;
+      root.querySelector("[data-found]").textContent = 0;
+      root.querySelector("[data-win]").classList.add("hidden");
+      render();
+    }
+    function render() {
+      board.innerHTML = deck.map((c, i) => {
+        const open = flipped.includes(i) || c.done;
+        return '<button data-i="' + i + '" class="aspect-square rounded-xl text-2xl transition ' +
+          (open ? "bg-brand-50 dark:bg-brand-900/30" : "bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10") + '">' +
+          (open ? c.e : "") + "</button>";
+      }).join("");
+      board.querySelectorAll("[data-i]").forEach((b) => b.addEventListener("click", () => flip(+b.getAttribute("data-i"))));
+    }
+    function flip(i) {
+      if (lock || deck[i].done || flipped.includes(i)) return;
+      flipped.push(i); render();
+      if (flipped.length === 2) {
+        moves++; root.querySelector("[data-moves]").textContent = moves; lock = true;
+        const [a, b] = flipped;
+        if (deck[a].e === deck[b].e) {
+          deck[a].done = deck[b].done = true; found++; root.querySelector("[data-found]").textContent = found;
+          flipped = []; lock = false; render();
+          if (found === 8) { const w = root.querySelector("[data-win]"); w.textContent = "🎉 Solved in " + moves + " moves!"; w.classList.remove("hidden"); }
+        } else {
+          setTimeout(() => { flipped = []; lock = false; render(); }, 700);
+        }
+      }
+    }
+    root.querySelector("[data-new]").addEventListener("click", start);
+    start();
+  })();
+</script>

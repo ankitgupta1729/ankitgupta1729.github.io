@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import YouTube from "../components/YouTube.astro";
+import Collatz from "../components/widgets/Collatz.astro";
+import UlamSpiral from "../components/widgets/UlamSpiral.astro";
+
+const domains = [
+  {
+    name: "Computer Science", icon: "💻", color: "#6366f1",
+    problems: [
+      { title: "P vs NP", status: "Open · $1M", blurb: "Is finding a solution as easy as checking one? The answer would reshape cryptography, optimization and AI.", link: "/blog/p-vs-np-explained/" },
+      { title: "Limits of computation", status: "Proven impossible", blurb: "Some questions no algorithm can ever answer (the halting problem). Where exactly is the boundary of the knowable?", link: null },
+    ],
+  },
+  {
+    name: "Mathematics", icon: "∑", color: "#8b5cf6",
+    problems: [
+      { title: "The Riemann Hypothesis", status: "Open · $1M", blurb: "A guess about where the zeta function vanishes that would unlock the deepest secrets of the prime numbers.", link: null },
+      { title: "The Collatz Conjecture", status: "Open", blurb: "Halve evens, do 3n+1 on odds. Everything tested reaches 1 — but nobody can prove it always does. (Try the simulator below!)", link: null },
+      { title: "Twin Prime Conjecture", status: "Open", blurb: "Are there infinitely many primes just 2 apart (11 & 13, 17 & 19…)? Tantalisingly close, still unproven.", link: null },
+      { title: "Goldbach's Conjecture", status: "Open", blurb: "Every even number > 2 is the sum of two primes — checked to enormous limits, never proved.", link: null },
+    ],
+  },
+  {
+    name: "Physics", icon: "⚛️", color: "#ef4444",
+    problems: [
+      { title: "Quantum gravity", status: "Open", blurb: "General relativity and quantum mechanics are both right — yet contradict each other. Reconciling them is physics' holy grail.", link: "/blog/quantum-entanglement-demystified/" },
+      { title: "Turbulence (Navier–Stokes)", status: "Open · $1M", blurb: "We can't even prove smooth solutions to the equations of fluid flow always exist. Feynman called turbulence 'the most important unsolved problem'.", link: null },
+      { title: "Dark matter & dark energy", status: "Open", blurb: "95% of the universe is stuff we can't see or explain. What is it?", link: null },
+    ],
+  },
+  {
+    name: "Finance & Economics", icon: "💹", color: "#22c55e",
+    problems: [
+      { title: "Are markets efficient?", status: "Debated", blurb: "Do prices reflect all information, making them unbeatable — or are there exploitable patterns? Decades of debate, no consensus.", link: "/blog/diversification-free-lunch/" },
+      { title: "Predicting financial crises", status: "Open", blurb: "Systemic risk emerges from millions of interacting agents. Forecasting collapse before it happens remains elusive.", link: null },
+    ],
+  },
+  {
+    name: "Biology", icon: "🧬", color: "#14b8a6",
+    problems: [
+      { title: "The origin of life", status: "Open", blurb: "How did non-living chemistry first cross the line into self-replicating life? The deepest question in biology.", link: "/blog/crispr-rewriting-life/" },
+      { title: "The hard problem of consciousness", status: "Open", blurb: "Why does physical brain activity feel like anything at all? Arguably the hardest question in all of science.", link: null },
+    ],
+  },
+  {
+    name: "Chemistry", icon: "🧪", color: "#f59e0b",
+    problems: [
+      { title: "Room-temperature superconductors", status: "Open", blurb: "Materials that carry electricity with zero loss at everyday temperatures would transform energy and computing.", link: null },
+      { title: "Designing catalysts from scratch", status: "Open", blurb: "Predicting and engineering molecules that speed up reactions — key to clean energy and medicine — is still mostly trial and error.", link: null },
+    ],
+  },
+];
+---
+
+<BaseLayout title="Open Frontiers" description="The great unsolved problems of science and mathematics — with explainers, video lectures and interactive simulations to spark your curiosity.">
+  <section class="aurora">
+    <div class="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
+      <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">Open Frontiers 🚀</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        The biggest questions humanity hasn't answered yet — across maths, physics, computing, biology and more. Read, watch, simulate… and maybe one day, <em>solve</em>.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <h2 class="mb-6 font-serif text-2xl font-bold text-gray-900 dark:text-white">🎬 Watch: legendary explainers</h2>
+    <div class="grid gap-6 md:grid-cols-3">
+      <YouTube id="094y1Z2wpJg" title="The Simplest Math Problem No One Can Solve — Collatz (Veritasium)" />
+      <YouTube id="sD0NjbwqlYw" title="Visualizing the Riemann zeta function (3Blue1Brown)" />
+      <YouTube id="HeQX2HjkcNo" title="Math's Fundamental Flaw — Gödel & the limits of logic (Veritasium)" />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 pb-4 sm:px-6">
+    {
+      domains.map((d) => (
+        <div class="mb-10">
+          <div class="mb-4 flex items-center gap-3">
+            <span class="grid h-11 w-11 place-items-center rounded-2xl text-2xl" style={`background:${d.color}1a`}>{d.icon}</span>
+            <h2 class="font-serif text-2xl font-bold text-gray-900 dark:text-white">{d.name}</h2>
+          </div>
+          <div class="grid gap-5 sm:grid-cols-2">
+            {d.problems.map((p) => (
+              <div data-reveal class="card-lift rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white">{p.title}</h3>
+                  <span class="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold" style={`background:${d.color}1a;color:${d.color}`}>{p.status}</span>
+                </div>
+                <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{p.blurb}</p>
+                <div class="mt-3 flex gap-3 text-sm font-semibold">
+                  {p.link && <a href={p.link} class="text-brand-600 hover:underline dark:text-brand-300">Read more →</a>}
+                  <a href={`/doubts?exam=`} class="text-gray-500 hover:text-brand-600 dark:text-gray-400">Discuss</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 pb-12 sm:px-6">
+    <h2 class="mb-2 font-serif text-2xl font-bold text-gray-900 dark:text-white">🧪 Play with the mathematics</h2>
+    <p class="mb-4 text-gray-600 dark:text-gray-400">Two of the most famous open problems, made tangible. Poke at them — that's how curiosity starts.</p>
+    <Collatz />
+    <UlamSpiral />
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+    <div class="rounded-3xl border border-brand-200/50 bg-gradient-to-br from-brand-50 to-pink-50 p-8 text-center dark:border-white/10 dark:from-brand-900/30 dark:to-pink-900/20">
+      <h2 class="font-serif text-2xl font-bold text-gray-900 dark:text-white">Got a theory? A question? A spark?</h2>
+      <p class="mx-auto mt-2 max-w-xl text-gray-700 dark:text-gray-300">Discuss these mysteries with other curious minds, or write your own explainer to help the next student fall in love with a hard problem.</p>
+      <div class="mt-5 flex flex-wrap justify-center gap-3">
+        <a href="/doubts" class="rounded-xl bg-brand-600 px-5 py-2.5 font-semibold text-white transition hover:bg-brand-700">Join the discussion</a>
+        <a href="/play" class="rounded-xl border border-gray-300 bg-white px-5 py-2.5 font-semibold text-gray-800 transition hover:border-brand-400 dark:border-white/15 dark:bg-white/5 dark:text-gray-100">🎮 Take a brain break</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

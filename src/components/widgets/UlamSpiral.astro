@@ -1,0 +1,54 @@
+---
+// Ulam spiral — numbers spiral outward; primes light up, revealing the
+// mysterious diagonal lines that hint at the (unsolved) distribution of primes.
+const uid = "ul" + Math.random().toString(36).slice(2, 8);
+---
+
+<div id={uid} class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">🔢</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">The Ulam prime spiral</h4>
+  </div>
+  <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+    Spiral the whole numbers outward and colour the primes. Strangely, they line up on <b>diagonals</b> — a visual echo of how primes are distributed, which the Riemann Hypothesis is still trying to pin down.
+  </p>
+  <canvas data-canvas width="440" height="440" class="mx-auto block w-full max-w-md rounded-xl bg-gray-900"></canvas>
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <label class="flex-1 text-sm text-gray-600 dark:text-gray-300">Grid size <b data-out class="text-brand-600 dark:text-brand-300"></b>
+      <input data-size type="range" min="51" max="251" step="20" value="151" class="mt-1 w-full accent-brand-600" />
+    </label>
+  </div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const cv = root.querySelector("[data-canvas]");
+    const ctx = cv.getContext("2d");
+    const sizeIn = root.querySelector("[data-size]");
+    const out = root.querySelector("[data-out]");
+
+    function isPrime(n) { if (n < 2) return false; if (n % 2 === 0) return n === 2; for (let i = 3; i * i <= n; i += 2) if (n % i === 0) return false; return true; }
+
+    function draw() {
+      const N = +sizeIn.value; out.textContent = N + "×" + N;
+      const cell = cv.width / N;
+      ctx.fillStyle = "#0b0f1a"; ctx.fillRect(0, 0, cv.width, cv.height);
+      // spiral coordinates
+      let x = Math.floor(N / 2), y = Math.floor(N / 2);
+      let dx = 1, dy = 0, segLen = 1, segPass = 0, steps = 0, turns = 0;
+      for (let n = 1; n <= N * N; n++) {
+        if (isPrime(n)) {
+          const t = Math.min(1, n / (N * N));
+          ctx.fillStyle = "hsl(" + (200 + t * 120) + ",90%,65%)";
+          ctx.fillRect(x * cell, y * cell, Math.max(1, cell - 0.5), Math.max(1, cell - 0.5));
+        }
+        x += dx; y += dy; steps++;
+        if (steps === segLen) { steps = 0; const t = dx; dx = -dy; dy = t; turns++; if (turns % 2 === 0) segLen++; }
+      }
+    }
+    sizeIn.addEventListener("input", draw);
+    draw();
+  })();
+</script>

@@ -1,0 +1,56 @@
+---
+// Collatz (3n+1) visualizer — type a number and watch its trajectory.
+// Ties to one of maths' most famous unsolved problems.
+const uid = "cz" + Math.random().toString(36).slice(2, 8);
+---
+
+<div id={uid} class="not-prose my-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-xl">🌀</span>
+    <h4 class="m-0 font-bold text-gray-900 dark:text-white">Collatz conjecture — does every number reach 1?</h4>
+  </div>
+  <p class="mt-0 mb-3 text-sm text-gray-600 dark:text-gray-400">
+    Rule: if a number is even, halve it; if odd, do <b>3n + 1</b>. Repeat. Every number ever tested falls to 1 — but <b>nobody has proved it always does.</b> Try one:
+  </p>
+  <div class="flex flex-wrap items-center gap-2">
+    <input data-n type="number" min="1" value="27" class="w-32 rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm dark:border-white/15" />
+    <button data-go class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Run</button>
+    <button data-rand class="rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Random</button>
+    <span class="ml-auto text-sm text-gray-500" data-stats></span>
+  </div>
+  <svg viewBox="0 0 600 220" class="mt-4 w-full" data-chart aria-hidden="true"></svg>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const input = root.querySelector("[data-n]");
+    const chart = root.querySelector("[data-chart]");
+    const stats = root.querySelector("[data-stats]");
+
+    function seq(n) {
+      const s = [n]; let steps = 0, peak = n;
+      while (n !== 1 && steps < 10000) { n = n % 2 === 0 ? n / 2 : 3 * n + 1; s.push(n); peak = Math.max(peak, n); steps++; }
+      return { s, steps, peak };
+    }
+    function run() {
+      let n = Math.floor(+input.value); if (!(n >= 1)) n = 1; input.value = n;
+      const { s, steps, peak } = seq(n);
+      stats.textContent = steps + " steps · peak " + peak.toLocaleString();
+      const W = 560, H = 190, X0 = 30, Y0 = 200;
+      const maxV = Math.max(...s) || 1;
+      const sx = (i) => X0 + (i / Math.max(1, s.length - 1)) * W;
+      const sy = (v) => Y0 - (v / maxV) * (H - 10);
+      const path = s.map((v, i) => (i ? "L" : "M") + sx(i).toFixed(1) + " " + sy(v).toFixed(1)).join(" ");
+      chart.innerHTML =
+        '<line x1="' + X0 + '" y1="' + Y0 + '" x2="' + (X0 + W) + '" y2="' + Y0 + '" stroke="currentColor" stroke-opacity="0.15"/>' +
+        '<path d="' + path + '" fill="none" stroke="#6366f1" stroke-width="2"/>' +
+        s.map((v, i) => (i % Math.ceil(s.length / 40) === 0 || i === s.length - 1) ? '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(v).toFixed(1) + '" r="2.5" fill="#ec4899"/>' : "").join("");
+    }
+    root.querySelector("[data-go]").addEventListener("click", run);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+    root.querySelector("[data-rand]").addEventListener("click", () => { input.value = Math.floor(Math.random() * 100000) + 2; run(); });
+    run();
+  })();
+</script>
