@@ -1,0 +1,57 @@
+---
+title: "Percentages & Ratios: Speed Tricks for CAT"
+description: "Half of CAT quant reduces to fast percentage and ratio manipulation. These mental shortcuts save precious seconds per question."
+category: "mathematics"
+tags: ["aptitude", "percentages", "cat", "exam-prep"]
+exams: ["cat"]
+author: "Ankit Gupta"
+pubDate: 2026-06-21
+heroEmoji: "📊"
+---
+
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+In CAT, *how fast* you handle percentages decides your quant score. The trick is to think in **fractions and multipliers**, not long division.
+
+## Memorise the fraction ↔ percent table
+
+| Fraction | % | Fraction | % |
+|---|---|---|---|
+| 1/2 | 50% | 1/6 | 16.67% |
+| 1/3 | 33.33% | 1/7 | 14.28% |
+| 1/4 | 25% | 1/8 | 12.5% |
+| 1/5 | 20% | 1/9 | 11.11% |
+
+So "62.5% of 80" = $\tfrac58 \times 80 = 50$ — instant, no calculator.
+
+## The multiplier method
+
+A change of $x\%$ multiplies by $\left(1 + \tfrac{x}{100}\right)$.
+
+- 20% increase → ×1.2; 20% decrease → ×0.8.
+- Successive 10% then 20% rise → ×1.1 × 1.2 = ×1.32 (a **32%** net rise, not 30%).
+
+<Callout type="key">
+A rise of $a\%$ then a fall of $a\%$ does **not** return to the start — it gives a net change of $-\tfrac{a^2}{100}\%$. E.g., +10% then −10% ⇒ −1%. CAT loves this trap.
+</Callout>
+
+## Percentage ↔ ratio
+
+"A is 25% more than B" means $A = 1.25B = \tfrac54 B$, so $A:B = 5:4$. Converting between percentages and ratios instantly is half the battle in DI/LR sets too.
+
+<Callout type="tip">
+To find "B is what % less than A" when $A:B = 5:4$: difference is 1 part out of 5 ⇒ **20%**. Always divide the difference by the **reference** quantity (the one after "than").
+</Callout>
+
+## Quick check
+
+<Quiz questions={[
+  { q: "Price rises 25% then falls 20%. Net change?", options: ["+5%", "0%", "−5%", "+45%"], answer: 1, explain: "×1.25 × 0.8 = 1.0 → no net change." },
+  { q: "62.5% of 240 =", options: ["120", "150", "160", "180"], answer: 1, explain: "5/8 × 240 = 150." },
+  { q: "If A:B = 6:5, B is what % less than A?", options: ["16.67%", "20%", "10%", "25%"], answer: 0, explain: "Difference 1 / reference 6 = 16.67%." }
+]} />
+
+Drill the fraction table until it's reflex, and always reach for multipliers. That alone can add several marks on CAT quant.
+
+*Want more CAT shortcuts? Ask in [Doubts](/doubts) or take a [mock test](/mock-tests?exam=cat).*

@@ -22,7 +22,7 @@ A model treats its training data as ground truth. If the data is biased, mislabe
 
 **3. Inconsistent units and formats.** Dates as `MM/DD/YYYY` and `DD-MM-YYYY` in the same column. Temperatures mixing Celsius and Fahrenheit. Currencies that aren't labeled.
 
-**4. Outliers.** Is a $0 transaction a data error, a refund, or a free trial? The answer changes how you handle it. Never delete outliers reflexively — investigate them.
+**4. Outliers.** Is a \$0 transaction a data error, a refund, or a free trial? The answer changes how you handle it. Never delete outliers reflexively — investigate them.
 
 **5. Leakage.** The silent killer. A feature that accidentally encodes the answer (like an "account_closed_date" when predicting churn) gives you suspiciously perfect validation scores and a model that's useless in production.
 

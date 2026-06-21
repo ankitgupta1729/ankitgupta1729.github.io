@@ -13,7 +13,7 @@ The number **e ≈ 2.71828** feels arbitrary at first, like π's less famous cou
 
 ## Born from greed (compound interest)
 
-Suppose you invest $1 at 100% annual interest. Compounded once a year, you end with $2. But compound it more often and something interesting happens:
+Suppose you invest \$1 at 100% annual interest. Compounded once a year, you end with \$2. But compound it more often and something interesting happens:
 
 - Yearly: $(1 + 1/1)^1 = 2.00$
 - Monthly: $(1 + 1/12)^{12} ≈ 2.613$

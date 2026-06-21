@@ -1,0 +1,57 @@
+---
+title: "The Mole Concept, Finally Clear (JEE Chemistry)"
+description: "Stoichiometry trips up countless JEE aspirants. Master the single bridge — the mole — and chemical calculations become bookkeeping."
+category: "science"
+tags: ["chemistry", "stoichiometry", "jee", "exam-prep"]
+exams: ["iit-jee", "neet"]
+author: "Ankit Gupta"
+pubDate: 2026-06-21
+heroEmoji: "⚗️"
+---
+
+import Callout from "../../components/Callout.astro";
+import Quiz from "../../components/Quiz.astro";
+
+The mole is just a **counting unit**, like "a dozen" — only much bigger. One mole = $6.022 \times 10^{23}$ particles (Avogadro's number, $N_A$). Every stoichiometry problem is secretly a units-conversion problem with the mole as the hub.
+
+## The three bridges
+
+$$n = \frac{m}{M} = \frac{N}{N_A} = \frac{V}{22.4\ \text{L}}\ (\text{gas at STP})$$
+
+- **mass ↔ moles:** $n = m/M$ (M = molar mass in g/mol)
+- **particles ↔ moles:** $n = N/N_A$
+- **gas volume ↔ moles:** at STP, 1 mol of any ideal gas = 22.4 L
+
+<Callout type="key">
+Almost every JEE stoichiometry question is: convert the given quantity **to moles**, use the balanced equation's mole ratio, then convert **back** to whatever is asked. Moles are the universal currency.
+</Callout>
+
+## Worked example
+
+*How many grams of $O_2$ are needed to completely burn 16 g of $CH_4$?*
+
+$$CH_4 + 2O_2 \rightarrow CO_2 + 2H_2O$$
+
+1. Moles of $CH_4 = 16/16 = 1$ mol.
+2. Mole ratio $CH_4 : O_2 = 1 : 2$, so $O_2 = 2$ mol.
+3. Mass of $O_2 = 2 \times 32 = 64$ g. ✓
+
+## Limiting reagent — the classic trap
+
+When two reactants are given, one runs out first (the **limiting reagent**) and decides the product. Compute moles of each, divide by their coefficients, and the **smallest** ratio limits the reaction.
+
+<Callout type="warning">
+Don't compare masses — compare **moles ÷ coefficient**. A heavier reactant can still be in excess. This is the single most common stoichiometry mistake in JEE.
+</Callout>
+
+## Quick check
+
+<Quiz questions={[
+  { q: "Moles in 11 g of CO₂ (M = 44):", options: ["0.25", "0.5", "1", "2"], answer: 0, explain: "n = 11/44 = 0.25 mol." },
+  { q: "At STP, 1 mole of any ideal gas occupies:", options: ["1 L", "22.4 L", "6.022×10²³ L", "44 L"], answer: 1, explain: "Molar volume at STP is 22.4 L." },
+  { q: "To find the limiting reagent, compare:", options: ["Masses", "Moles ÷ coefficient", "Volumes", "Densities"], answer: 1, explain: "Smallest mole-to-coefficient ratio limits the reaction." }
+]} />
+
+Internalise the three bridges and the "to moles → ratio → back" routine. Once it's automatic, even multi-step JEE problems become a calm sequence of conversions.
+
+*Stuck on a stoichiometry problem? Post it in [Doubts](/doubts).*

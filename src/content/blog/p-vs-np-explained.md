@@ -40,7 +40,7 @@ Classic examples include scheduling, route optimization (the traveling salesman)
 
 ## Where we stand
 
-Almost all experts believe **P ≠ NP** — but believing isn't proving. No one has produced a rigorous proof either way. It remains one of the seven Millennium Prize Problems, with a $1,000,000 reward from the Clay Mathematics Institute for a solution.
+Almost all experts believe **P ≠ NP** — but believing isn't proving. No one has produced a rigorous proof either way. It remains one of the seven Millennium Prize Problems, with a \$1,000,000 reward from the Clay Mathematics Institute for a solution.
 
 ## The takeaway
 

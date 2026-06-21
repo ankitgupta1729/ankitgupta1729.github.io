@@ -3,6 +3,8 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 // https://astro.build/config
 export default defineConfig({
@@ -10,6 +12,8 @@ export default defineConfig({
   site: "https://ankitgupta1729.github.io",
   integrations: [mdx(), sitemap()],
   markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
     shikiConfig: {
       themes: { light: "github-light", dark: "github-dark" },
       wrap: true,
