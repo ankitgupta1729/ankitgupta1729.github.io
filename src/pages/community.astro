@@ -53,6 +53,15 @@ const totalLikes = COMMENTS.reduce(
     <p id="lb-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500 dark:border-white/10">
       No points yet — publish an article, comment, or suggest an idea to climb the board!
     </p>
+
+    <div class="mb-5 mt-12 flex items-center justify-between">
+      <h2 class="font-serif text-2xl font-bold text-gray-900 dark:text-white">🧠 Top doubt-solvers</h2>
+      <span class="text-xs text-gray-400">Answers ×3 · Upvotes ×1</span>
+    </div>
+    <ol id="ds-list" class="space-y-2"></ol>
+    <p id="ds-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500 dark:border-white/10">
+      No answers yet — be the first to <a href="/doubts" class="font-semibold text-brand-600">solve a doubt</a> and top this board!
+    </p>
   </section>
 
   <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -158,6 +167,36 @@ const totalLikes = COMMENTS.reduce(
             '<span class="ml-auto rounded-full bg-brand-50 px-2.5 py-1 text-sm font-bold text-brand-700 dark:bg-brand-900/30 dark:text-brand-300">' + r.points + ' pts</span>' +
           '</li>'
         ).join("");
+      })();
+
+      // Top doubt-solvers (computed from answers + accepted answers + votes)
+      (async () => {
+        const dsList = document.getElementById("ds-list");
+        const dsEmpty = document.getElementById("ds-empty");
+        if (!dsList || !window.polyDB) return;
+        try {
+          const sb = await window.polyDB();
+          if (!sb) return;
+          const { data: ans } = await sb.from("answers").select("author_id, author_name, votes");
+          if (!ans || !ans.length) { dsEmpty.classList.remove("hidden"); return; }
+          const by = {};
+          ans.forEach((a) => {
+            const k = a.author_id || ("name:" + (a.author_name || "Anonymous"));
+            by[k] = by[k] || { id: a.author_id, name: a.author_name || "Anonymous", answers: 0, votes: 0 };
+            by[k].answers++; by[k].votes += a.votes || 0;
+          });
+          const ranked = Object.values(by).map((u) => ({ ...u, score: u.answers * 3 + u.votes })).sort((a, b) => b.score - a.score).slice(0, 10);
+          if (!ranked.length) { dsEmpty.classList.remove("hidden"); return; }
+          dsList.innerHTML = ranked.map((r, i) =>
+            '<li class="flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-3 dark:border-white/10 dark:bg-white/[0.03]">' +
+              '<span class="grid h-7 w-7 place-items-center text-sm font-bold">' + medal(i) + '</span>' +
+              '<img src="https://api.dicebear.com/9.x/thumbs/svg?seed=' + encodeURIComponent(r.name) + '&radius=50" width="36" height="36" class="h-9 w-9 rounded-full bg-gray-100 dark:bg-white/10"/>' +
+              (r.id ? '<a href="/profile?id=' + r.id + '" class="font-semibold text-gray-900 hover:text-brand-600 dark:text-white">' + esc(r.name) + '</a>' : '<span class="font-semibold text-gray-900 dark:text-white">' + esc(r.name) + '</span>') +
+              '<span class="ml-auto text-xs text-gray-400">' + r.answers + ' ans · ' + r.votes + ' votes</span>' +
+              '<span class="rounded-full bg-green-50 px-2.5 py-1 text-sm font-bold text-green-700 dark:bg-green-900/30 dark:text-green-300">' + r.score + '</span>' +
+            '</li>'
+          ).join("");
+        } catch (e) { dsEmpty.classList.remove("hidden"); }
       })();
     })();
   </script>

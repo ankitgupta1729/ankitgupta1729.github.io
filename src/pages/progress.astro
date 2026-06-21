@@ -1,0 +1,123 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { EXAMS } from "../consts";
+const examMap = Object.fromEntries(EXAMS.map((e) => [e.slug, e.name]));
+---
+
+<BaseLayout title="My progress" description="Track your mock-test performance, accuracy trends and improvement over time.">
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div class="mb-6 flex items-center justify-between">
+      <h1 class="font-serif text-3xl font-bold text-gray-900 dark:text-white">📈 My progress</h1>
+      <a href="/mock-tests" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Take a test →</a>
+    </div>
+    <p id="pg-source" class="mb-6 text-sm text-gray-400"></p>
+
+    <div id="pg-empty" class="hidden rounded-2xl border border-dashed border-gray-300 p-12 text-center dark:border-white/10">
+      <p class="text-4xl">📝</p>
+      <p class="mt-3 text-lg font-semibold text-gray-800 dark:text-gray-200">No attempts yet</p>
+      <p class="mt-1 text-gray-500 dark:text-gray-400">Take a mock test and your scores, trends and weak areas will appear here.</p>
+      <a href="/mock-tests" class="mt-5 inline-block rounded-xl bg-brand-600 px-5 py-2.5 font-semibold text-white transition hover:bg-brand-700">Browse mock tests</a>
+    </div>
+
+    <div id="pg-dash" class="hidden">
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-2xl border border-gray-200 p-4 text-center dark:border-white/10"><div id="pg-count" class="text-3xl font-extrabold text-gray-900 dark:text-white"></div><div class="text-xs text-gray-500">Tests taken</div></div>
+        <div class="rounded-2xl border border-gray-200 p-4 text-center dark:border-white/10"><div id="pg-avg" class="text-3xl font-extrabold text-brand-600 dark:text-brand-300"></div><div class="text-xs text-gray-500">Average</div></div>
+        <div class="rounded-2xl border border-gray-200 p-4 text-center dark:border-white/10"><div id="pg-best" class="text-3xl font-extrabold text-green-600 dark:text-green-400"></div><div class="text-xs text-gray-500">Best score</div></div>
+        <div class="rounded-2xl border border-gray-200 p-4 text-center dark:border-white/10"><div id="pg-qs" class="text-3xl font-extrabold text-gray-900 dark:text-white"></div><div class="text-xs text-gray-500">Questions done</div></div>
+      </div>
+
+      <h2 class="mb-3 mt-8 font-serif text-xl font-bold text-gray-900 dark:text-white">Score trend</h2>
+      <div class="rounded-2xl border border-gray-200 p-4 dark:border-white/10">
+        <svg id="pg-chart" viewBox="0 0 600 200" class="w-full"></svg>
+      </div>
+
+      <h2 class="mb-3 mt-8 font-serif text-xl font-bold text-gray-900 dark:text-white">By exam</h2>
+      <div id="pg-byexam" class="space-y-2"></div>
+
+      <h2 class="mb-3 mt-8 font-serif text-xl font-bold text-gray-900 dark:text-white">Recent attempts</h2>
+      <div id="pg-recent" class="space-y-2"></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ examMap }}>
+  (function () {
+    const fmt = (t) => { try { return new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric" }); } catch (e) { return ""; } };
+    const pctColor = (p) => (p >= 70 ? "#22c55e" : p >= 40 ? "#f59e0b" : "#ef4444");
+
+    function readLocal() { try { return (JSON.parse(localStorage.getItem("quizAttempts") || "[]")).map((a) => ({ slug: a.slug, title: a.title, exam: a.exam, score: a.score, total: a.total, t: a.at })); } catch (e) { return []; } }
+
+    function dedupe(rows) {
+      const seen = new Set(); const out = [];
+      rows.sort((a, b) => a.t - b.t).forEach((r) => { const k = r.slug + ":" + r.score + ":" + r.total + ":" + Math.round(r.t / 60000); if (!seen.has(k)) { seen.add(k); out.push(r); } });
+      return out;
+    }
+
+    function renderDash(rows) {
+      document.getElementById("pg-dash").classList.toggle("hidden", rows.length === 0);
+      document.getElementById("pg-empty").classList.toggle("hidden", rows.length > 0);
+      if (!rows.length) return;
+
+      const pcts = rows.map((r) => (r.score / r.total) * 100);
+      const avg = Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length);
+      const best = Math.round(Math.max(...pcts));
+      const qs = rows.reduce((s, r) => s + r.total, 0);
+      document.getElementById("pg-count").textContent = rows.length;
+      document.getElementById("pg-avg").textContent = avg + "%";
+      document.getElementById("pg-best").textContent = best + "%";
+      document.getElementById("pg-qs").textContent = qs;
+
+      // trend chart (last 20 chronological)
+      const pts = rows.slice(-20).map((r) => Math.round((r.score / r.total) * 100));
+      const W = 560, H = 160, X0 = 30, Y0 = 180;
+      const sx = (i) => X0 + (i / Math.max(1, pts.length - 1)) * W;
+      const sy = (p) => Y0 - (p / 100) * (H - 10);
+      let path = pts.map((p, i) => (i ? "L" : "M") + sx(i).toFixed(1) + " " + sy(p).toFixed(1)).join(" ");
+      let dots = pts.map((p, i) => '<circle cx="' + sx(i).toFixed(1) + '" cy="' + sy(p).toFixed(1) + '" r="3.5" fill="' + pctColor(p) + '"/>').join("");
+      let grid = [0, 50, 100].map((g) => '<line x1="' + X0 + '" y1="' + sy(g) + '" x2="' + (X0 + W) + '" y2="' + sy(g) + '" stroke="currentColor" stroke-opacity="0.12"/><text x="0" y="' + (sy(g) + 4) + '" font-size="10" fill="currentColor" opacity="0.5">' + g + '</text>').join("");
+      document.getElementById("pg-chart").innerHTML = grid + (pts.length > 1 ? '<path d="' + path + '" fill="none" stroke="#6366f1" stroke-width="2"/>' : "") + dots;
+
+      // by exam
+      const byExam = {};
+      rows.forEach((r) => { const e = r.exam || "other"; byExam[e] = byExam[e] || { n: 0, sum: 0 }; byExam[e].n++; byExam[e].sum += (r.score / r.total) * 100; });
+      document.getElementById("pg-byexam").innerHTML = Object.entries(byExam).map(([e, v]) => {
+        const a = Math.round(v.sum / v.n);
+        return '<div class="flex items-center gap-3 rounded-xl border border-gray-200 p-3 text-sm dark:border-white/10">' +
+          '<span class="w-28 font-semibold text-gray-900 dark:text-white">' + (examMap[e] || e) + '</span>' +
+          '<span class="h-2 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-white/10"><span class="block h-full" style="width:' + a + '%;background:' + pctColor(a) + '"></span></span>' +
+          '<span class="w-24 text-right text-gray-500">' + a + '% · ' + v.n + ' test' + (v.n === 1 ? "" : "s") + '</span></div>';
+      }).join("");
+
+      // recent
+      document.getElementById("pg-recent").innerHTML = rows.slice(-10).reverse().map((r) => {
+        const p = Math.round((r.score / r.total) * 100);
+        return '<div class="flex items-center gap-3 rounded-xl border border-gray-200 p-3 text-sm dark:border-white/10">' +
+          '<span class="font-semibold text-gray-900 dark:text-white">' + (r.title || r.slug) + '</span>' +
+          '<span class="ml-auto font-bold" style="color:' + pctColor(p) + '">' + r.score + '/' + r.total + ' (' + p + '%)</span>' +
+          '<span class="text-xs text-gray-400">' + fmt(r.t) + '</span>' +
+          '<a href="/quiz?id=' + r.slug + '" class="text-brand-600 hover:underline dark:text-brand-300">Retry</a></div>';
+      }).join("");
+    }
+
+    async function load(user) {
+      let rows = readLocal();
+      let source = "Showing attempts saved on this device.";
+      if (user && user.id && window.polyDB) {
+        try {
+          const sb = await window.polyDB();
+          if (sb) {
+            const { data } = await sb.from("quiz_attempts").select("*").eq("user_id", user.id).order("created_at", { ascending: true });
+            if (data) { rows = rows.concat(data.map((r) => ({ slug: r.slug, title: r.title, exam: r.exam, score: r.score, total: r.total, t: new Date(r.created_at).getTime() }))); source = "Showing your account history (synced across devices)."; }
+          }
+        } catch (e) {}
+      }
+      document.getElementById("pg-source").textContent = source;
+      renderDash(dedupe(rows));
+    }
+
+    if (window.PolyAuth) window.PolyAuth.onChange(load);
+    document.addEventListener("polyauth", (e) => load(e.detail));
+    load((window.PolyAuth && window.PolyAuth.user) || null);
+  })();
+</script>

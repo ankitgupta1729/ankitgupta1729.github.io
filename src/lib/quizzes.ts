@@ -138,6 +138,36 @@ export const QUIZZES: Quiz[] = [
       { q: "The 'Tropic of Cancer' passes through how many Indian states?", options: ["5", "8", "10", "12"], answer: 1, explain: "It passes through 8 states.", topic: "Geography" },
     ],
   },
+  {
+    slug: "gate-ds-os-1",
+    title: "GATE CS — Data Structures & OS",
+    exam: "gate",
+    subject: "Computer Science",
+    difficulty: "Hard",
+    minutes: 10,
+    questions: [
+      { q: "A stack follows which order?", options: ["FIFO", "LIFO", "Priority", "Random"], answer: 1, explain: "Stack = Last In, First Out.", topic: "Data structures" },
+      { q: "Worst-case insertion in a singly linked list at the head:", options: ["O(1)", "O(log n)", "O(n)", "O(n²)"], answer: 0, explain: "Inserting at head is constant time.", topic: "Data structures" },
+      { q: "Which causes a deadlock to be possible?", options: ["Mutual exclusion + hold-and-wait + no preemption + circular wait", "Only mutual exclusion", "Round-robin scheduling", "Paging"], answer: 0, explain: "All four Coffman conditions must hold simultaneously.", topic: "Operating systems" },
+      { q: "A page fault occurs when:", options: ["CPU overheats", "A requested page is not in physical memory", "The disk is full", "A process exits"], answer: 1, explain: "The page must be fetched from secondary storage.", topic: "Operating systems" },
+      { q: "Number of edges in a tree with n nodes:", options: ["n", "n−1", "n+1", "2n"], answer: 1, explain: "A tree with n nodes has exactly n−1 edges.", topic: "Graphs & trees" },
+    ],
+  },
+  {
+    slug: "neet-physics-1",
+    title: "NEET — Physics Set 1",
+    exam: "neet",
+    subject: "Physics",
+    difficulty: "Easy",
+    minutes: 8,
+    questions: [
+      { q: "SI unit of force is the:", options: ["Joule", "Newton", "Watt", "Pascal"], answer: 1, explain: "Force is measured in newtons (kg·m/s²).", topic: "Mechanics" },
+      { q: "Acceleration due to gravity on Earth (approx):", options: ["9.8 m/s²", "98 m/s²", "1.6 m/s²", "0"], answer: 0, explain: "g ≈ 9.8 m/s² near Earth's surface.", topic: "Mechanics" },
+      { q: "Ohm's law states V =", options: ["I/R", "IR", "I²R", "R/I"], answer: 1, explain: "Voltage = current × resistance.", topic: "Electricity" },
+      { q: "Which has the longest wavelength?", options: ["Gamma rays", "Visible light", "Radio waves", "X-rays"], answer: 2, explain: "Radio waves have the longest wavelength in the EM spectrum.", topic: "Waves & optics" },
+      { q: "The work done when force is perpendicular to displacement is:", options: ["Maximum", "Zero", "Negative", "Infinite"], answer: 1, explain: "W = Fd cosθ; cos90° = 0.", topic: "Mechanics" },
+    ],
+  },
 ];
 
 export function quizBySlug(slug: string) {
