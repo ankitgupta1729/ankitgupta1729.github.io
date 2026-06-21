@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const pillars = [
+  { icon: "🎯", title: "Master the syllabus & pattern", points: ["Download the official syllabus and exam pattern first — know exactly what's tested and the marking scheme.", "Map every topic to its weightage. Prioritise high-yield, high-frequency areas.", "Solve 5–10 years of previous papers early — they reveal the exam's true difficulty and favourite topics."] },
+  { icon: "🗓️", title: "Build a realistic study plan", points: ["Work backwards from the exam date. Split into phases: Learn → Practice → Revise → Mock-test.", "Plan weekly, not just daily — leave buffer days for slippage and revision.", "Use time-blocking: fixed slots per subject. Rotate subjects to stay fresh and avoid burnout."] },
+  { icon: "🧠", title: "Learn deeply, not passively", points: ["Understand the 'why', don't memorise formulas blindly — derive them once and they stick.", "Use active recall (close the book and reproduce it) and spaced repetition (revisit at growing intervals).", "Teach a concept to an imaginary student — if you can't explain it simply, you don't fully get it yet."] },
+  { icon: "✍️", title: "Practice like it's the real thing", points: ["Quality over quantity: analyse every wrong answer until you understand the gap.", "Maintain an error log / formula sheet — revise it weekly. Most marks are lost on repeated mistakes.", "Build speed only after accuracy. Time individual topics, then full sections."] },
+  { icon: "📝", title: "Take mock tests seriously", points: ["Simulate exam conditions: same time, no breaks, no notes. Then do a deep post-mortem.", "Track per-topic accuracy and time spent — fix your weakest, highest-weightage areas first.", "Practice question-selection strategy: which to attempt first, which to skip, when to guess."] },
+  { icon: "🧘", title: "Mind, body & exam-day", points: ["Sleep 7–8 hours, especially in the final week — a rested brain recalls far better than a crammed one.", "Don't learn anything brand-new the last 48 hours; revise and stay calm.", "On exam day: read instructions carefully, do easy questions first, manage time, and don't panic over one hard question."] },
+];
+
+const tools = [
+  { icon: "🧭", title: "Start here", desc: "Curated learning paths through the best concept guides, in order.", href: "/start-here" },
+  { icon: "📝", title: "Mock tests", desc: "Timed quizzes with instant scoring, explanations and topic analysis.", href: "/mock-tests" },
+  { icon: "📈", title: "Track progress", desc: "See your accuracy trends and weak areas over time.", href: "/progress" },
+  { icon: "💬", title: "Clear doubts", desc: "Ask anything; the community answers and you accept the best.", href: "/doubts" },
+  { icon: "🔔", title: "Exam alerts", desc: "Never miss an application deadline or exam date.", href: "/exam-alerts" },
+  { icon: "📚", title: "Concept guides", desc: "Intuition-first explainers for every exam topic.", href: "/exams" },
+];
+---
+
+<BaseLayout title="Preparation guides & tips" description="A complete, no-nonsense playbook for cracking competitive exams — study plans, deep-learning techniques, mock-test strategy and exam-day tips.">
+  <section class="aurora">
+    <div class="mx-auto max-w-3xl px-4 py-14 text-center sm:px-6">
+      <h1 class="font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">How to prepare 🚀</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+        Toppers aren't just smarter — they study <em>smarter</em>. Here's a battle-tested playbook you can apply to any competitive exam, plus the tools to do it right here.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div class="space-y-6">
+      {
+        pillars.map((p, i) => (
+          <div data-reveal class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-white/[0.03]">
+            <div class="flex items-center gap-3">
+              <span class="grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-2xl dark:bg-brand-900/30">{p.icon}</span>
+              <h2 class="text-xl font-bold text-gray-900 dark:text-white">{i + 1}. {p.title}</h2>
+            </div>
+            <ul class="mt-4 space-y-2">
+              {p.points.map((pt) => (
+                <li class="flex gap-2 text-sm leading-relaxed text-gray-700 dark:text-gray-300"><span class="text-brand-500">▸</span><span>{pt}</span></li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-10 rounded-2xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-white/[0.03]">
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white">⏱️ A sample weekly rhythm</h2>
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead><tr class="border-b border-gray-200 text-gray-500 dark:border-white/10"><th class="py-2 pr-4">Phase</th><th class="py-2 pr-4">Focus</th><th class="py-2">Mix</th></tr></thead>
+          <tbody class="text-gray-700 dark:text-gray-300">
+            <tr class="border-b border-gray-100 dark:border-white/5"><td class="py-2 pr-4 font-semibold">Mon–Wed</td><td class="py-2 pr-4">Learn new topics</td><td class="py-2">60% concepts · 40% practice</td></tr>
+            <tr class="border-b border-gray-100 dark:border-white/5"><td class="py-2 pr-4 font-semibold">Thu–Fri</td><td class="py-2 pr-4">Practice & problems</td><td class="py-2">80% practice · 20% theory gaps</td></tr>
+            <tr class="border-b border-gray-100 dark:border-white/5"><td class="py-2 pr-4 font-semibold">Sat</td><td class="py-2 pr-4">Full mock test</td><td class="py-2">1 timed mock + deep analysis</td></tr>
+            <tr><td class="py-2 pr-4 font-semibold">Sun</td><td class="py-2 pr-4">Revision + error log</td><td class="py-2">Spaced repetition · rest</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2 class="mb-4 mt-12 font-serif text-2xl font-bold text-gray-900 dark:text-white">Your prep toolkit on Polymath</h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        tools.map((t) => (
+          <a href={t.href} class="card-lift rounded-2xl border border-gray-200 bg-white p-5 hover:border-brand-300 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-brand-500/50">
+            <div class="text-2xl">{t.icon}</div>
+            <h3 class="mt-2 font-bold text-gray-900 dark:text-white">{t.title}</h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{t.desc}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

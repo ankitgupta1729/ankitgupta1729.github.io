@@ -1,0 +1,82 @@
+---
+// Sorting algorithm visualizer — watch bubble / insertion / selection / quick
+// sort rearrange bars in real time. A favourite for building algorithm intuition.
+const uid = "sv" + Math.random().toString(36).slice(2, 8);
+---
+
+<div id={uid} class="not-prose rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+  <div class="mb-3 flex items-center justify-between">
+    <h4 class="m-0 flex items-center gap-2 font-bold text-gray-900 dark:text-white"><span class="text-xl">📊</span> Sorting visualizer</h4>
+  </div>
+  <canvas data-canvas width="480" height="220" class="w-full rounded-xl bg-gray-900"></canvas>
+  <div class="mt-3 flex flex-wrap items-center gap-2">
+    <select data-algo class="rounded-lg border border-gray-300 bg-transparent px-2 py-1.5 text-sm dark:border-white/15">
+      <option value="bubble">Bubble sort</option>
+      <option value="insertion">Insertion sort</option>
+      <option value="selection">Selection sort</option>
+      <option value="quick">Quick sort</option>
+    </select>
+    <button data-run class="rounded-lg bg-brand-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">▶ Sort</button>
+    <button data-shuffle class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">Shuffle</button>
+    <span class="ml-auto text-xs text-gray-400" data-info></span>
+  </div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const cv = root.querySelector("[data-canvas]");
+    const ctx = cv.getContext("2d");
+    const N = 48;
+    let arr = [], frames = [], playing = false, raf = null;
+
+    function shuffle() { arr = Array.from({ length: N }, (_, i) => i + 1); for (let i = N - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;[arr[i], arr[j]] = [arr[j], arr[i]]; } draw(arr, {}); root.querySelector("[data-info]").textContent = ""; }
+
+    function draw(a, hi) {
+      ctx.fillStyle = "#0b0f1a"; ctx.fillRect(0, 0, cv.width, cv.height);
+      const w = cv.width / a.length;
+      for (let i = 0; i < a.length; i++) {
+        const h = (a[i] / N) * (cv.height - 6);
+        ctx.fillStyle = hi.done ? "#22c55e" : (i === hi.a || i === hi.b ? "#ec4899" : (i === hi.p ? "#f59e0b" : "#6366f1"));
+        ctx.fillRect(i * w, cv.height - h, Math.max(1, w - 1), h);
+      }
+    }
+
+    function record(alg) {
+      const a = arr.slice(); frames = []; let comps = 0;
+      const snap = (hi) => frames.push([a.slice(), hi]);
+      const swap = (i, j) => { [a[i], a[j]] = [a[j], a[i]]; };
+      if (alg === "bubble") {
+        for (let i = 0; i < N; i++) for (let j = 0; j < N - i - 1; j++) { comps++; snap({ a: j, b: j + 1 }); if (a[j] > a[j + 1]) { swap(j, j + 1); snap({ a: j, b: j + 1 }); } }
+      } else if (alg === "insertion") {
+        for (let i = 1; i < N; i++) { let j = i; while (j > 0 && a[j - 1] > a[j]) { comps++; snap({ a: j, b: j - 1 }); swap(j, j - 1); j--; } }
+      } else if (alg === "selection") {
+        for (let i = 0; i < N; i++) { let m = i; for (let j = i + 1; j < N; j++) { comps++; snap({ a: m, b: j }); if (a[j] < a[m]) m = j; } if (m !== i) { swap(i, m); snap({ a: i, b: m }); } }
+      } else if (alg === "quick") {
+        const qs = (lo, hi) => { if (lo >= hi) return; const p = a[hi]; let i = lo; for (let j = lo; j < hi; j++) { comps++; snap({ a: j, b: i, p: hi }); if (a[j] < p) { swap(i, j); i++; } } swap(i, hi); snap({ a: i, p: hi }); qs(lo, i - 1); qs(i + 1, hi); };
+        qs(0, N - 1);
+      }
+      snap({ done: true });
+      return comps;
+    }
+
+    function play(alg) {
+      if (playing) return;
+      const comps = record(alg);
+      root.querySelector("[data-info]").textContent = comps.toLocaleString() + " comparisons";
+      playing = true; let f = 0;
+      const speed = Math.max(1, Math.floor(frames.length / 600));
+      function tick() {
+        if (f >= frames.length) { playing = false; draw(arr.slice().sort((x, y) => x - y), { done: true }); return; }
+        const [state, hi] = frames[Math.min(f, frames.length - 1)];
+        draw(state, hi); f += speed; raf = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    root.querySelector("[data-run]").addEventListener("click", () => { if (!playing) play(root.querySelector("[data-algo]").value); });
+    root.querySelector("[data-shuffle]").addEventListener("click", () => { if (raf) cancelAnimationFrame(raf); playing = false; shuffle(); });
+    shuffle();
+  })();
+</script>
