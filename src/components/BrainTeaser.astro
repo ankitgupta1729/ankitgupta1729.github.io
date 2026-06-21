@@ -1,0 +1,56 @@
+---
+// Daily brain-teaser with a streak counter. Same puzzle for everyone each day,
+// rotating daily; streak persists in localStorage.
+const uid = "bt" + Math.random().toString(36).slice(2, 8);
+---
+
+<div id={uid} class="not-prose rounded-2xl border border-brand-200/60 bg-gradient-to-br from-brand-50 to-pink-50 p-5 dark:border-white/10 dark:from-brand-900/30 dark:to-pink-900/20">
+  <div class="mb-2 flex items-center justify-between">
+    <h4 class="m-0 flex items-center gap-2 font-bold text-gray-900 dark:text-white"><span class="text-xl">🧠</span> Daily brain-teaser</h4>
+    <span data-streak class="rounded-full bg-white/70 px-2.5 py-1 text-xs font-bold text-orange-600 dark:bg-white/10 dark:text-orange-300"></span>
+  </div>
+  <p data-q class="text-gray-800 dark:text-gray-100"></p>
+  <p data-hint class="mt-2 hidden text-sm italic text-gray-600 dark:text-gray-300"></p>
+  <p data-answer class="mt-2 hidden rounded-lg bg-white/70 p-3 text-sm text-gray-800 dark:bg-white/10 dark:text-gray-100"></p>
+  <div class="mt-3 flex gap-2">
+    <button data-hintbtn class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:border-brand-400 dark:border-white/15 dark:text-gray-200">💡 Hint</button>
+    <button data-reveal class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-700">Reveal answer</button>
+  </div>
+</div>
+
+<script is:inline define:vars={{ uid }}>
+  (function () {
+    const root = document.getElementById(uid);
+    if (!root) return;
+    const T = [
+      { q: "A bat and a ball cost $1.10 together. The bat costs $1 more than the ball. How much is the ball?", h: "It's not 10¢ — check the difference.", a: "5¢. (Ball 5¢ + bat $1.05 = $1.10, difference $1.)" },
+      { q: "I am an odd number. Take away one letter and I become even. What am I?", h: "Think about the word, not the value.", a: "Seven → 'even'." },
+      { q: "How many times can you subtract 5 from 25?", h: "After the first subtraction it's no longer 25.", a: "Once — after that you're subtracting from 20, 15, …" },
+      { q: "A farmer has 17 sheep and all but 9 die. How many are left?", h: "Read 'all but 9' carefully.", a: "9 sheep." },
+      { q: "What has keys but no locks, space but no room, and you can enter but not go in?", h: "You're using one now.", a: "A keyboard." },
+      { q: "Two fathers and two sons go fishing. Each catches one fish, but only 3 fish total. How?", h: "Three generations.", a: "Grandfather, father, son — the father is both a father and a son." },
+      { q: "Which weighs more: a kilogram of feathers or a kilogram of steel?", h: "Look at the units.", a: "They weigh the same — one kilogram each." },
+      { q: "A clock strikes 6 in 5 seconds. How long to strike 12?", h: "Count the intervals, not the strikes.", a: "11 seconds (intervals: 5 for 6 strikes = 1s each; 11 intervals for 12)." },
+      { q: "What comes next: 1, 11, 21, 1211, 111221, … ?", h: "Read the previous term out loud.", a: "312211 ('look-and-say' sequence)." },
+      { q: "You see a boat full of people but there isn't a single person aboard. How?", h: "Marital status.", a: "Everyone on board is married (no single person)." },
+      { q: "If you have me, you want to share me; once you share me, you no longer have me. What am I?", h: "Hush…", a: "A secret." },
+      { q: "A 3-litre and a 5-litre jug. Measure exactly 4 litres. How?", h: "Fill, pour, repeat.", a: "Fill 5, pour into 3 (2 left in 5), empty 3, pour the 2 in, fill 5, top up 3 (needs 1) → 4 left in the 5-litre." },
+      { q: "What number, spelled out, has its letters in alphabetical order?", h: "It's below 100.", a: "Forty (F-O-R-T-Y)." },
+      { q: "A snail climbs a 10 m well: up 3 m by day, slips 2 m by night. Days to escape?", h: "The last climb has no slip.", a: "8 days — on day 8 it climbs from 7 m to 10 m and is out." },
+    ];
+    const day = Math.floor(Date.now() / 86400000);
+    const t = T[day % T.length];
+    root.querySelector("[data-q]").textContent = t.q;
+
+    // streak
+    let st = {}; try { st = JSON.parse(localStorage.getItem("teaserStreak") || "{}"); } catch (e) {}
+    function renderStreak() { root.querySelector("[data-streak]").textContent = (st.count > 0 ? "🔥 " + st.count + "-day streak" : "Start a streak!"); }
+    renderStreak();
+
+    root.querySelector("[data-hintbtn]").addEventListener("click", () => { const h = root.querySelector("[data-hint]"); h.textContent = "Hint: " + t.h; h.classList.remove("hidden"); });
+    root.querySelector("[data-reveal]").addEventListener("click", () => {
+      const a = root.querySelector("[data-answer]"); a.textContent = "✅ " + t.a; a.classList.remove("hidden");
+      if (st.lastDay !== day) { st.count = (st.lastDay === day - 1) ? (st.count || 0) + 1 : 1; st.lastDay = day; localStorage.setItem("teaserStreak", JSON.stringify(st)); renderStreak(); }
+    });
+  })();
+</script>

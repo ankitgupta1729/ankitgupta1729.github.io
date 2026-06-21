@@ -5,6 +5,9 @@ import ReactionTest from "../components/widgets/ReactionTest.astro";
 import MathDrill from "../components/widgets/MathDrill.astro";
 import GameOfLife from "../components/widgets/GameOfLife.astro";
 import MontyHall from "../components/widgets/MontyHall.astro";
+import DoublePendulum from "../components/widgets/DoublePendulum.astro";
+import Mandelbrot from "../components/widgets/Mandelbrot.astro";
+import BrainTeaser from "../components/BrainTeaser.astro";
 ---
 
 <BaseLayout title="Arcade" description="Take a brain break — fun games and playful simulations for curious minds.">
@@ -18,6 +21,9 @@ import MontyHall from "../components/widgets/MontyHall.astro";
   </section>
 
   <section class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div class="mb-6">
+      <BrainTeaser />
+    </div>
     <div class="grid gap-6 lg:grid-cols-2">
       <MathDrill />
       <ReactionTest />
@@ -30,6 +36,13 @@ import MontyHall from "../components/widgets/MontyHall.astro";
 
     <div class="mt-6">
       <MontyHall />
+    </div>
+
+    <h2 class="mb-2 mt-8 font-serif text-2xl font-bold text-gray-900 dark:text-white">🌀 Mesmerising simulations</h2>
+    <p class="mb-2 text-gray-600 dark:text-gray-400">Chaos and infinity, rendered live. Nudge the pendulum, or click into the Mandelbrot set forever.</p>
+    <div class="grid gap-6 lg:grid-cols-2">
+      <DoublePendulum />
+      <Mandelbrot />
     </div>
 
     <h2 class="mb-2 mt-8 font-serif text-2xl font-bold text-gray-900 dark:text-white">🦠 Sandbox: Conway's Game of Life</h2>
