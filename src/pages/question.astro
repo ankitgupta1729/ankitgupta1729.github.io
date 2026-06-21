@@ -14,7 +14,7 @@ import { EXAMS } from "../consts";
   </section>
 </BaseLayout>
 
-<script is:inline src="/poly-qa.js"></script>
+<script is:inline src="/poly-qa.js?v=3"></script>
 <script is:inline define:vars={{ examMap: Object.fromEntries(EXAMS.map((e) => [e.slug, e.name])) }}>
   (function () {
     const id = new URLSearchParams(location.search).get("id");

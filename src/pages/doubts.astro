@@ -59,7 +59,7 @@ const examOpts = EXAMS.map((e) => ({ slug: e.slug, name: e.name }));
   </section>
 </BaseLayout>
 
-<script is:inline src="/poly-qa.js"></script>
+<script is:inline src="/poly-qa.js?v=3"></script>
 <script is:inline define:vars={{ examMap: Object.fromEntries(EXAMS.map((e) => [e.slug, e.name])) }}>
   (function () {
     const listEl = document.getElementById("d-list");
