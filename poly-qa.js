@@ -8,7 +8,7 @@
 // localStorage (browsable + answerable locally) even when the rest of the site
 // is live, so the PYQ bank is never empty and never depends on the DB columns.
 window.PolyQA = (function () {
-  const LSQ = "doubtsQ5"; // bumped when the seed set changes (now ~85 PYQs)
+  const LSQ = "doubtsQ6"; // bumped when the seed set changes (now ~105 PYQs, 2004-2024)
   const uid = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
   const write = (k, v) => localStorage.setItem(k, JSON.stringify(v));
@@ -142,6 +142,33 @@ window.PolyQA = (function () {
       { id: "seed-pyq83", kind: "pyq", year: 2020, subject: "History", title: "UPSC Prelims 2020: Who led the Dandi Salt March?", body: "Who led the **Dandi March (Salt Satyagraha)** of 1930, and what did it protest?\n\n*(UPSC CSE Prelims 2020, Modern History)*", author_name: "PYQ Bank", exam: "upsc", tags: ["modern-history", "freedom-movement"], votes: 5, status: "solved", accepted_answer_id: "seed-pa83", created_at: t(14) },
       { id: "seed-pyq84", kind: "pyq", year: 2023, subject: "Economy", title: "UPSC Prelims 2023: What is the repo rate?", body: "What is the **repo rate**, and which institution sets it in India?\n\n*(UPSC CSE Prelims 2023, Indian Economy)*", author_name: "PYQ Bank", exam: "upsc", tags: ["economy", "monetary-policy"], votes: 4, status: "open", accepted_answer_id: null, created_at: t(10) },
       { id: "seed-pyq85", kind: "pyq", year: 2019, subject: "Polity", title: "UPSC Prelims 2019: Minimum age to become President", body: "What is the minimum age required for a person to be eligible for election as **President of India**?\n\n*(UPSC CSE Prelims 2019, Indian Polity)*", author_name: "PYQ Bank", exam: "upsc", tags: ["polity", "eligibility"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(7) },
+
+      // ── Batch 4: classic older-year questions (2004–2015) ───
+      { id: "seed-pyq86", kind: "pyq", year: 2005, subject: "Computer Science", title: "GATE CSE 2005: Worst-case comparisons in binary search", body: "What is the worst-case number of comparisons to search a sorted array of $1024$ elements using **binary search**?\n\n*(GATE CSE 2005, Algorithms)*", author_name: "PYQ Bank", exam: "gate", tags: ["binary-search", "algorithms"], votes: 4, status: "solved", accepted_answer_id: "seed-pa86", created_at: t(34) },
+      { id: "seed-pyq87", kind: "pyq", year: 2010, subject: "Computer Science", title: "GATE CSE 2010: One key difference between TCP and UDP", body: "State one fundamental difference between **TCP** and **UDP** at the transport layer.\n\n*(GATE CSE 2010, Networks)*", author_name: "PYQ Bank", exam: "gate", tags: ["networks", "transport-layer"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(31) },
+      { id: "seed-pyq88", kind: "pyq", year: 2014, subject: "Mathematics", title: "GATE 2014: Determinant of a 2×2 matrix", body: "Find the determinant of $\\begin{pmatrix} 3 & 2 \\\\ 1 & 4 \\end{pmatrix}$.\n\n*(GATE 2014, Linear Algebra)*", author_name: "PYQ Bank", exam: "gate", tags: ["linear-algebra", "determinant"], votes: 3, status: "solved", accepted_answer_id: "seed-pa88", created_at: t(28) },
+      { id: "seed-pyq89", kind: "pyq", year: 2012, subject: "Computer Science", title: "GATE CSE 2012: Output of an in-order traversal of a BST", body: "What sequence does an **in-order traversal** of a binary search tree always produce?\n\n*(GATE CSE 2012, Data Structures)*", author_name: "PYQ Bank", exam: "gate", tags: ["bst", "traversal"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(25) },
+
+      { id: "seed-pyq90", kind: "pyq", year: 2005, subject: "Physics", title: "IIT-JEE 2005: Work done lifting a mass", body: "How much work is done in lifting a $10\\ \\text{kg}$ mass vertically through $5\\ \\text{m}$? (Take $g = 10\\ \\text{m/s}^2$.)\n\n*(IIT-JEE 2005, Work–Energy)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["work-energy", "mechanics"], votes: 4, status: "solved", accepted_answer_id: "seed-pa90", created_at: t(33) },
+      { id: "seed-pyq91", kind: "pyq", year: 2010, subject: "Mathematics", title: "IIT-JEE 2010: Probability of an even number on a die", body: "A fair six-sided die is rolled once. What is the probability of getting an **even** number?\n\n*(IIT-JEE 2010, Probability)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["probability"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(30) },
+      { id: "seed-pyq92", kind: "pyq", year: 2015, subject: "Mathematics", title: "JEE Main 2015: Integral of 1/x", body: "Evaluate the indefinite integral $\\displaystyle\\int \\frac{1}{x}\\,dx$.\n\n*(JEE Main 2015, Integral Calculus)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["integration", "calculus"], votes: 3, status: "solved", accepted_answer_id: "seed-pa92", created_at: t(27) },
+      { id: "seed-pyq93", kind: "pyq", year: 2008, subject: "Chemistry", title: "IIT-JEE 2008: Molar mass of water", body: "Calculate the molar mass of water, $\\mathrm{H_2O}$ (H = 1, O = 16).\n\n*(IIT-JEE 2008, Mole Concept)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["mole-concept", "molar-mass"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(23) },
+
+      { id: "seed-pyq94", kind: "pyq", year: 2008, subject: "Biology", title: "AIPMT 2008: The 'powerhouse of the cell'", body: "Which organelle is known as the **powerhouse of the cell**, and why?\n\n*(AIPMT 2008, Cell Biology)*", author_name: "PYQ Bank", exam: "neet", tags: ["cell-biology", "organelles"], votes: 5, status: "solved", accepted_answer_id: "seed-pa94", created_at: t(32) },
+      { id: "seed-pyq95", kind: "pyq", year: 2012, subject: "Biology", title: "AIPMT 2012: Largest gland in the human body", body: "Which is the **largest gland** in the human body?\n\n*(AIPMT 2012, Human Physiology)*", author_name: "PYQ Bank", exam: "neet", tags: ["physiology", "glands"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(26) },
+      { id: "seed-pyq96", kind: "pyq", year: 2014, subject: "Physics", title: "NEET 2014: Acceleration due to gravity on the Moon", body: "The Moon's gravity is about one-sixth of Earth's. If $g = 9.8\\ \\text{m/s}^2$ on Earth, what is it on the Moon?\n\n*(NEET 2014, Gravitation)*", author_name: "PYQ Bank", exam: "neet", tags: ["gravitation"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(18) },
+
+      { id: "seed-pyq97", kind: "pyq", year: 2010, subject: "Mathematics", title: "ISI 2010: Sum of the first n odd numbers", body: "Find a closed form for $1 + 3 + 5 + \\dots + (2n-1)$ (the sum of the first $n$ odd numbers).\n\n*(ISI entrance, Series)*", author_name: "PYQ Bank", exam: "isi-cmi", tags: ["series", "induction"], votes: 5, status: "solved", accepted_answer_id: "seed-pa97", created_at: t(29) },
+      { id: "seed-pyq98", kind: "pyq", year: 2005, subject: "Mathematics", title: "ISI 2005: Arrangements of the letters of 'MATH'", body: "In how many distinct ways can the letters of the word **MATH** be arranged?\n\n*(ISI entrance, Permutations)*", author_name: "PYQ Bank", exam: "isi-cmi", tags: ["permutations", "combinatorics"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(22) },
+      { id: "seed-pyq99", kind: "pyq", year: 2013, subject: "Mathematics", title: "ISI 2013: Discriminant and nature of roots", body: "For the quadratic $x^2 + x + 1 = 0$, use the discriminant to determine whether the roots are real or complex.\n\n*(ISI entrance, Algebra)*", author_name: "PYQ Bank", exam: "isi-cmi", tags: ["quadratic", "discriminant"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(16) },
+
+      { id: "seed-pyq100", kind: "pyq", year: 2004, subject: "Quant", title: "CAT 2004: Average speed for equal distances", body: "A car covers half a journey at $40\\ \\text{km/h}$ and the other half at $60\\ \\text{km/h}$. What is its average speed for the whole journey?\n\n*(CAT 2004, Time–Speed–Distance)*", author_name: "PYQ Bank", exam: "cat", tags: ["average-speed", "tsd"], votes: 5, status: "solved", accepted_answer_id: "seed-pa100", created_at: t(28) },
+      { id: "seed-pyq101", kind: "pyq", year: 2009, subject: "Quant", title: "CAT 2009: Percentage of a percentage", body: "What is $20\\%$ of $25\\%$ of $400$?\n\n*(CAT 2009, Arithmetic)*", author_name: "PYQ Bank", exam: "cat", tags: ["percentages"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(20) },
+      { id: "seed-pyq102", kind: "pyq", year: 2013, subject: "Quant", title: "CAT 2013: Smallest number divisible by 2,3,4,5,6", body: "What is the smallest positive integer divisible by each of $2, 3, 4, 5$ and $6$?\n\n*(CAT 2013, Number System / LCM)*", author_name: "PYQ Bank", exam: "cat", tags: ["lcm", "number-system"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(13) },
+
+      { id: "seed-pyq103", kind: "pyq", year: 2010, subject: "Polity", title: "UPSC Prelims 2010: How many Fundamental Rights today?", body: "How many **Fundamental Rights** are currently guaranteed by the Constitution of India (after the 44th Amendment removed the right to property)?\n\n*(UPSC CSE Prelims 2010, Indian Polity)*", author_name: "PYQ Bank", exam: "upsc", tags: ["polity", "fundamental-rights"], votes: 4, status: "solved", accepted_answer_id: "seed-pa103", created_at: t(24) },
+      { id: "seed-pyq104", kind: "pyq", year: 2015, subject: "History", title: "UPSC Prelims 2015: Composer of India's national anthem", body: "Who composed *Jana Gana Mana*, the national anthem of India?\n\n*(UPSC CSE Prelims 2015, Modern History)*", author_name: "PYQ Bank", exam: "upsc", tags: ["modern-history", "culture"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(15) },
+      { id: "seed-pyq105", kind: "pyq", year: 2008, subject: "Science & Tech", title: "UPSC Prelims 2008: Longest river flowing within India", body: "Which is the **longest river** that flows entirely within India?\n\n*(UPSC CSE Prelims 2008, Geography)*", author_name: "PYQ Bank", exam: "upsc", tags: ["geography", "rivers"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(9) },
     ];
     write(LSQ, qs);
     write("doubtsA:seed-q1", [
@@ -241,6 +268,30 @@ window.PolyQA = (function () {
       ],
       "seed-pyq83": [
         { id: "seed-pa83", body: "**Mahatma Gandhi** led the Dandi March (March–April 1930), walking ~240 km to Dandi to make salt from seawater — defying the British **salt tax** and launching the Civil Disobedience Movement.", author_name: "Kabir Das", votes: 8, created_at: t(13) },
+      ],
+      "seed-pyq86": [
+        { id: "seed-pa86", body: "Binary search halves the search space each step, so the worst case is $\\lfloor \\log_2 n \\rfloor + 1 = \\lfloor \\log_2 1024 \\rfloor + 1 = 10 + 1 = 11$ comparisons.", author_name: "Sara Beck", votes: 5, created_at: t(33) },
+      ],
+      "seed-pyq88": [
+        { id: "seed-pa88", body: "$\\det = (3)(4) - (2)(1) = 12 - 2 = 10$.", author_name: "Maya Rao", votes: 4, created_at: t(27) },
+      ],
+      "seed-pyq90": [
+        { id: "seed-pa90", body: "$W = mgh = 10 \\times 10 \\times 5 = 500\\ \\text{J}$.", author_name: "Ishan Verma", votes: 6, created_at: t(32) },
+      ],
+      "seed-pyq92": [
+        { id: "seed-pa92", body: "$\\displaystyle\\int \\frac{1}{x}\\,dx = \\ln|x| + C$.", author_name: "Maya Rao", votes: 5, created_at: t(26) },
+      ],
+      "seed-pyq94": [
+        { id: "seed-pa94", body: "The **mitochondrion** — it carries out aerobic respiration and produces most of the cell's ATP (chemical energy), hence 'powerhouse of the cell'.", author_name: "Aanya Roy", votes: 7, created_at: t(31) },
+      ],
+      "seed-pyq97": [
+        { id: "seed-pa97", body: "$1 + 3 + 5 + \\dots + (2n-1) = n^2$. (Each new odd number adds the next 'L-shaped' layer to an $n\\times n$ square — a classic visual proof.)", author_name: "Dev Khanna", votes: 8, created_at: t(28) },
+      ],
+      "seed-pyq100": [
+        { id: "seed-pa100", body: "For equal distances, use the **harmonic mean**: $\\bar v = \\dfrac{2uv}{u+v} = \\dfrac{2\\times40\\times60}{40+60} = \\dfrac{4800}{100} = 48\\ \\text{km/h}$ (not the simple average of 50).", author_name: "Priya Nair", votes: 7, created_at: t(27) },
+      ],
+      "seed-pyq103": [
+        { id: "seed-pa103", body: "There are **six** Fundamental Rights today: Equality, Freedom, Against Exploitation, Freedom of Religion, Cultural & Educational rights, and Constitutional Remedies. (The Right to Property was removed as a fundamental right by the 44th Amendment, 1978.)", author_name: "Kabir Das", votes: 6, created_at: t(23) },
       ],
     };
     Object.keys(A).forEach((qid) => write("doubtsA:" + qid, A[qid].map((a) => Object.assign({ question_id: qid }, a))));

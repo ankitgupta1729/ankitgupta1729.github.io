@@ -1,0 +1,615 @@
+<!DOCTYPE html><html lang="en" class="scroll-smooth"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><!-- PWA --><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#6366f1"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Polymath"><meta name="generator" content="Astro v5.18.2"><title>#regularization · Polymath</title><meta name="description" content="Articles tagged regularization."><meta name="author" content="Ankit Gupta"><link rel="canonical" href="https://ankitgupta1729.github.io/tags/regularization/"><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:title" content="#regularization · Polymath"><meta property="og:description" content="Articles tagged regularization."><meta property="og:url" content="https://ankitgupta1729.github.io/tags/regularization/"><meta property="og:image" content="https://ankitgupta1729.github.io/og-default.svg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:site_name" content="Polymath"><!-- Twitter --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="#regularization · Polymath"><meta name="twitter:description" content="Articles tagged regularization."><meta name="twitter:image" content="https://ankitgupta1729.github.io/og-default.svg"><link rel="alternate" type="application/rss+xml" title="Polymath" href="/rss.xml"><!-- KaTeX styles for server-rendered article math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16/dist/katex.min.css"><!-- Fonts --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opt@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><!-- Theme: apply before paint to avoid flash --><script>
+      (function () {
+        // Mark that JS is available so reveal animations can hide content.
+        document.documentElement.classList.add("js");
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (stored === "dark" || (!stored && prefersDark)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script><!-- JSON-LD --><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Polymath","url":"https://ankitgupta1729.github.io","description":"Polymath is a free, open knowledge hub exploring AI, machine learning, data science, mathematics, physics, cryptography, finance, history, science and technology — with a community that discusses, questions and learns together.","author":{"@type":"Person","name":"Ankit Gupta"}}</script><link rel="stylesheet" href="/_astro/_slug_.BKI9qK4T.css"></head> <body class="min-h-screen flex flex-col"> <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-lg focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">Skip to content</a> <div id="reading-progress" class="fixed top-0 left-0 z-50 h-1 w-full bg-gradient-to-r from-brand-500 via-pink-500 to-teal-400"></div> <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-ink/80"> <nav class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6"> <a href="/" class="group flex items-center gap-2"> <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-pink-500 text-lg font-black text-white shadow-sm transition group-hover:scale-105">P</span> <span class="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white"> Polymath </span> </a> <div class="hidden items-center gap-1 md:flex"> <a href="/" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Home </a><a href="/blog" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Articles </a><a href="/exams" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Exams </a><a href="/frontiers" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Frontiers </a><a href="/play" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Arcade </a><a href="/write" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> Write </a><a href="/about" class="rounded-lg px-3 py-2 text-sm font-medium transition text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"> About </a> </div> <div class="flex items-center gap-2"> <a id="revise-badge" href="/practice" title="Questions due for revision" class="hidden items-center gap-1 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-sm font-semibold text-amber-700 transition hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-900/20 dark:text-amber-300">
+📅 <span id="revise-count">0</span> </a> <button id="palette-trigger" aria-label="Search (press / or Cmd-K)" class="hidden items-center gap-2 rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm text-gray-500 transition hover:border-brand-400 hover:text-brand-600 sm:flex dark:border-white/10 dark:text-gray-400"> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg> <span class="hidden md:inline">Search</span> <kbd class="hidden rounded border border-gray-200 px-1 text-[10px] md:inline dark:border-white/10">⌘K</kbd> </button> <!-- Header auth control --><div id="auth-root" class="relative" data-live="1" data-url="https://bcgpurvuwmvljbqmaqwm.supabase.co" data-key="sb_publishable_zIXsjL-F4dixk81WlVwWkQ_rU6YclKM"> <button id="auth-signin-btn" class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-700">
+Sign in
+</button> <button id="auth-user-btn" class="hidden items-center gap-2 rounded-full border border-gray-200 py-1 pl-1 pr-3 text-sm font-semibold text-gray-700 transition hover:border-brand-400 dark:border-white/15 dark:text-gray-200"> <img id="auth-user-avatar" src="" alt="" width="28" height="28" class="h-7 w-7 rounded-full bg-gray-100 dark:bg-white/10"> <span id="auth-user-name">You</span> </button> <!-- Dropdown --> <div id="auth-menu" class="absolute right-0 z-50 mt-2 hidden w-52 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-xl dark:border-white/10 dark:bg-ink"> <div class="border-b border-gray-100 px-3 py-2 dark:border-white/10"> <p id="auth-menu-name" class="truncate text-sm font-semibold text-gray-900 dark:text-white"></p> <p id="auth-menu-email" class="truncate text-xs text-gray-400"></p> </div> <a id="auth-menu-profile" href="/profile" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">👤 My profile</a> <a href="/write" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">✍️ Write an article</a> <a href="/my-posts" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">📝 My posts</a> <a href="/progress" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">📈 My progress</a> <a href="/reading-list" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5">📚 Reading list</a> <button id="auth-signout" class="block w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-white/5">↩ Sign out</button> </div> </div> <!-- Auth modal --> <div id="auth-modal" class="fixed inset-0 z-[60] hidden items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm"> <div class="my-auto max-h-[92vh] w-full max-w-sm overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-ink"> <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3 dark:border-white/10"> <h3 id="auth-title" class="text-lg font-bold text-gray-900 dark:text-white">Welcome back</h3> <button id="auth-modal-close" class="rounded-lg p-1 text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5">✕</button> </div> <div class="p-5"> <p id="auth-demo-note" class="mb-3 hidden rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+✨ Demo mode — accounts &amp; posts are saved only in this browser. Add Supabase keys for real shared accounts &amp; social login.
+</p> <!-- Social (only providers enabled in Supabase + listed in AUTH.providers) --> <div class="grid gap-2"> <button data-oauth="google" class="auth-social flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-white/15 dark:text-gray-200 dark:hover:bg-white/5"> <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8z"></path><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1 .7-2.4 1.2-4 1.2-3 0-5.6-2-6.5-4.8H1.5v3a12 12 0 0 0 10.5 6.5z"></path><path fill="#FBBC05" d="M5.5 14.5a7.2 7.2 0 0 1 0-4.6v-3H1.5a12 12 0 0 0 0 10.6l4-3z"></path><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.5 1.8l3.4-3.4A12 12 0 0 0 1.5 6.9l4 3C6.4 7.1 9 4.8 12 4.8z"></path></svg>
+Continue with Google
+</button> <div class="grid gap-2 grid-cols-1"> <button data-oauth="github" class="auth-social flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-white/15 dark:text-gray-200 dark:hover:bg-white/5"> <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.6 18 4.9 18 4.9c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"></path></svg>
+GitHub
+</button>  </div> </div> <div class="my-4 flex items-center gap-3 text-xs text-gray-400"><span class="h-px flex-1 bg-gray-200 dark:bg-white/10"></span>or with email<span class="h-px flex-1 bg-gray-200 dark:bg-white/10"></span></div> <form id="auth-form" class="space-y-3"> <input id="auth-name" type="text" placeholder="Display name" class="hidden w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15"> <input id="auth-email" type="email" required placeholder="Email" class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15"> <input id="auth-password" type="password" required minlength="6" placeholder="Password" class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15"> <p id="auth-error" class="hidden text-sm text-red-500"></p> <button type="submit" id="auth-submit" class="w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700">Sign in</button> </form> <p class="mt-3 text-center text-sm text-gray-500 dark:text-gray-400"> <span id="auth-switch-text">New here?</span> <button id="auth-switch" class="font-semibold text-brand-600 hover:underline dark:text-brand-300">Create an account</button> </p> </div> </div> </div> <script>(function(){const live = true;
+const url = "https://bcgpurvuwmvljbqmaqwm.supabase.co";
+const key = "sb_publishable_zIXsjL-F4dixk81WlVwWkQ_rU6YclKM";
+
+  (function () {
+    const root = document.getElementById("auth-root");
+    if (!root) return;
+    // The header has a backdrop-filter, which makes position:fixed anchor to
+    // the header instead of the viewport. Move the modal to <body> so it
+    // centers in the real viewport.
+    const modalEl = document.getElementById("auth-modal");
+    if (modalEl && modalEl.parentElement !== document.body) document.body.appendChild(modalEl);
+    const dice = (s) => "https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(s || "you") + "&radius=50";
+    const $ = (id) => document.getElementById(id);
+    let supabase = null;
+    let mode = "signin";
+
+    const listeners = [];
+    const PolyAuth = {
+      live,
+      user: null,
+      onChange(cb) { listeners.push(cb); cb(this.user); },
+      _emit() { listeners.forEach((cb) => cb(this.user)); document.dispatchEvent(new CustomEvent("polyauth", { detail: this.user })); },
+      openModal() { openModal("signin"); },
+      signOut: async () => {
+        if (live && supabase) { await supabase.auth.signOut(); }
+        localStorage.removeItem("polyUser");
+        setUser(null);
+      },
+    };
+    window.PolyAuth = PolyAuth;
+
+    function setUser(u) {
+      PolyAuth.user = u;
+      if (u) {
+        $("auth-signin-btn").classList.add("hidden");
+        $("auth-user-btn").classList.remove("hidden");
+        $("auth-user-btn").classList.add("flex");
+        $("auth-user-avatar").src = u.avatar || dice(u.email || u.name);
+        $("auth-user-name").textContent = (u.name || "You").split(" ")[0];
+        $("auth-menu-name").textContent = u.name || "You";
+        $("auth-menu-email").textContent = u.email || "";
+        if (u.id) $("auth-menu-profile").href = "/profile?id=" + u.id;
+      } else {
+        $("auth-signin-btn").classList.remove("hidden");
+        $("auth-user-btn").classList.add("hidden");
+        $("auth-user-btn").classList.remove("flex");
+        $("auth-menu").classList.add("hidden");
+      }
+      PolyAuth._emit();
+    }
+
+    function normalize(su) {
+      if (!su) return null;
+      const m = su.user_metadata || {};
+      return { id: su.id, email: su.email, name: m.full_name || m.name || m.user_name || (su.email || "").split("@")[0], avatar: m.avatar_url || dice(su.email) };
+    }
+
+    // Shared Supabase client for the whole app (reused so the auth session
+    // is attached everywhere). Returns null in demo mode.
+    window.polyDB = async function () {
+      if (!live) return null;
+      if (window.PolySB) return window.PolySB;
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      window.PolySB = createClient(url, key);
+      return window.PolySB;
+    };
+
+    async function upsertProfile(u) {
+      if (!u) return;
+      try {
+        const sb = await window.polyDB();
+        if (sb) await sb.from("profiles").upsert({ id: u.id, name: u.name, avatar_url: u.avatar }, { onConflict: "id" });
+      } catch (e) {}
+    }
+
+    async function initSupabase() {
+      try {
+        supabase = await window.polyDB();
+        const { data } = await supabase.auth.getSession();
+        const u = normalize(data.session && data.session.user);
+        setUser(u);
+        upsertProfile(u);
+        supabase.auth.onAuthStateChange((_e, session) => {
+          const nu = normalize(session && session.user);
+          setUser(nu);
+          upsertProfile(nu);
+        });
+      } catch (e) { console.warn("Supabase auth unavailable", e); }
+    }
+
+    // ---- Modal ----
+    function openModal(m) {
+      mode = m;
+      $("auth-demo-note").classList.toggle("hidden", live);
+      $("auth-error").classList.add("hidden");
+      $("auth-name").classList.toggle("hidden", m !== "signup");
+      $("auth-title").textContent = m === "signup" ? "Create your account" : "Welcome back";
+      $("auth-submit").textContent = m === "signup" ? "Create account" : "Sign in";
+      $("auth-switch-text").textContent = m === "signup" ? "Already have an account?" : "New here?";
+      $("auth-switch").textContent = m === "signup" ? "Sign in" : "Create an account";
+      const modal = $("auth-modal"); modal.classList.remove("hidden"); modal.classList.add("flex");
+    }
+    function closeModal() { const m = $("auth-modal"); m.classList.add("hidden"); m.classList.remove("flex"); }
+
+    $("auth-signin-btn").addEventListener("click", () => openModal("signin"));
+    $("auth-modal-close").addEventListener("click", closeModal);
+    $("auth-modal").addEventListener("click", (e) => { if (e.target === $("auth-modal")) closeModal(); });
+    $("auth-switch").addEventListener("click", () => openModal(mode === "signup" ? "signin" : "signup"));
+
+    $("auth-user-btn").addEventListener("click", () => $("auth-menu").classList.toggle("hidden"));
+    document.addEventListener("click", (e) => { if (!root.contains(e.target)) $("auth-menu").classList.add("hidden"); });
+    $("auth-signout").addEventListener("click", () => PolyAuth.signOut());
+
+    function showErr(msg) { const e = $("auth-error"); e.textContent = msg; e.classList.remove("hidden"); }
+
+    $("auth-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = $("auth-email").value.trim();
+      const password = $("auth-password").value;
+      const name = $("auth-name").value.trim();
+      if (live) {
+        try {
+          if (mode === "signup") {
+            const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name || email.split("@")[0] } } });
+            if (error) return showErr(error.message);
+            showErr("Check your email to confirm your account ✉️");
+            return;
+          } else {
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) return showErr(error.message);
+          }
+        } catch (err) { return showErr("Auth error — try again."); }
+        closeModal();
+      } else {
+        // Demo mode: store locally
+        const u = { id: "demo-" + btoa(email).slice(0, 8), email, name: name || email.split("@")[0], avatar: dice(email) };
+        localStorage.setItem("polyUser", JSON.stringify(u));
+        setUser(u); closeModal();
+      }
+    });
+
+    document.querySelectorAll(".auth-social").forEach((b) => b.addEventListener("click", async () => {
+      const provider = b.getAttribute("data-oauth");
+      if (live) {
+        try { await supabase.auth.signInWithOAuth({ provider, options: { redirectTo: location.href } }); } catch (e) { showErr("Could not start " + provider + " login."); }
+      } else {
+        const label = provider.charAt(0).toUpperCase() + provider.slice(1);
+        showErr("🔒 Real " + label + " sign-in activates once the site owner connects an auth provider (Supabase). It can't run on a static demo because OAuth needs a server-side secret. For now, use the email demo sign-in below.");
+      }
+    }));
+
+    // ---- Init ----
+    if (live) {
+      initSupabase();
+    } else {
+      try { const u = JSON.parse(localStorage.getItem("polyUser") || "null"); setUser(u); } catch (e) { setUser(null); }
+    }
+  })();
+})();</script> <button id="theme-toggle" aria-label="Toggle dark mode" class="grid h-9 w-9 place-items-center rounded-lg text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"> <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <circle cx="12" cy="12" r="4"></circle> <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path> </svg> <svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path> </svg> </button> <script>
+  (function () {
+    const btn = document.getElementById("theme-toggle");
+    btn?.addEventListener("click", () => {
+      const root = document.documentElement;
+      root.classList.toggle("dark");
+      localStorage.setItem("theme", root.classList.contains("dark") ? "dark" : "light");
+    });
+  })();
+</script> <button id="mobile-menu-btn" aria-label="Open menu" class="grid h-9 w-9 place-items-center rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5 md:hidden"> <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <line x1="3" y1="6" x2="21" y2="6"></line> <line x1="3" y1="12" x2="21" y2="12"></line> <line x1="3" y1="18" x2="21" y2="18"></line> </svg> </button> </div> </nav> <!-- Mobile menu --> <div id="mobile-menu" class="hidden border-t border-gray-200/70 px-4 py-3 dark:border-white/10 md:hidden"> <a href="/" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"> Home </a><a href="/blog" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"> Articles </a><a href="/exams" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"> Exams </a><a href="/frontiers" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"> Frontiers </a><a href="/play" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"> Arcade </a><a href="/write" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"> Write </a><a href="/about" class="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/5"> About </a> </div> </header> <script src="/poly-practice.js?v=2"></script> <script>
+  (function () {
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    btn?.addEventListener("click", () => menu?.classList.toggle("hidden"));
+    document.getElementById("palette-trigger")?.addEventListener("click", () => window.PolyPalette && window.PolyPalette.open());
+
+    // Revision-due badge in the nav
+    function updateBadge() {
+      const el = document.getElementById("revise-badge");
+      const c = document.getElementById("revise-count");
+      if (!el || !c || !window.PolyPractice) return;
+      const n = window.PolyPractice.dueCount();
+      c.textContent = n;
+      el.classList.toggle("hidden", n <= 0);
+      el.classList.toggle("flex", n > 0);
+    }
+    updateBadge();
+    document.addEventListener("polypractice", updateBadge);
+    if (window.PolyAuth && window.PolyAuth.onChange) window.PolyAuth.onChange(updateBadge);
+  })();
+</script> <main id="main" class="flex-1 page-enter">  <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6"> <a href="/tags" class="text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">← All tags</a> <h1 class="mt-4 font-serif text-4xl font-bold text-gray-900 sm:text-5xl dark:text-white">#regularization</h1> <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">1 article</p> <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"> <article data-reveal class="card-lift group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-xl hover:border-brand-300 dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-brand-500/50"> <a href="/blog/overfitting-and-regularization" class="relative grid place-items-center overflow-hidden text-6xl aspect-[16/9]" style="background: linear-gradient(135deg, #0ea5e922, #0ea5e905);" aria-hidden="true"> <span class="transition-transform duration-300 group-hover:scale-110">📉</span> </a> <div class="flex flex-1 flex-col p-5"> <div class="flex items-center gap-2 text-xs"> <span class="rounded-full px-2.5 py-1 font-semibold" style="background:#0ea5e91a; color:#0ea5e9;"> 📈 Machine Learning </span> <span class="text-gray-400">2 min read</span> </div> <h3 class="mt-3 text-lg font-bold leading-snug text-gray-900 dark:text-white"> <a href="/blog/overfitting-and-regularization" class="transition group-hover:text-brand-600 dark:group-hover:text-brand-300">Overfitting and the Art of Knowing Less</a> </h3> <p class="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">A model that memorises its training data looks brilliant — until it meets the real world. Here&#39;s why overfitting happens and how regularization gently forces a model to generalise.</p> <div class="mt-4 flex items-center justify-between"> <div class="flex items-center gap-2 text-xs text-gray-400"> <time>Jun 15, 2026</time> <span data-counts data-slug="overfitting-and-regularization" class="hidden items-center gap-2"></span> </div> <a href="/blog/overfitting-and-regularization" class="text-sm font-semibold text-brand-600 transition group-hover:translate-x-0.5 dark:text-brand-300">
+Read →
+</a> </div> </div> </article> </div> </section>  </main> <footer class="mt-24 border-t border-gray-200/70 bg-white/50 dark:border-white/10 dark:bg-white/[0.02]"> <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-4"> <div class="md:col-span-2"> <div class="flex items-center gap-2"> <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-pink-500 text-lg font-black text-white">P</span> <span class="text-lg font-extrabold text-gray-900 dark:text-white">Polymath</span> </div> <p class="mt-3 max-w-sm text-sm leading-relaxed text-gray-600 dark:text-gray-400"> Polymath is a free, open knowledge hub exploring AI, machine learning, data science, mathematics, physics, cryptography, finance, history, science and technology — with a community that discusses, questions and learns together. </p> <div class="mt-5"> <div class="flex flex-wrap items-center gap-2"> <a href="https://github.com/ankitgupta1729" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub" class="grid h-9 w-9 place-items-center rounded-lg border border-gray-200 text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300 dark:hover:text-white"> <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 4.6 18 4.9 18 4.9c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"></path></svg>     </a><a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" title="X / Twitter" class="grid h-9 w-9 place-items-center rounded-lg border border-gray-200 text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300 dark:hover:text-white">  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 1.2h3.7l-8 9.1L24 22.8h-7.4l-5.8-7.5-6.6 7.5H.5l8.5-9.8L0 1.2h7.6l5.2 6.9 6.1-6.9zm-1.3 19.4h2L6.5 3.3H4.4l13.2 17.3z"></path></svg>    </a><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn" class="grid h-9 w-9 place-items-center rounded-lg border border-gray-200 text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300 dark:hover:text-white">   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>   </a><a href="/rss.xml" rel="noopener noreferrer" aria-label="RSS" title="RSS" class="grid h-9 w-9 place-items-center rounded-lg border border-gray-200 text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300 dark:hover:text-white">     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 11a9 9 0 0 1 9 9h2.5A11.5 11.5 0 0 0 4 8.5V11zm0 4a5 5 0 0 1 5 5h2.5A7.5 7.5 0 0 0 4 12.5V15zm1.5 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"></path></svg> </a> </div> </div> <button id="install-app" class="mt-4 hidden items-center gap-2 rounded-lg border border-brand-300 px-3 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 dark:border-brand-500/40 dark:text-brand-300 dark:hover:bg-white/5">
+📲 Install app
+</button> </div> <div> <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Explore</h3> <ul class="mt-3 space-y-2 text-sm"> <li><a href="/" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Home</a></li><li><a href="/blog" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Articles</a></li><li><a href="/exams" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Exams</a></li><li><a href="/frontiers" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Frontiers</a></li><li><a href="/play" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Arcade</a></li><li><a href="/write" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Write</a></li><li><a href="/about" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">About</a></li> <li><a href="/doubts" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Doubts</a></li> <li><a href="/pyq" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Previous-year Qs</a></li> <li><a href="/mock-tests" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Mock Tests</a></li> <li><a href="/exam-alerts" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Exam alerts</a></li> <li><a href="/prep" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Prep tips</a></li> <li><a href="/start-here" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Start here</a></li> <li><a href="/posts" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Community posts</a></li> <li><a href="/categories" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Topics</a></li> <li><a href="/forum" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Forum</a></li> <li><a href="/progress" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">My progress</a></li> <li><a href="/practice" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">My practice</a></li> <li><a href="/community" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Community</a></li> <li><a href="/feedback" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Feedback &amp; ideas</a></li> <li><a href="/tags" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Tags</a></li> <li><a href="/reading-list" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Reading list</a></li> </ul> </div> <div> <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Topics</h3> <ul class="mt-3 space-y-2 text-sm"> <li><a href="/categories/ai" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Artificial Intelligence</a></li><li><a href="/categories/machine-learning" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Machine Learning</a></li><li><a href="/categories/data-science" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Data Science</a></li><li><a href="/categories/mathematics" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Mathematics</a></li><li><a href="/categories/physics" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Physics</a></li><li><a href="/categories/cryptography" class="text-gray-600 transition hover:text-brand-600 dark:text-gray-400 dark:hover:text-white">Cryptography</a></li> </ul> </div> </div> <div class="border-t border-gray-200/70 dark:border-white/10"> <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-gray-500 sm:flex-row sm:px-6 dark:text-gray-400"> <p>© 2026 Ankit Gupta. Built with Astro · Free & open. Content under CC BY 4.0.</p> <p>Made for curious minds everywhere.</p> </div> </div> </footer> <!-- Back to top --> <button id="back-to-top" aria-label="Back to top" class="fixed bottom-6 right-6 z-40 grid h-11 w-11 translate-y-4 place-items-center rounded-full bg-brand-600 text-white opacity-0 shadow-lg transition hover:bg-brand-700 pointer-events-none"> <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"></path></svg> </button> <button id="ai-fab" aria-label="Open AI assistant" class="fixed bottom-6 left-6 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-brand-600 to-pink-500 px-4 py-3 font-semibold text-white shadow-lg shadow-brand-600/30 transition hover:scale-105"><span class="text-lg">✨</span><span class="hidden sm:inline">Ask Poly</span></button><div id="ai-panel" class="fixed bottom-24 left-4 right-4 z-50 hidden max-h-[72vh] w-auto flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl sm:left-6 sm:right-auto sm:w-[400px] dark:border-white/10 dark:bg-ink" data-cdn="https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0" data-embed="Xenova/all-MiniLM-L6-v2" data-config="{&#34;webgpu&#34;:{&#34;model&#34;:&#34;onnx-community/Llama-3.2-1B-Instruct&#34;,&#34;dtype&#34;:&#34;q4f16&#34;},&#34;wasm&#34;:{&#34;model&#34;:&#34;HuggingFaceTB/SmolLM2-360M-Instruct&#34;,&#34;dtype&#34;:&#34;q4&#34;}}" data-docs="[{&#34;id&#34;:&#34;ada-lovelace-first-programmer&#34;,&#34;url&#34;:&#34;/blog/ada-lovelace-first-programmer/&#34;,&#34;title&#34;:&#34;Ada Lovelace: The First Programmer, a Century Early&#34;,&#34;category&#34;:&#34;History&#34;,&#34;text&#34;:&#34;Ada Lovelace: The First Programmer, a Century Early. Before electricity powered a single computer, a 19th-century mathematician saw that machines could do far more than arithmetic. The story of computing's prophetic founder. Topic: History.&#34;},{&#34;id&#34;:&#34;attention-is-all-you-need-explained&#34;,&#34;url&#34;:&#34;/blog/attention-is-all-you-need-explained/&#34;,&#34;title&#34;:&#34;Attention, Explained: How Transformers Actually Think&#34;,&#34;category&#34;:&#34;Artificial Intelligence&#34;,&#34;text&#34;:&#34;Attention, Explained: How Transformers Actually Think. The self-attention mechanism powers nearly every modern AI model. An intuitive, jargon-light walkthrough — with a diagram and a great video — of what it does and why it changed everything. Topic: Artificial Intelligence.&#34;},{&#34;id&#34;:&#34;bayes-theorem-updating-beliefs&#34;,&#34;url&#34;:&#34;/blog/bayes-theorem-updating-beliefs/&#34;,&#34;title&#34;:&#34;Bayes' Theorem: The Math of Changing Your Mind&#34;,&#34;category&#34;:&#34;Data Science&#34;,&#34;text&#34;:&#34;Bayes' Theorem: The Math of Changing Your Mind. A single formula tells you how much to update a belief when new evidence arrives. Use the interactive calculator to see why a '99% accurate' test can still mostly cry wolf. Topic: Data Science.&#34;},{&#34;id&#34;:&#34;compound-interest-eighth-wonder&#34;,&#34;url&#34;:&#34;/blog/compound-interest-eighth-wonder/&#34;,&#34;title&#34;:&#34;Compound Interest: The Most Powerful Force You're Ignoring&#34;,&#34;category&#34;:&#34;Finance&#34;,&#34;text&#34;:&#34;Compound Interest: The Most Powerful Force You're Ignoring. Time, not timing, builds wealth. Play with the interactive calculator to see how starting early beats investing more — and how fees quietly eat your returns. Topic: Finance.&#34;},{&#34;id&#34;:&#34;algorithmic-bias&#34;,&#34;url&#34;:&#34;/blog/algorithmic-bias/&#34;,&#34;title&#34;:&#34;Algorithmic Bias: How Neutral-Looking Models Learn Unfairness&#34;,&#34;category&#34;:&#34;Data Science&#34;,&#34;text&#34;:&#34;Algorithmic Bias: How Neutral-Looking Models Learn Unfairness. An algorithm has no opinions — so how does it end up discriminating? Understanding where bias enters is the first step to building AI that's actually fair. Topic: Data Science.&#34;},{&#34;id&#34;:&#34;crispr-rewriting-life&#34;,&#34;url&#34;:&#34;/blog/crispr-rewriting-life/&#34;,&#34;title&#34;:&#34;CRISPR: How We Learned to Edit Life Itself&#34;,&#34;category&#34;:&#34;Science&#34;,&#34;text&#34;:&#34;CRISPR: How We Learned to Edit Life Itself. A bacterial immune system became the most powerful gene-editing tool ever invented. Here's how CRISPR works, what it can already do, and the questions it forces us to ask. Topic: Science.&#34;},{&#34;id&#34;:&#34;data-cleaning-the-unglamorous-truth&#34;,&#34;url&#34;:&#34;/blog/data-cleaning-the-unglamorous-truth/&#34;,&#34;title&#34;:&#34;Data Cleaning: The Unglamorous 80% of Data Science&#34;,&#34;category&#34;:&#34;Data Science&#34;,&#34;text&#34;:&#34;Data Cleaning: The Unglamorous 80% of Data Science. Models get the glory, but data preparation decides whether a project succeeds. A field guide to the messy, essential work nobody puts in their portfolio. Topic: Data Science.&#34;},{&#34;id&#34;:&#34;bias-variance-tradeoff&#34;,&#34;url&#34;:&#34;/blog/bias-variance-tradeoff/&#34;,&#34;title&#34;:&#34;The Bias–Variance Tradeoff, Without the Hand-Waving&#34;,&#34;category&#34;:&#34;Machine Learning&#34;,&#34;text&#34;:&#34;The Bias–Variance Tradeoff, Without the Hand-Waving. Why your model can be wrong in two completely different ways — and how understanding the tension between them makes you a better practitioner. Topic: Machine Learning.&#34;},{&#34;id&#34;:&#34;correlation-is-not-causation&#34;,&#34;url&#34;:&#34;/blog/correlation-is-not-causation/&#34;,&#34;title&#34;:&#34;Correlation Is Not Causation: The Most Important Stats Lesson&#34;,&#34;category&#34;:&#34;Data Science&#34;,&#34;text&#34;:&#34;Correlation Is Not Causation: The Most Important Stats Lesson. Ice cream sales and drownings rise together — but ice cream isn't the killer. A practical guide to the trap that fools experts, headlines, and algorithms alike. Topic: Data Science.&#34;},{&#34;id&#34;:&#34;decision-trees-random-forests&#34;,&#34;url&#34;:&#34;/blog/decision-trees-random-forests/&#34;,&#34;title&#34;:&#34;Decision Trees and Random Forests, Explained Simply&#34;,&#34;category&#34;:&#34;Machine Learning&#34;,&#34;text&#34;:&#34;Decision Trees and Random Forests, Explained Simply. One of the most intuitive ideas in machine learning — asking a series of yes/no questions — scales into one of the most reliable. Here's how, and why a 'forest' beats a single tree. Topic: Machine Learning.&#34;},{&#34;id&#34;:&#34;entropy-arrow-of-time&#34;,&#34;url&#34;:&#34;/blog/entropy-arrow-of-time/&#34;,&#34;title&#34;:&#34;Entropy and the Arrow of Time&#34;,&#34;category&#34;:&#34;Science&#34;,&#34;text&#34;:&#34;Entropy and the Arrow of Time. Why can you unscramble an egg in a video played backward, but never in real life? The answer — entropy — may be the deepest reason time only flows one way. Topic: Science.&#34;},{&#34;id&#34;:&#34;diversification-free-lunch&#34;,&#34;url&#34;:&#34;/blog/diversification-free-lunch/&#34;,&#34;title&#34;:&#34;Diversification: The Only Free Lunch in Investing&#34;,&#34;category&#34;:&#34;Finance&#34;,&#34;text&#34;:&#34;Diversification: The Only Free Lunch in Investing. There's a way to reduce risk without reducing expected return. It's not magic — it's math — and it's the single most reliable idea in finance. Topic: Finance.&#34;},{&#34;id&#34;:&#34;diffie-hellman-secret-in-public&#34;,&#34;url&#34;:&#34;/blog/diffie-hellman-secret-in-public/&#34;,&#34;title&#34;:&#34;Diffie–Hellman: How to Agree on a Secret in Public&#34;,&#34;category&#34;:&#34;Cryptography&#34;,&#34;text&#34;:&#34;Diffie–Hellman: How to Agree on a Secret in Public. Two strangers can shout across a crowded room and end up sharing a secret nobody else knows. The paint-mixing analogy that makes this magic trick obvious. Topic: Cryptography.&#34;},{&#34;id&#34;:&#34;fibonacci-and-golden-ratio&#34;,&#34;url&#34;:&#34;/blog/fibonacci-and-golden-ratio/&#34;,&#34;title&#34;:&#34;Fibonacci and the Golden Ratio: Beauty, Hype, and Truth&#34;,&#34;category&#34;:&#34;Mathematics&#34;,&#34;text&#34;:&#34;Fibonacci and the Golden Ratio: Beauty, Hype, and Truth. From sunflower seeds to pinecones, one sequence keeps appearing in nature. Here's the real math behind Fibonacci and the golden ratio — and which famous claims are myths. Topic: Mathematics.&#34;},{&#34;id&#34;:&#34;hash-functions-explained&#34;,&#34;url&#34;:&#34;/blog/hash-functions-explained/&#34;,&#34;title&#34;:&#34;Hash Functions: The Internet's Fingerprints&#34;,&#34;category&#34;:&#34;Cryptography&#34;,&#34;text&#34;:&#34;Hash Functions: The Internet's Fingerprints. They verify your downloads, store your passwords, and hold blockchains together. A clear look at what cryptographic hash functions do and why they're irreversible. Topic: Cryptography.&#34;},{&#34;id&#34;:&#34;gradient-descent-intuition&#34;,&#34;url&#34;:&#34;/blog/gradient-descent-intuition/&#34;,&#34;title&#34;:&#34;Gradient Descent: How Machines Learn by Walking Downhill&#34;,&#34;category&#34;:&#34;Machine Learning&#34;,&#34;text&#34;:&#34;Gradient Descent: How Machines Learn by Walking Downhill. Nearly every model is trained by one simple idea — feel which way is downhill, take a step, repeat. Play with the learning rate and watch it converge, crawl, or explode. Topic: Machine Learning.&#34;},{&#34;id&#34;:&#34;gate-big-o-complexity&#34;,&#34;url&#34;:&#34;/blog/gate-big-o-complexity/&#34;,&#34;title&#34;:&#34;Big-O &#38; Time Complexity for GATE CS, Made Intuitive&#34;,&#34;category&#34;:&#34;Technology&#34;,&#34;text&#34;:&#34;Big-O &#38; Time Complexity for GATE CS, Made Intuitive. Big-O is the most-tested topic in GATE CS algorithms. Here's how to read, compare and derive complexities with confidence — no rote memorisation. Topic: Technology.&#34;},{&#34;id&#34;:&#34;how-the-internet-actually-works&#34;,&#34;url&#34;:&#34;/blog/how-the-internet-actually-works/&#34;,&#34;title&#34;:&#34;What Actually Happens When You Open a Website&#34;,&#34;category&#34;:&#34;Technology&#34;,&#34;text&#34;:&#34;What Actually Happens When You Open a Website. You type a URL and a page appears. Between those two moments, a remarkable global relay race takes place in milliseconds. Here's the whole journey. Topic: Technology.&#34;},{&#34;id&#34;:&#34;how-vaccines-train-immunity&#34;,&#34;url&#34;:&#34;/blog/how-vaccines-train-immunity/&#34;,&#34;title&#34;:&#34;How Vaccines Teach Your Immune System (Without the Disease)&#34;,&#34;category&#34;:&#34;Science&#34;,&#34;text&#34;:&#34;How Vaccines Teach Your Immune System (Without the Disease). A vaccine is a training exercise for your body's defenses — a wanted poster for a criminal who never has to show up. Here's the biology, clearly explained. Topic: Science.&#34;},{&#34;id&#34;:&#34;how-rsa-encryption-works&#34;,&#34;url&#34;:&#34;/blog/how-rsa-encryption-works/&#34;,&#34;title&#34;:&#34;How RSA Lets Strangers Share Secrets&#34;,&#34;category&#34;:&#34;Cryptography&#34;,&#34;text&#34;:&#34;How RSA Lets Strangers Share Secrets. Every time you see a padlock in your browser, public-key cryptography is at work. Here's the elegant number theory that lets two people who've never met communicate securely. Topic: Cryptography.&#34;},{&#34;id&#34;:&#34;jee-rotational-motion&#34;,&#34;url&#34;:&#34;/blog/jee-rotational-motion/&#34;,&#34;title&#34;:&#34;Rotational Motion for JEE: Torque, Inertia &#38; Angular Momentum&#34;,&#34;category&#34;:&#34;Physics&#34;,&#34;text&#34;:&#34;Rotational Motion for JEE: Torque, Inertia &#38; Angular Momentum. The whole of rotational mechanics rests on one beautiful analogy with linear motion. Master that mapping and JEE rotation problems stop being scary. Topic: Physics.&#34;},{&#34;id&#34;:&#34;isi-pigeonhole-principle&#34;,&#34;url&#34;:&#34;/blog/isi-pigeonhole-principle/&#34;,&#34;title&#34;:&#34;The Pigeonhole Principle: A Tiny Idea Behind Big Proofs (ISI/CMI)&#34;,&#34;category&#34;:&#34;Mathematics&#34;,&#34;text&#34;:&#34;The Pigeonhole Principle: A Tiny Idea Behind Big Proofs (ISI/CMI). One of the simplest yet most powerful tools in olympiad and ISI/CMI entrance maths. Learn to spot when 'too many objects, too few boxes' cracks a problem. Topic: Mathematics.&#34;},{&#34;id&#34;:&#34;how-wifi-works&#34;,&#34;url&#34;:&#34;/blog/how-wifi-works/&#34;,&#34;title&#34;:&#34;How Wi-Fi Actually Works (It's Just Radio, Cleverly)&#34;,&#34;category&#34;:&#34;Technology&#34;,&#34;text&#34;:&#34;How Wi-Fi Actually Works (It's Just Radio, Cleverly). Your router is a tiny radio station, your laptop a tiny receiver, and your data rides invisible waves at the speed of light. A friendly tour of the magic in your home. Topic: Technology.&#34;},{&#34;id&#34;:&#34;monty-hall-problem&#34;,&#34;url&#34;:&#34;/blog/monty-hall-problem/&#34;,&#34;title&#34;:&#34;The Monty Hall Problem: When Intuition Goes to War with Math&#34;,&#34;category&#34;:&#34;Mathematics&#34;,&#34;text&#34;:&#34;The Monty Hall Problem: When Intuition Goes to War with Math. Three doors, one car, two goats. A puzzle so counterintuitive it fooled mathematicians — play the interactive simulator and watch 'always switch' win two-thirds of the time. Topic: Mathematics.&#34;},{&#34;id&#34;:&#34;p-vs-np-explained&#34;,&#34;url&#34;:&#34;/blog/p-vs-np-explained/&#34;,&#34;title&#34;:&#34;P vs NP: Computer Science's Million-Dollar Question&#34;,&#34;category&#34;:&#34;Technology&#34;,&#34;text&#34;:&#34;P vs NP: Computer Science's Million-Dollar Question. Is finding a solution as easy as checking one? It sounds simple, but the answer would reshape cryptography, science, and our understanding of creativity itself. Topic: Technology.&#34;},{&#34;id&#34;:&#34;printing-press-changed-everything&#34;,&#34;url&#34;:&#34;/blog/printing-press-changed-everything/&#34;,&#34;title&#34;:&#34;The Printing Press and the Original Information Revolution&#34;,&#34;category&#34;:&#34;History&#34;,&#34;text&#34;:&#34;The Printing Press and the Original Information Revolution. Five centuries before the internet, one machine shattered the monopoly on knowledge and reshaped religion, science, and politics. The parallels to our own moment are striking. Topic: History.&#34;},{&#34;id&#34;:&#34;quantum-entanglement-demystified&#34;,&#34;url&#34;:&#34;/blog/quantum-entanglement-demystified/&#34;,&#34;title&#34;:&#34;Quantum Entanglement Without the Mysticism&#34;,&#34;category&#34;:&#34;Physics&#34;,&#34;text&#34;:&#34;Quantum Entanglement Without the Mysticism. It's been called 'spooky action at a distance,' but entanglement doesn't let you send signals faster than light. Here's what it really is — and isn't. Topic: Physics.&#34;},{&#34;id&#34;:&#34;neural-networks-the-idea&#34;,&#34;url&#34;:&#34;/blog/neural-networks-the-idea/&#34;,&#34;title&#34;:&#34;Neural Networks: The Idea Behind the Magic&#34;,&#34;category&#34;:&#34;Artificial Intelligence&#34;,&#34;text&#34;:&#34;Neural Networks: The Idea Behind the Magic. Strip away the hype and a neural network is just a stack of tunable knobs that learns to turn inputs into outputs. Here's the intuition — with a diagram and a brilliant video. Topic: Artificial Intelligence.&#34;},{&#34;id&#34;:&#34;special-relativity-time-dilation&#34;,&#34;url&#34;:&#34;/blog/special-relativity-time-dilation/&#34;,&#34;title&#34;:&#34;Special Relativity: Why Time Is Not the Same for Everyone&#34;,&#34;category&#34;:&#34;Physics&#34;,&#34;text&#34;:&#34;Special Relativity: Why Time Is Not the Same for Everyone. Move fast enough and your clock genuinely runs slow. It sounds like science fiction — but GPS satellites correct for it every day. With a light-clock diagram and a self-check quiz. Topic: Physics.&#34;},{&#34;id&#34;:&#34;simpsons-paradox&#34;,&#34;url&#34;:&#34;/blog/simpsons-paradox/&#34;,&#34;title&#34;:&#34;Simpson's Paradox: When Data Lies by Telling the Truth&#34;,&#34;category&#34;:&#34;Data Science&#34;,&#34;text&#34;:&#34;Simpson's Paradox: When Data Lies by Telling the Truth. A treatment can help every subgroup yet appear harmful overall. This statistical illusion has swayed court cases and medical decisions — here's how to spot it. Topic: Data Science.&#34;},{&#34;id&#34;:&#34;why-e-is-everywhere&#34;,&#34;url&#34;:&#34;/blog/why-e-is-everywhere/&#34;,&#34;title&#34;:&#34;Why the Number e Shows Up Everywhere&#34;,&#34;category&#34;:&#34;Mathematics&#34;,&#34;text&#34;:&#34;Why the Number e Shows Up Everywhere. Compound interest, population growth, radioactive decay, and probability all lead to the same constant: 2.71828… Here's the single idea that ties them together. Topic: Mathematics.&#34;},{&#34;id&#34;:&#34;why-llms-hallucinate&#34;,&#34;url&#34;:&#34;/blog/why-llms-hallucinate/&#34;,&#34;title&#34;:&#34;Why LLMs Hallucinate (and How to Keep Them Honest)&#34;,&#34;category&#34;:&#34;Artificial Intelligence&#34;,&#34;text&#34;:&#34;Why LLMs Hallucinate (and How to Keep Them Honest). Large language models sometimes state false things with total confidence. Understanding why reveals how to use them safely — and where they genuinely shine. Topic: Artificial Intelligence.&#34;},{&#34;id&#34;:&#34;why-the-sky-is-blue&#34;,&#34;url&#34;:&#34;/blog/why-the-sky-is-blue/&#34;,&#34;title&#34;:&#34;Why Is the Sky Blue? (And Sunsets Red)&#34;,&#34;category&#34;:&#34;Physics&#34;,&#34;text&#34;:&#34;Why Is the Sky Blue? (And Sunsets Red). The answer involves the size of air molecules, the wavelength of light, and a fourth-power law. A clear, visual explanation of one of childhood's best questions. Topic: Physics.&#34;},{&#34;id&#34;:&#34;zero-the-number-that-almost-wasnt&#34;,&#34;url&#34;:&#34;/blog/zero-the-number-that-almost-wasnt/&#34;,&#34;title&#34;:&#34;Zero: The Most Important Number That Almost Wasn't&#34;,&#34;category&#34;:&#34;History&#34;,&#34;text&#34;:&#34;Zero: The Most Important Number That Almost Wasn't. Civilizations built pyramids and predicted eclipses without it. The story of how humanity invented 'nothing' is a journey through India, the Islamic world, and centuries of resistance. Topic: History.&#34;},{&#34;id&#34;:&#34;cat-percentages-tricks&#34;,&#34;url&#34;:&#34;/blog/cat-percentages-tricks/&#34;,&#34;title&#34;:&#34;Percentages &#38; Ratios: Speed Tricks for CAT&#34;,&#34;category&#34;:&#34;Mathematics&#34;,&#34;text&#34;:&#34;Percentages &#38; Ratios: Speed Tricks for CAT. Half of CAT quant reduces to fast percentage and ratio manipulation. These mental shortcuts save precious seconds per question. Topic: Mathematics.&#34;},{&#34;id&#34;:&#34;jee-mole-concept&#34;,&#34;url&#34;:&#34;/blog/jee-mole-concept/&#34;,&#34;title&#34;:&#34;The Mole Concept, Finally Clear (JEE Chemistry)&#34;,&#34;category&#34;:&#34;Science&#34;,&#34;text&#34;:&#34;The Mole Concept, Finally Clear (JEE Chemistry). Stoichiometry trips up countless JEE aspirants. Master the single bridge — the mole — and chemical calculations become bookkeeping. Topic: Science.&#34;},{&#34;id&#34;:&#34;central-limit-theorem&#34;,&#34;url&#34;:&#34;/blog/central-limit-theorem/&#34;,&#34;title&#34;:&#34;The Central Limit Theorem: Why Bell Curves Are Everywhere&#34;,&#34;category&#34;:&#34;Data Science&#34;,&#34;text&#34;:&#34;The Central Limit Theorem: Why Bell Curves Are Everywhere. Heights, measurement errors, polling averages, test scores — they all pile up into the same bell shape. The Central Limit Theorem explains why averaging almost anything conjures a normal distribution out of chaos. Topic: Data Science.&#34;},{&#34;id&#34;:&#34;elliptic-curve-cryptography-intuition&#34;,&#34;url&#34;:&#34;/blog/elliptic-curve-cryptography-intuition/&#34;,&#34;title&#34;:&#34;Elliptic Curve Cryptography, Without the Fear&#34;,&#34;category&#34;:&#34;Cryptography&#34;,&#34;text&#34;:&#34;Elliptic Curve Cryptography, Without the Fear. ECC secures your phone, your messages and most modern websites — with keys a fraction the size of RSA's. Here's the surprisingly visual idea behind it: bouncing points around a curve in a way that's trivial forward and brutal to reverse. Topic: Cryptography.&#34;},{&#34;id&#34;:&#34;how-https-keeps-you-safe&#34;,&#34;url&#34;:&#34;/blog/how-https-keeps-you-safe/&#34;,&#34;title&#34;:&#34;How HTTPS Actually Keeps You Safe&#34;,&#34;category&#34;:&#34;Technology&#34;,&#34;text&#34;:&#34;How HTTPS Actually Keeps You Safe. The little padlock in your address bar hides a clever choreography: a public-key handshake to agree on a secret, a certificate to prove you're talking to who you think, and fast symmetric encryption for everything after. Here's the whole dance. Topic: Technology.&#34;},{&#34;id&#34;:&#34;overfitting-and-regularization&#34;,&#34;url&#34;:&#34;/blog/overfitting-and-regularization/&#34;,&#34;title&#34;:&#34;Overfitting and the Art of Knowing Less&#34;,&#34;category&#34;:&#34;Machine Learning&#34;,&#34;text&#34;:&#34;Overfitting and the Art of Knowing Less. A model that memorises its training data looks brilliant — until it meets the real world. Here's why overfitting happens and how regularization gently forces a model to generalise. Topic: Machine Learning.&#34;},{&#34;id&#34;:&#34;time-value-of-money&#34;,&#34;url&#34;:&#34;/blog/time-value-of-money/&#34;,&#34;title&#34;:&#34;The Time Value of Money: Why a Rupee Today Beats a Rupee Tomorrow&#34;,&#34;category&#34;:&#34;Finance&#34;,&#34;text&#34;:&#34;The Time Value of Money: Why a Rupee Today Beats a Rupee Tomorrow. The single idea behind loans, investments, valuations and your retirement plan — that money has a price for time, and that price compounds. Topic: Finance.&#34;},{&#34;id&#34;:&#34;what-temperature-really-is&#34;,&#34;url&#34;:&#34;/blog/what-temperature-really-is/&#34;,&#34;title&#34;:&#34;What Temperature Really Is&#34;,&#34;category&#34;:&#34;Physics&#34;,&#34;text&#34;:&#34;What Temperature Really Is. Hot and cold feel obvious — but temperature isn't a substance flowing around. It's a statement about the frantic, invisible motion of atoms, and that reframing explains everything from why metal feels colder than wood to why absolute zero is a hard floor. Topic: Physics.&#34;}]"><div class="flex items-center justify-between border-b border-gray-200 bg-gradient-to-r from-brand-600 to-pink-500 px-4 py-3 text-white dark:border-white/10"><div class="flex items-center gap-2"><span class="grid h-8 w-8 place-items-center rounded-full bg-white/20 text-lg">🦉</span><div><p class="text-sm font-bold leading-none">Ask Poly</p><p class="text-[11px] opacity-80" id="ai-sub">AI assistant · runs in your browser</p></div></div><button id="ai-close" aria-label="Close" class="rounded-lg p-1 text-white/80 hover:bg-white/20 hover:text-white">✕</button></div><div id="ai-messages" class="flex-1 space-y-3 overflow-y-auto p-4 text-sm"><div class="rounded-2xl rounded-tl-sm bg-gray-100 p-3 text-gray-700 dark:bg-white/5 dark:text-gray-200">
+Hi! I'm <b>Poly</b> 🦉 — a free, open-source AI running entirely on your device (no servers, no cost). Say hi, or ask me anything about what's on this site.
+<span class="mt-1 block text-xs text-gray-400">First real question loads a small chat model once (cached after). On WebGPU devices it uses Llama 3.2.</span></div></div><div id="ai-suggest" class="flex flex-wrap gap-2 px-4 pb-2"><button class="ai-chip rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300">What is attention in transformers?</button><button class="ai-chip rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300">Why do LLMs hallucinate?</button><button class="ai-chip rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300">Explain the Monty Hall problem</button><button class="ai-chip rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 transition hover:border-brand-400 hover:text-brand-600 dark:border-white/10 dark:text-gray-300">How does compound interest work?</button></div><div class="border-t border-gray-200 p-3 dark:border-white/10"><div class="flex items-end gap-2"><textarea id="ai-input" rows="1" placeholder="Say hi or ask a question…" class="max-h-24 flex-1 resize-none rounded-xl border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:border-brand-500 dark:border-white/15"></textarea><button id="ai-send" class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-600 text-white transition hover:bg-brand-700 disabled:opacity-50" aria-label="Send">➤</button></div><p class="mt-1.5 text-center text-[10px] text-gray-400">Open-source models via Transformers.js · answers are AI-generated, verify what matters</p></div></div><script>(function(){const siteName = "Polymath";
+
+      (function () {
+        const fab = document.getElementById("ai-fab");
+        const panel = document.getElementById("ai-panel");
+        if (!fab || !panel) return;
+        const closeBtn = document.getElementById("ai-close");
+        const msgs = document.getElementById("ai-messages");
+        const input = document.getElementById("ai-input");
+        const send = document.getElementById("ai-send");
+        const sub = document.getElementById("ai-sub");
+
+        const CDN = panel.getAttribute("data-cdn");
+        const EMBED = panel.getAttribute("data-embed");
+        const CFG = JSON.parse(panel.getAttribute("data-config"));
+        const DOCS = JSON.parse(panel.getAttribute("data-docs") || "[]");
+
+        let extractor = null, generator = null, docVecs = null, loading = false, ready = false, device = "wasm", modelName = "";
+        const history = [];
+
+        function open() { panel.classList.remove("hidden"); panel.classList.add("flex"); input.focus(); }
+        function close() { panel.classList.add("hidden"); panel.classList.remove("flex"); }
+        fab.addEventListener("click", () => (panel.classList.contains("hidden") ? open() : close()));
+        closeBtn.addEventListener("click", close);
+
+        function bubble(role, html) {
+          const el = document.createElement("div");
+          el.className = role === "user"
+            ? "ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-brand-600 p-3 text-white"
+            : "max-w-[92%] rounded-2xl rounded-tl-sm bg-gray-100 p-3 text-gray-700 dark:bg-white/5 dark:text-gray-200";
+          el.innerHTML = html;
+          msgs.appendChild(el);
+          msgs.scrollTop = msgs.scrollHeight;
+          return el;
+        }
+        function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+        function fmt(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>"); }
+
+        async function ensureModels(statusEl) {
+          if (ready) return true;
+          if (loading) return false;
+          loading = true;
+          try {
+            const tf = await import(CDN);
+            const hasGPU = typeof navigator !== "undefined" && !!navigator.gpu;
+            const choice = hasGPU ? CFG.webgpu : CFG.wasm;
+            device = hasGPU ? "webgpu" : "wasm";
+            modelName = choice.model.split("/").pop();
+            const prog = (label) => (p) => { if (p && p.status === "progress" && statusEl) statusEl.innerHTML = "⏳ " + label + " " + Math.round(p.progress || 0) + "%"; };
+
+            statusEl.innerHTML = "⏳ Loading search model…";
+            extractor = await tf.pipeline("feature-extraction", EMBED, { progress_callback: prog("search index") });
+            const out = await extractor(DOCS.map((d) => d.text), { pooling: "mean", normalize: true });
+            docVecs = out.tolist();
+
+            statusEl.innerHTML = "⏳ Loading " + modelName + " (one-time)…";
+            try {
+              generator = await tf.pipeline("text-generation", choice.model, { device: device, dtype: choice.dtype, progress_callback: prog(modelName) });
+            } catch (e1) {
+              // Fallback to the small WASM model if the preferred one fails.
+              device = "wasm"; modelName = CFG.wasm.model.split("/").pop();
+              statusEl.innerHTML = "⏳ Loading " + modelName + "…";
+              generator = await tf.pipeline("text-generation", CFG.wasm.model, { device: "wasm", dtype: CFG.wasm.dtype, progress_callback: prog(modelName) });
+            }
+            sub.textContent = modelName + " · " + device;
+            ready = true; loading = false; return true;
+          } catch (e) {
+            loading = false;
+            statusEl.innerHTML = "⚠️ Couldn't load the model (connection/browser support). I'll still point you to relevant articles.";
+            return false;
+          }
+        }
+
+        function dot(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; }
+        function keywordTop(q) {
+          const w = q.toLowerCase().split(/\W+/).filter((x) => x.length > 3);
+          return DOCS.map((d) => ({ d, s: w.reduce((n, x) => n + (d.text.toLowerCase().includes(x) ? 1 : 0), 0) }))
+            .sort((a, b) => b.s - a.s).filter((x) => x.s > 0).slice(0, 3).map((x) => x.d);
+        }
+        function sourcesHtml(top) {
+          if (!top.length) return "";
+          return '<div class="mt-2 border-t border-gray-200 pt-2 dark:border-white/10"><p class="mb-1 text-xs font-semibold text-gray-400">📚 Related reading</p>' +
+            top.map((d) => '<a href="' + d.url + '" class="block text-xs font-medium text-brand-600 hover:underline dark:text-brand-300">→ ' + esc(d.title) + '</a>').join("") + '</div>';
+        }
+
+        const GREET = /^\s*(hi|hii+|hey|hello|yo|sup|hola|namaste|howdy|good\s*(morning|afternoon|evening)|what'?s up|how are you|who are you|what can you do|help)\b/i;
+
+        async function answer(q) {
+          bubble("user", esc(q));
+          history.push({ role: "user", content: q });
+
+          // Friendly instant reply for greetings / small talk — no model needed.
+          if (GREET.test(q) || q.trim().length < 3) {
+            const reply = "Hey! 👋 I'm <b>Poly</b>, your guide to this site. Ask me things like:<br>• \"Explain the Monty Hall problem\"<br>• \"How do neural networks learn?\"<br>• \"What is RSA encryption?\"<br><br>I'll find the best article and explain it in plain language.";
+            const el = bubble("assistant", reply);
+            history.push({ role: "assistant", content: "Greeting — offered help and examples." });
+            msgs.scrollTop = msgs.scrollHeight;
+            return;
+          }
+
+          const thinking = bubble("assistant", "<span class='inline-block animate-pulse'>Thinking…</span>");
+          const ok = await ensureModels(thinking);
+
+          // Rank articles; keep scores so we can attach the most relevant links.
+          let scored = [];
+          if (ok && extractor && docVecs) {
+            try {
+              const qv = (await extractor([q], { pooling: "mean", normalize: true })).tolist()[0];
+              scored = DOCS.map((d, i) => ({ d, s: dot(qv, docVecs[i]) })).sort((a, b) => b.s - a.s);
+            } catch (e) { scored = keywordTop(q).map((d) => ({ d, s: 1 })); }
+          } else {
+            scored = keywordTop(q).map((d) => ({ d, s: 1 }));
+          }
+          // Strongly-related links (good match); fall back to the single best.
+          let links = scored.filter((x) => x.s > 0.3).slice(0, 3).map((x) => x.d);
+          if (!links.length && scored.length) links = [scored[0].d];
+          const topForCtx = scored.slice(0, 3).map((x) => x.d);
+
+          if (ok && generator) {
+            try {
+              thinking.innerHTML = "<span class='inline-block animate-pulse'>Writing…</span>";
+              const ctx = topForCtx.map((d) => "- " + d.title + ": " + d.text).join("\n");
+              const messages = [
+                { role: "system", content: "You are Poly, a knowledgeable and friendly assistant on the " + siteName + " learning site. Answer the user's question directly and accurately using your OWN knowledge — give a real explanation, not just a referral. Be clear and concise (about 3-6 sentences). The following site articles may be relevant background you can draw on or mention, but always answer the question itself:\n" + ctx },
+                ...history.slice(-5),
+              ];
+              const out = await generator(messages, { max_new_tokens: 256, do_sample: true, temperature: 0.7, top_p: 0.9, repetition_penalty: 1.2 });
+              let g = out[0].generated_text;
+              let text = Array.isArray(g) ? (g[g.length - 1].content || "") : String(g);
+              text = text.trim();
+              if (!text) text = "Here's the most relevant reading I found:";
+              history.push({ role: "assistant", content: text });
+              thinking.innerHTML = fmt(text) + sourcesHtml(links);
+            } catch (e) {
+              thinking.innerHTML = "Sorry, I had trouble writing that. Here's relevant reading:" + sourcesHtml(links.length ? links : topForCtx);
+            }
+          } else {
+            thinking.innerHTML = "Here's the most relevant reading I found:" + sourcesHtml(links.length ? links : topForCtx);
+          }
+          msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function submit() {
+          const q = input.value.trim();
+          if (!q || loading) return;
+          input.value = ""; input.style.height = "auto";
+          answer(q);
+        }
+        send.addEventListener("click", submit);
+        input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } });
+        input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(96, input.scrollHeight) + "px"; });
+        document.querySelectorAll("#ai-suggest .ai-chip").forEach((c) => c.addEventListener("click", () => { input.value = c.textContent; submit(); }));
+      })();
+    })();</script> <div id="cmdk" class="fixed inset-0 z-[70] hidden items-start justify-center bg-black/40 p-4 pt-[12vh] backdrop-blur-sm" data-index="[{&#34;t&#34;:&#34;Home&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Articles&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/blog&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Exams&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/exams&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Frontiers&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/frontiers&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Arcade&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/play&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Write&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/write&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;About&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/about&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Reading list&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/reading-list&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Tags&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/tags&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Community&#34;,&#34;s&#34;:&#34;Page&#34;,&#34;u&#34;:&#34;/community&#34;,&#34;k&#34;:&#34;page&#34;},{&#34;t&#34;:&#34;Artificial Intelligence&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/ai&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;🤖&#34;},{&#34;t&#34;:&#34;Machine Learning&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/machine-learning&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;📈&#34;},{&#34;t&#34;:&#34;Data Science&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/data-science&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;🔬&#34;},{&#34;t&#34;:&#34;Mathematics&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/mathematics&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;∑&#34;},{&#34;t&#34;:&#34;Physics&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/physics&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;⚛️&#34;},{&#34;t&#34;:&#34;Cryptography&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/cryptography&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;🔐&#34;},{&#34;t&#34;:&#34;Finance&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/finance&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;💹&#34;},{&#34;t&#34;:&#34;Science&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/science&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;🧪&#34;},{&#34;t&#34;:&#34;Technology&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/technology&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;💡&#34;},{&#34;t&#34;:&#34;History&#34;,&#34;s&#34;:&#34;Topic&#34;,&#34;u&#34;:&#34;/categories/history&#34;,&#34;k&#34;:&#34;topic&#34;,&#34;i&#34;:&#34;🏛️&#34;},{&#34;t&#34;:&#34;Ada Lovelace: The First Programmer, a Century Early&#34;,&#34;s&#34;:&#34;History&#34;,&#34;u&#34;:&#34;/blog/ada-lovelace-first-programmer/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;👩‍💻&#34;},{&#34;t&#34;:&#34;Attention, Explained: How Transformers Actually Think&#34;,&#34;s&#34;:&#34;Artificial Intelligence&#34;,&#34;u&#34;:&#34;/blog/attention-is-all-you-need-explained/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🤖&#34;},{&#34;t&#34;:&#34;Bayes' Theorem: The Math of Changing Your Mind&#34;,&#34;s&#34;:&#34;Data Science&#34;,&#34;u&#34;:&#34;/blog/bayes-theorem-updating-beliefs/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🎲&#34;},{&#34;t&#34;:&#34;Compound Interest: The Most Powerful Force You're Ignoring&#34;,&#34;s&#34;:&#34;Finance&#34;,&#34;u&#34;:&#34;/blog/compound-interest-eighth-wonder/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;💹&#34;},{&#34;t&#34;:&#34;Algorithmic Bias: How Neutral-Looking Models Learn Unfairness&#34;,&#34;s&#34;:&#34;Data Science&#34;,&#34;u&#34;:&#34;/blog/algorithmic-bias/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;⚖️&#34;},{&#34;t&#34;:&#34;CRISPR: How We Learned to Edit Life Itself&#34;,&#34;s&#34;:&#34;Science&#34;,&#34;u&#34;:&#34;/blog/crispr-rewriting-life/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🧬&#34;},{&#34;t&#34;:&#34;Data Cleaning: The Unglamorous 80% of Data Science&#34;,&#34;s&#34;:&#34;Data Science&#34;,&#34;u&#34;:&#34;/blog/data-cleaning-the-unglamorous-truth/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔬&#34;},{&#34;t&#34;:&#34;The Bias–Variance Tradeoff, Without the Hand-Waving&#34;,&#34;s&#34;:&#34;Machine Learning&#34;,&#34;u&#34;:&#34;/blog/bias-variance-tradeoff/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;📈&#34;},{&#34;t&#34;:&#34;Correlation Is Not Causation: The Most Important Stats Lesson&#34;,&#34;s&#34;:&#34;Data Science&#34;,&#34;u&#34;:&#34;/blog/correlation-is-not-causation/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔗&#34;},{&#34;t&#34;:&#34;Decision Trees and Random Forests, Explained Simply&#34;,&#34;s&#34;:&#34;Machine Learning&#34;,&#34;u&#34;:&#34;/blog/decision-trees-random-forests/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🌳&#34;},{&#34;t&#34;:&#34;Entropy and the Arrow of Time&#34;,&#34;s&#34;:&#34;Science&#34;,&#34;u&#34;:&#34;/blog/entropy-arrow-of-time/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;⏳&#34;},{&#34;t&#34;:&#34;Diversification: The Only Free Lunch in Investing&#34;,&#34;s&#34;:&#34;Finance&#34;,&#34;u&#34;:&#34;/blog/diversification-free-lunch/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🧺&#34;},{&#34;t&#34;:&#34;Diffie–Hellman: How to Agree on a Secret in Public&#34;,&#34;s&#34;:&#34;Cryptography&#34;,&#34;u&#34;:&#34;/blog/diffie-hellman-secret-in-public/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🎨&#34;},{&#34;t&#34;:&#34;Fibonacci and the Golden Ratio: Beauty, Hype, and Truth&#34;,&#34;s&#34;:&#34;Mathematics&#34;,&#34;u&#34;:&#34;/blog/fibonacci-and-golden-ratio/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🌻&#34;},{&#34;t&#34;:&#34;Hash Functions: The Internet's Fingerprints&#34;,&#34;s&#34;:&#34;Cryptography&#34;,&#34;u&#34;:&#34;/blog/hash-functions-explained/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔏&#34;},{&#34;t&#34;:&#34;Gradient Descent: How Machines Learn by Walking Downhill&#34;,&#34;s&#34;:&#34;Machine Learning&#34;,&#34;u&#34;:&#34;/blog/gradient-descent-intuition/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;⛰️&#34;},{&#34;t&#34;:&#34;Big-O &#38; Time Complexity for GATE CS, Made Intuitive&#34;,&#34;s&#34;:&#34;Technology&#34;,&#34;u&#34;:&#34;/blog/gate-big-o-complexity/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;⚙️&#34;},{&#34;t&#34;:&#34;What Actually Happens When You Open a Website&#34;,&#34;s&#34;:&#34;Technology&#34;,&#34;u&#34;:&#34;/blog/how-the-internet-actually-works/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🌐&#34;},{&#34;t&#34;:&#34;How Vaccines Teach Your Immune System (Without the Disease)&#34;,&#34;s&#34;:&#34;Science&#34;,&#34;u&#34;:&#34;/blog/how-vaccines-train-immunity/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;💉&#34;},{&#34;t&#34;:&#34;How RSA Lets Strangers Share Secrets&#34;,&#34;s&#34;:&#34;Cryptography&#34;,&#34;u&#34;:&#34;/blog/how-rsa-encryption-works/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔐&#34;},{&#34;t&#34;:&#34;Rotational Motion for JEE: Torque, Inertia &#38; Angular Momentum&#34;,&#34;s&#34;:&#34;Physics&#34;,&#34;u&#34;:&#34;/blog/jee-rotational-motion/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🌀&#34;},{&#34;t&#34;:&#34;The Pigeonhole Principle: A Tiny Idea Behind Big Proofs (ISI/CMI)&#34;,&#34;s&#34;:&#34;Mathematics&#34;,&#34;u&#34;:&#34;/blog/isi-pigeonhole-principle/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🕳️&#34;},{&#34;t&#34;:&#34;How Wi-Fi Actually Works (It's Just Radio, Cleverly)&#34;,&#34;s&#34;:&#34;Technology&#34;,&#34;u&#34;:&#34;/blog/how-wifi-works/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;📶&#34;},{&#34;t&#34;:&#34;The Monty Hall Problem: When Intuition Goes to War with Math&#34;,&#34;s&#34;:&#34;Mathematics&#34;,&#34;u&#34;:&#34;/blog/monty-hall-problem/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🚪&#34;},{&#34;t&#34;:&#34;P vs NP: Computer Science's Million-Dollar Question&#34;,&#34;s&#34;:&#34;Technology&#34;,&#34;u&#34;:&#34;/blog/p-vs-np-explained/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;❓&#34;},{&#34;t&#34;:&#34;The Printing Press and the Original Information Revolution&#34;,&#34;s&#34;:&#34;History&#34;,&#34;u&#34;:&#34;/blog/printing-press-changed-everything/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🏛️&#34;},{&#34;t&#34;:&#34;Quantum Entanglement Without the Mysticism&#34;,&#34;s&#34;:&#34;Physics&#34;,&#34;u&#34;:&#34;/blog/quantum-entanglement-demystified/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;⚛️&#34;},{&#34;t&#34;:&#34;Neural Networks: The Idea Behind the Magic&#34;,&#34;s&#34;:&#34;Artificial Intelligence&#34;,&#34;u&#34;:&#34;/blog/neural-networks-the-idea/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🧠&#34;},{&#34;t&#34;:&#34;Special Relativity: Why Time Is Not the Same for Everyone&#34;,&#34;s&#34;:&#34;Physics&#34;,&#34;u&#34;:&#34;/blog/special-relativity-time-dilation/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🚀&#34;},{&#34;t&#34;:&#34;Simpson's Paradox: When Data Lies by Telling the Truth&#34;,&#34;s&#34;:&#34;Data Science&#34;,&#34;u&#34;:&#34;/blog/simpsons-paradox/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔀&#34;},{&#34;t&#34;:&#34;Why the Number e Shows Up Everywhere&#34;,&#34;s&#34;:&#34;Mathematics&#34;,&#34;u&#34;:&#34;/blog/why-e-is-everywhere/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;∑&#34;},{&#34;t&#34;:&#34;Why LLMs Hallucinate (and How to Keep Them Honest)&#34;,&#34;s&#34;:&#34;Artificial Intelligence&#34;,&#34;u&#34;:&#34;/blog/why-llms-hallucinate/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🌀&#34;},{&#34;t&#34;:&#34;Why Is the Sky Blue? (And Sunsets Red)&#34;,&#34;s&#34;:&#34;Physics&#34;,&#34;u&#34;:&#34;/blog/why-the-sky-is-blue/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🌤️&#34;},{&#34;t&#34;:&#34;Zero: The Most Important Number That Almost Wasn't&#34;,&#34;s&#34;:&#34;History&#34;,&#34;u&#34;:&#34;/blog/zero-the-number-that-almost-wasnt/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;0️⃣&#34;},{&#34;t&#34;:&#34;Percentages &#38; Ratios: Speed Tricks for CAT&#34;,&#34;s&#34;:&#34;Mathematics&#34;,&#34;u&#34;:&#34;/blog/cat-percentages-tricks/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;📊&#34;},{&#34;t&#34;:&#34;The Mole Concept, Finally Clear (JEE Chemistry)&#34;,&#34;s&#34;:&#34;Science&#34;,&#34;u&#34;:&#34;/blog/jee-mole-concept/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;⚗️&#34;},{&#34;t&#34;:&#34;The Central Limit Theorem: Why Bell Curves Are Everywhere&#34;,&#34;s&#34;:&#34;Data Science&#34;,&#34;u&#34;:&#34;/blog/central-limit-theorem/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔔&#34;},{&#34;t&#34;:&#34;Elliptic Curve Cryptography, Without the Fear&#34;,&#34;s&#34;:&#34;Cryptography&#34;,&#34;u&#34;:&#34;/blog/elliptic-curve-cryptography-intuition/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔐&#34;},{&#34;t&#34;:&#34;How HTTPS Actually Keeps You Safe&#34;,&#34;s&#34;:&#34;Technology&#34;,&#34;u&#34;:&#34;/blog/how-https-keeps-you-safe/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🔒&#34;},{&#34;t&#34;:&#34;Overfitting and the Art of Knowing Less&#34;,&#34;s&#34;:&#34;Machine Learning&#34;,&#34;u&#34;:&#34;/blog/overfitting-and-regularization/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;📉&#34;},{&#34;t&#34;:&#34;The Time Value of Money: Why a Rupee Today Beats a Rupee Tomorrow&#34;,&#34;s&#34;:&#34;Finance&#34;,&#34;u&#34;:&#34;/blog/time-value-of-money/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;💹&#34;},{&#34;t&#34;:&#34;What Temperature Really Is&#34;,&#34;s&#34;:&#34;Physics&#34;,&#34;u&#34;:&#34;/blog/what-temperature-really-is/&#34;,&#34;k&#34;:&#34;article&#34;,&#34;i&#34;:&#34;🌡️&#34;}]"> <div class="w-full max-w-xl overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-white/10 dark:bg-ink"> <div class="flex items-center gap-2 border-b border-gray-200 px-4 dark:border-white/10"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-400"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg> <input id="cmdk-input" type="text" placeholder="Search articles, topics, pages…" class="w-full bg-transparent py-3.5 text-sm outline-none placeholder:text-gray-400"> <kbd class="hidden rounded border border-gray-200 px-1.5 py-0.5 text-[10px] text-gray-400 sm:inline dark:border-white/10">esc</kbd> </div> <ul id="cmdk-results" class="max-h-[55vh] overflow-y-auto p-2"></ul> <div class="flex items-center justify-between border-t border-gray-200 px-4 py-2 text-[11px] text-gray-400 dark:border-white/10"> <span><kbd class="rounded border border-gray-200 px-1 dark:border-white/10">↑</kbd> <kbd class="rounded border border-gray-200 px-1 dark:border-white/10">↓</kbd> to navigate</span> <span><kbd class="rounded border border-gray-200 px-1 dark:border-white/10">↵</kbd> to open</span> </div> </div> </div> <script>
+  (function () {
+    const modal = document.getElementById("cmdk");
+    if (!modal) return;
+    if (modal.parentElement !== document.body) document.body.appendChild(modal);
+    const input = document.getElementById("cmdk-input");
+    const results = document.getElementById("cmdk-results");
+    const INDEX = JSON.parse(modal.getAttribute("data-index") || "[]");
+    let items = [];
+    let active = 0;
+
+    const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const iconFor = (k) => k === "article" ? "📄" : k === "topic" ? "🗂️" : "↗";
+
+    function search(q) {
+      q = q.trim().toLowerCase();
+      if (!q) return INDEX.filter((x) => x.k !== "article").slice(0, 8).concat(INDEX.filter((x) => x.k === "article").slice(0, 4));
+      const scored = [];
+      for (const x of INDEX) {
+        const t = x.t.toLowerCase();
+        let s = -1;
+        if (t === q) s = 100;
+        else if (t.startsWith(q)) s = 80;
+        else if (t.includes(q)) s = 50;
+        else if ((x.s || "").toLowerCase().includes(q)) s = 20;
+        if (s >= 0) scored.push({ x, s });
+      }
+      return scored.sort((a, b) => b.s - a.s).slice(0, 12).map((r) => r.x);
+    }
+
+    function render() {
+      if (!items.length) {
+        results.innerHTML = '<li class="px-3 py-6 text-center text-sm text-gray-400">No matches</li>';
+        return;
+      }
+      results.innerHTML = items.map((x, i) =>
+        '<li><a href="' + x.u + '" data-i="' + i + '" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ' + (i === active ? "bg-brand-50 dark:bg-white/10" : "") + '">' +
+          '<span class="text-base">' + (x.i || iconFor(x.k)) + '</span>' +
+          '<span class="flex-1 truncate font-medium text-gray-900 dark:text-white">' + esc(x.t) + '</span>' +
+          '<span class="shrink-0 text-xs text-gray-400">' + esc(x.s) + '</span>' +
+        '</a></li>'
+      ).join("");
+      const act = results.querySelector('[data-i="' + active + '"]');
+      if (act) act.scrollIntoView({ block: "nearest" });
+    }
+
+    function open() {
+      modal.classList.remove("hidden"); modal.classList.add("flex");
+      input.value = ""; items = search(""); active = 0; render();
+      setTimeout(() => input.focus(), 20);
+    }
+    function close() { modal.classList.add("hidden"); modal.classList.remove("flex"); }
+    function isOpen() { return !modal.classList.contains("hidden"); }
+    window.PolyPalette = { open };
+
+    input.addEventListener("input", () => { items = search(input.value); active = 0; render(); });
+    results.addEventListener("mousemove", (e) => { const a = e.target.closest("[data-i]"); if (a) { active = +a.getAttribute("data-i"); render(); } });
+    modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+
+    document.addEventListener("keydown", (e) => {
+      const tag = (e.target && e.target.tagName) || "";
+      const typing = tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable);
+      // Open with Cmd/Ctrl+K, or "/" when not typing
+      if ((e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing && !isOpen())) {
+        e.preventDefault(); open(); return;
+      }
+      if (!isOpen()) return;
+      if (e.key === "Escape") { e.preventDefault(); close(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+      else if (e.key === "Enter") { const x = items[active]; if (x) location.href = x.u; }
+    });
+  })();
+</script> <!-- Reading progress, back-to-top, copy-code, keyboard shortcut --> <script>
+      (function () {
+        const bar = document.getElementById("reading-progress");
+        const toTop = document.getElementById("back-to-top");
+        function onScroll() {
+          const h = document.documentElement;
+          const max = h.scrollHeight - h.clientHeight;
+          const p = max > 0 ? h.scrollTop / max : 0;
+          if (bar) bar.style.transform = `scaleX(${p})`;
+          if (toTop) {
+            const show = h.scrollTop > 600;
+            toTop.style.opacity = show ? "1" : "0";
+            toTop.style.transform = show ? "none" : "translateY(1rem)";
+            toTop.style.pointerEvents = show ? "auto" : "none";
+          }
+        }
+        document.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+        toTop?.addEventListener("click", () =>
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        );
+
+        // Copy buttons on code blocks
+        document.querySelectorAll("article pre").forEach((pre) => {
+          pre.style.position = "relative";
+          const btn = document.createElement("button");
+          btn.textContent = "Copy";
+          btn.setAttribute("aria-label", "Copy code");
+          btn.style.cssText =
+            "position:absolute;top:.5rem;right:.5rem;font-size:.7rem;font-weight:600;padding:.25rem .5rem;border-radius:.4rem;background:rgba(127,127,127,.18);color:inherit;border:0;cursor:pointer;opacity:0;transition:opacity .15s";
+          pre.addEventListener("mouseenter", () => (btn.style.opacity = "1"));
+          pre.addEventListener("mouseleave", () => (btn.style.opacity = "0"));
+          btn.addEventListener("click", async () => {
+            const code = pre.querySelector("code");
+            try {
+              await navigator.clipboard.writeText(code ? code.innerText : pre.innerText);
+              btn.textContent = "Copied!";
+              setTimeout(() => (btn.textContent = "Copy"), 1200);
+            } catch (e) {}
+          });
+          pre.appendChild(btn);
+        });
+
+        // Hover anchor links on article headings (click to copy section URL)
+        document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach((h) => {
+          const a = document.createElement("a");
+          a.href = "#" + h.id;
+          a.className = "heading-anchor";
+          a.setAttribute("aria-label", "Link to this section");
+          a.textContent = "#";
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
+            const url = location.origin + location.pathname + "#" + h.id;
+            history.replaceState(null, "", "#" + h.id);
+            h.scrollIntoView({ behavior: "smooth" });
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(url).then(() => {
+                a.textContent = "✓";
+                setTimeout(() => (a.textContent = "#"), 1000);
+              }).catch(() => {});
+            }
+          });
+          h.appendChild(a);
+        });
+      })();
+
+      // Engagement counts (💬 comments · ❤️ likes) on article cards
+      (async function () {
+        const els = document.querySelectorAll("[data-counts]");
+        if (!els.length || !window.polyDB) return;
+        try {
+          const sb = await window.polyDB();
+          if (!sb) return;
+          const [cc, al] = await Promise.all([
+            sb.rpc("comment_counts"),
+            sb.from("article_likes").select("slug,likes"),
+          ]);
+          const cmap = {}; (cc.data || []).forEach((r) => (cmap[r.slug] = r.n));
+          const lmap = {}; (al.data || []).forEach((r) => (lmap[r.slug] = r.likes));
+          els.forEach((el) => {
+            const s = el.getAttribute("data-slug");
+            const c = cmap[s] || 0, l = lmap[s] || 0;
+            if (c || l) {
+              el.innerHTML = "<span>·</span>" + (c ? "<span>💬 " + c + "</span>" : "") + (l ? "<span>❤️ " + l + "</span>" : "");
+              el.classList.remove("hidden"); el.classList.add("flex");
+            }
+          });
+        } catch (e) {}
+      })();
+
+      // Lazy code-syntax highlighting for client-rendered user posts.
+      window.polyHighlight = async function (el) {
+        if (!el) return;
+        try {
+          if (!document.getElementById("hljs-theme")) {
+            const link = document.createElement("link");
+            link.id = "hljs-theme"; link.rel = "stylesheet";
+            link.href = "https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark.min.css";
+            document.head.appendChild(link);
+          }
+          if (!window.__hljs) window.__hljs = (await import("https://esm.sh/highlight.js@11")).default;
+          el.querySelectorAll("pre code").forEach((c) => { try { window.__hljs.highlightElement(c); } catch (e) {} });
+        } catch (e) {}
+      };
+
+      // Reusable likes + comments widget for community posts (slug = "post:<id>")
+      window.PolyEngage = async function (el, slug) {
+        if (!el || !window.polyDB) return;
+        const sb = await window.polyDB();
+        if (!sb) return;
+        const esc = (s) => String(s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        const dice = (s) => "https://api.dicebear.com/9.x/thumbs/svg?seed=" + encodeURIComponent(s || "anon") + "&radius=50";
+
+        let likes = 0;
+        try { const r = await sb.from("article_likes").select("likes").eq("slug", slug).maybeSingle(); likes = (r.data && r.data.likes) || 0; } catch (e) {}
+        const lk = "liked:" + slug;
+        let mine = localStorage.getItem(lk) === "1";
+        el.innerHTML =
+          '<div class="flex items-center gap-3 border-y border-gray-200 py-3 dark:border-white/10">' +
+            '<button id="pe-like" class="inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm font-semibold"></button>' +
+            '<span class="text-sm text-gray-400">Enjoyed this? Leave a comment 👇</span></div>' +
+            '<div id="pe-comments" class="mt-4"></div>';
+        const likeBtn = el.querySelector("#pe-like");
+        function paintLike() { likeBtn.className = "inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-sm font-semibold " + (mine ? "border-pink-400 text-pink-600" : "border-gray-200 text-gray-600 dark:border-white/10 dark:text-gray-300"); likeBtn.innerHTML = (mine ? "❤️" : "🤍") + " " + likes; }
+        paintLike();
+        likeBtn.addEventListener("click", async () => {
+          const delta = mine ? -1 : 1; mine = !mine; localStorage.setItem(lk, mine ? "1" : "0"); likes = Math.max(0, likes + delta); paintLike();
+          try { await sb.rpc("toggle_like", { article_slug: slug, delta }); } catch (e) {}
+        });
+
+        const wrap = el.querySelector("#pe-comments");
+        async function renderComments() {
+          wrap.innerHTML = '<p class="text-sm text-gray-400">Loading comments…</p>';
+          let rows = []; try { const r = await sb.from("comments").select("*").eq("slug", slug).order("created_at", { ascending: true }); rows = r.data || []; } catch (e) {}
+          const u = window.PolyAuth && window.PolyAuth.user;
+          wrap.innerHTML =
+            '<div class="rounded-2xl border border-gray-200 p-4 dark:border-white/10"><div class="flex flex-wrap gap-2">' +
+              '<input id="pe-name" placeholder="Name" value="' + esc(u ? u.name : "") + '" class="w-32 rounded-lg border border-gray-300 bg-transparent px-2 py-1.5 text-sm dark:border-white/15"/>' +
+              '<input id="pe-body" placeholder="Add a comment…" class="min-w-40 flex-1 rounded-lg border border-gray-300 bg-transparent px-2 py-1.5 text-sm dark:border-white/15"/>' +
+              '<button id="pe-post" class="rounded-lg bg-brand-600 px-3 text-sm font-semibold text-white">Post</button></div></div>' +
+            '<p class="mt-3 text-sm text-gray-500">' + rows.length + ' comment' + (rows.length === 1 ? "" : "s") + '</p>' +
+            '<div class="mt-2 space-y-3">' + (rows.length ? rows.map((c) =>
+              '<div class="flex items-start gap-3"><img src="' + (c.avatar_url || dice(c.name)) + '" width="32" height="32" class="h-8 w-8 shrink-0 rounded-full bg-gray-100 dark:bg-white/10"/>' +
+              '<div><div class="text-sm font-semibold text-gray-900 dark:text-white">' + esc(c.name) + '</div>' +
+              '<p class="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-200">' + esc(c.body) + '</p></div></div>'
+            ).join("") : '<p class="text-sm text-gray-400">No comments yet — start the conversation!</p>') + "</div>";
+          el.querySelector("#pe-post").addEventListener("click", async () => {
+            const name = (el.querySelector("#pe-name").value || "").trim() || "Anonymous";
+            const body = (el.querySelector("#pe-body").value || "").trim();
+            if (!body) return;
+            const u2 = window.PolyAuth && window.PolyAuth.user;
+            const payload = { slug, name, body };
+            if (u2 && u2.avatar) payload.avatar_url = u2.avatar;
+            if (u2 && u2.id) payload.author_id = u2.id;
+            try { let r = await sb.from("comments").insert(payload); if (r.error && (payload.avatar_url || payload.author_id)) await sb.from("comments").insert({ slug, name, body }); } catch (e) {}
+            renderComments();
+          });
+        }
+        renderComments();
+      };
+
+      // Register service worker (installable PWA + offline reading)
+      if ("serviceWorker" in navigator && location.protocol === "https:") {
+        window.addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
+      }
+
+      // "Install app" button — shown only when the browser offers installation
+      (function () {
+        let deferred = null;
+        const btn = document.getElementById("install-app");
+        window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; if (btn) { btn.classList.remove("hidden"); btn.classList.add("inline-flex"); } });
+        btn?.addEventListener("click", async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; btn.classList.add("hidden"); });
+        window.addEventListener("appinstalled", () => btn && btn.classList.add("hidden"));
+      })();
+    </script> </body> </html>
