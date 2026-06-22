@@ -8,7 +8,7 @@
 // localStorage (browsable + answerable locally) even when the rest of the site
 // is live, so the PYQ bank is never empty and never depends on the DB columns.
 window.PolyQA = (function () {
-  const LSQ = "doubtsQ3"; // bumped when the seed set changes (now ~30 PYQs)
+  const LSQ = "doubtsQ4"; // bumped when the seed set changes (now ~50 PYQs)
   const uid = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
   const write = (k, v) => localStorage.setItem(k, JSON.stringify(v));
@@ -63,6 +63,38 @@ window.PolyQA = (function () {
       { id: "seed-pyq28", kind: "pyq", year: 2022, subject: "Polity", title: "UPSC Prelims 2022: Which writ secures release from unlawful detention?", body: "Which constitutional writ is issued by a court to secure the release of a person who has been **unlawfully detained**?\n\n*(UPSC CSE Prelims 2022, Indian Polity)*", author_name: "PYQ Bank", exam: "upsc", tags: ["polity", "writs", "fundamental-rights"], votes: 6, status: "solved", accepted_answer_id: "seed-pa28", created_at: t(22) },
       { id: "seed-pyq29", kind: "pyq", year: 2021, subject: "Economy", title: "UPSC Prelims 2021: What does fiscal deficit measure?", body: "Define **fiscal deficit**. How does it differ from the revenue deficit?\n\n*(UPSC CSE Prelims 2021, Indian Economy)*", author_name: "PYQ Bank", exam: "upsc", tags: ["economy", "public-finance"], votes: 4, status: "open", accepted_answer_id: null, created_at: t(12) },
       { id: "seed-pyq30", kind: "pyq", year: 2023, subject: "Science & Tech", title: "UPSC Prelims 2023: Chandrayaan-3 landing region", body: "Near which region of the Moon did India's **Chandrayaan-3** mission soft-land its Vikram lander in 2023, making India the first country to do so?\n\n*(UPSC CSE Prelims 2023, Science & Technology)*", author_name: "PYQ Bank", exam: "upsc", tags: ["science-tech", "space"], votes: 5, status: "open", accepted_answer_id: null, created_at: t(9) },
+
+      // ── Batch 2: more GATE ──────────────────────────────────
+      { id: "seed-pyq31", kind: "pyq", year: 2017, subject: "Computer Science", title: "GATE CSE 2017: Does Dijkstra work with negative edge weights?", body: "Can Dijkstra's shortest-path algorithm be used correctly on a graph with **negative edge weights**? Justify, and name an algorithm that handles them.\n\n*(GATE CSE 2017, Algorithms)*", author_name: "PYQ Bank", exam: "gate", tags: ["graphs", "shortest-path", "algorithms"], votes: 5, status: "open", accepted_answer_id: null, created_at: t(35) },
+      { id: "seed-pyq32", kind: "pyq", year: 2021, subject: "Computer Science", title: "GATE CSE 2021: Page faults with FIFO replacement", body: "A process is given 3 frames. For the reference string $1,2,3,4,1,2,5,1,2,3,4,5$, how many page faults occur under **FIFO** page replacement?\n\n*(GATE CSE 2021, Operating Systems)*", author_name: "PYQ Bank", exam: "gate", tags: ["operating-systems", "paging"], votes: 4, status: "open", accepted_answer_id: null, created_at: t(32) },
+      { id: "seed-pyq33", kind: "pyq", year: 2019, subject: "Mathematics", title: "GATE 2019: Probability that two dice sum to 7", body: "Two fair dice are rolled. What is the probability that the sum of the numbers shown is exactly $7$?\n\n*(GATE 2019, Probability)*", author_name: "PYQ Bank", exam: "gate", tags: ["probability"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(28) },
+
+      // ── Batch 2: more IIT-JEE ───────────────────────────────
+      { id: "seed-pyq34", kind: "pyq", year: 2020, subject: "Physics", title: "JEE Main 2020: Time period of a simple pendulum", body: "A simple pendulum has length $L = 1\\ \\text{m}$. Taking $g = \\pi^2\\ \\text{m/s}^2$, find its time period of oscillation.\n\n*(JEE Main 2020, Oscillations)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["shm", "oscillations"], votes: 5, status: "solved", accepted_answer_id: "seed-pa34", created_at: t(24) },
+      { id: "seed-pyq35", kind: "pyq", year: 2024, subject: "Chemistry", title: "JEE Main 2024: Oxidation number of Mn in KMnO₄", body: "What is the oxidation number of manganese in potassium permanganate, $\\mathrm{KMnO_4}$?\n\n*(JEE Main 2024, Redox)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["redox", "oxidation-number"], votes: 4, status: "open", accepted_answer_id: null, created_at: t(21) },
+      { id: "seed-pyq36", kind: "pyq", year: 2019, subject: "Mathematics", title: "JEE Main 2019: Maximum value of f(x) = x(10 − x)", body: "Find the maximum value of $f(x) = x(10 - x)$ for real $x$, and the value of $x$ at which it occurs.\n\n*(JEE Main 2019, Application of Derivatives)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["maxima-minima", "calculus"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(19) },
+      { id: "seed-pyq37", kind: "pyq", year: 2022, subject: "Physics", title: "JEE Main 2022: Two resistors in parallel", body: "Two resistors of $6\\ \\Omega$ and $3\\ \\Omega$ are connected in **parallel**. What is their equivalent resistance?\n\n*(JEE Main 2022, Current Electricity)*", author_name: "PYQ Bank", exam: "iit-jee", tags: ["circuits", "resistance"], votes: 4, status: "open", accepted_answer_id: null, created_at: t(16) },
+
+      // ── Batch 2: more NEET ──────────────────────────────────
+      { id: "seed-pyq38", kind: "pyq", year: 2023, subject: "Chemistry", title: "NEET 2023: Number of chambers in the human heart", body: "How many chambers does the human heart have, and name them.\n\n*(NEET 2023, Human Physiology)*", author_name: "PYQ Bank", exam: "neet", tags: ["physiology", "circulation"], votes: 6, status: "solved", accepted_answer_id: "seed-pa38", created_at: t(22) },
+      { id: "seed-pyq39", kind: "pyq", year: 2021, subject: "Chemistry", title: "NEET 2021: Electronic configuration of chlorine (Z = 17)", body: "Write the electronic configuration of a chlorine atom (atomic number $Z = 17$).\n\n*(NEET 2021, Atomic Structure)*", author_name: "PYQ Bank", exam: "neet", tags: ["atomic-structure", "configuration"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(17) },
+      { id: "seed-pyq40", kind: "pyq", year: 2019, subject: "Physics", title: "NEET 2019: Work done by a constant force", body: "A constant force of $10\\ \\text{N}$ moves a body $5\\ \\text{m}$ in the direction of the force. How much work is done?\n\n*(NEET 2019, Work–Energy)*", author_name: "PYQ Bank", exam: "neet", tags: ["work-energy"], votes: 2, status: "open", accepted_answer_id: null, created_at: t(14) },
+
+      // ── Batch 2: more ISI / CMI ─────────────────────────────
+      { id: "seed-pyq41", kind: "pyq", year: 2021, subject: "Mathematics", title: "ISI 2021: Prove AM ≥ GM for two positive reals", body: "For positive reals $a$ and $b$, prove that $\\dfrac{a+b}{2} \\ge \\sqrt{ab}$, with equality iff $a = b$.\n\n*(ISI entrance, Inequalities)*", author_name: "PYQ Bank", exam: "isi-cmi", tags: ["inequalities", "am-gm"], votes: 6, status: "solved", accepted_answer_id: "seed-pa41", created_at: t(20) },
+      { id: "seed-pyq42", kind: "pyq", year: 2019, subject: "Mathematics", title: "ISI 2019: Last digit of 7^100", body: "What is the **units digit** (last digit) of $7^{100}$?\n\n*(ISI entrance, Number Theory)*", author_name: "PYQ Bank", exam: "isi-cmi", tags: ["number-theory", "modular-arithmetic"], votes: 5, status: "open", accepted_answer_id: null, created_at: t(13) },
+      { id: "seed-pyq43", kind: "pyq", year: 2017, subject: "Statistics", title: "ISI 2017: Mean of first n natural numbers", body: "What is the arithmetic mean of the first $n$ natural numbers $1, 2, \\dots, n$?\n\n*(ISI entrance, Statistics)*", author_name: "PYQ Bank", exam: "isi-cmi", tags: ["statistics", "averages"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(10) },
+
+      // ── Batch 2: more CAT ───────────────────────────────────
+      { id: "seed-pyq44", kind: "pyq", year: 2020, subject: "Quant", title: "CAT 2020: New average after a number joins", body: "The average of 10 numbers is $20$. If a new number is added and the average becomes $22$, what is the new number?\n\n*(CAT 2020, Averages)*", author_name: "PYQ Bank", exam: "cat", tags: ["averages", "arithmetic"], votes: 5, status: "solved", accepted_answer_id: "seed-pa44", created_at: t(18) },
+      { id: "seed-pyq45", kind: "pyq", year: 2022, subject: "Quant", title: "CAT 2022: Simple interest on a principal", body: "Find the simple interest on $\\textrm{₹}8000$ at $5\\%$ per annum for $3$ years.\n\n*(CAT 2022, Simple & Compound Interest)*", author_name: "PYQ Bank", exam: "cat", tags: ["simple-interest", "arithmetic"], votes: 4, status: "solved", accepted_answer_id: "seed-pa45", created_at: t(15) },
+      { id: "seed-pyq46", kind: "pyq", year: 2019, subject: "Quant", title: "CAT 2019: Remainder when 2^10 is divided by 7", body: "What is the remainder when $2^{10}$ is divided by $7$?\n\n*(CAT 2019, Number System)*", author_name: "PYQ Bank", exam: "cat", tags: ["remainders", "number-system"], votes: 4, status: "open", accepted_answer_id: null, created_at: t(12) },
+      { id: "seed-pyq47", kind: "pyq", year: 2023, subject: "VARC", title: "CAT 2023: Identify the odd sentence (para-coherence)", body: "Read these statements and decide which one does **not** fit a coherent paragraph: (1) Bees communicate the direction of food via a 'waggle dance'. (2) The angle of the dance encodes the food's bearing relative to the sun. (3) Honey is widely used as a natural sweetener. (4) The duration of the waggle signals distance. Which sentence is the odd one out, and why?\n\n*(CAT 2023, Verbal Ability)*", author_name: "PYQ Bank", exam: "cat", tags: ["verbal", "reasoning"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(8) },
+
+      // ── Batch 2: more UPSC ──────────────────────────────────
+      { id: "seed-pyq48", kind: "pyq", year: 2020, subject: "History", title: "UPSC Prelims 2020: Who started the Champaran Satyagraha?", body: "Who led the **Champaran Satyagraha** of 1917, the first civil-disobedience movement in colonial India?\n\n*(UPSC CSE Prelims 2020, Modern History)*", author_name: "PYQ Bank", exam: "upsc", tags: ["modern-history", "freedom-movement"], votes: 4, status: "open", accepted_answer_id: null, created_at: t(11) },
+      { id: "seed-pyq49", kind: "pyq", year: 2022, subject: "Polity", title: "UPSC Prelims 2022: How many Schedules in the Constitution?", body: "How many **Schedules** does the Constitution of India currently have?\n\n*(UPSC CSE Prelims 2022, Indian Polity)*", author_name: "PYQ Bank", exam: "upsc", tags: ["polity", "constitution"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(7) },
+      { id: "seed-pyq50", kind: "pyq", year: 2021, subject: "Economy", title: "UPSC Prelims 2021: What does GDP stand for?", body: "What does **GDP** stand for, and does it count goods produced by a country's citizens abroad?\n\n*(UPSC CSE Prelims 2021, Indian Economy)*", author_name: "PYQ Bank", exam: "upsc", tags: ["economy", "national-income"], votes: 3, status: "open", accepted_answer_id: null, created_at: t(6) },
     ];
     write(LSQ, qs);
     write("doubtsA:seed-q1", [
@@ -117,6 +149,21 @@ window.PolyQA = (function () {
       ],
       "seed-pyq28": [
         { id: "seed-pa28", body: "**Habeas corpus** (Latin: 'you shall have the body'). The court orders the detaining authority to produce the person and justify the detention; if it's unlawful, the person is released. It safeguards Article 21 (right to life & personal liberty).", author_name: "Kabir Das", votes: 8, created_at: t(21) },
+      ],
+      "seed-pyq34": [
+        { id: "seed-pa34", body: "$T = 2\\pi\\sqrt{\\dfrac{L}{g}} = 2\\pi\\sqrt{\\dfrac{1}{\\pi^2}} = 2\\pi\\cdot\\dfrac{1}{\\pi} = 2\\ \\text{s}$. The clever choice $g=\\pi^2$ makes the $\\pi$'s cancel.", author_name: "Ishan Verma", votes: 7, created_at: t(23) },
+      ],
+      "seed-pyq38": [
+        { id: "seed-pa38", body: "**Four chambers**: two upper **atria** (right & left atrium) and two lower **ventricles** (right & left ventricle). The right side handles deoxygenated blood, the left side oxygenated.", author_name: "Aanya Roy", votes: 8, created_at: t(21) },
+      ],
+      "seed-pyq41": [
+        { id: "seed-pa41", body: "Since squares are non-negative, $(\\sqrt{a}-\\sqrt{b})^2 \\ge 0$. Expanding: $a - 2\\sqrt{ab} + b \\ge 0 \\Rightarrow a+b \\ge 2\\sqrt{ab} \\Rightarrow \\dfrac{a+b}{2}\\ge\\sqrt{ab}$. Equality holds iff $\\sqrt{a}=\\sqrt{b}$, i.e. $a=b$. $\\blacksquare$", author_name: "Sara Beck", votes: 11, created_at: t(19) },
+      ],
+      "seed-pyq44": [
+        { id: "seed-pa44", body: "Sum of the 10 numbers $=10\\times20=200$. After adding the new number $x$, there are 11 numbers averaging 22, so total $=11\\times22=242$. Thus $x=242-200=42$.", author_name: "Priya Nair", votes: 6, created_at: t(17) },
+      ],
+      "seed-pyq45": [
+        { id: "seed-pa45", body: "Simple interest $=\\dfrac{P\\cdot R\\cdot T}{100}=\\dfrac{8000\\times5\\times3}{100}=\\textrm{₹}1200$.", author_name: "Priya Nair", votes: 5, created_at: t(14) },
       ],
     };
     Object.keys(A).forEach((qid) => write("doubtsA:" + qid, A[qid].map((a) => Object.assign({ question_id: qid }, a))));
