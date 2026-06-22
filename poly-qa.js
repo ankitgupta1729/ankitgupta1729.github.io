@@ -67,7 +67,13 @@ window.PolyQA = (function () {
   return {
     async isLive() { return (await mode()) === "live"; },
     async listQuestions() {
-      if (await mode() === "live") { const { data } = await _sb.from("questions").select("*").order("created_at", { ascending: false }); return data || []; }
+      if (await mode() === "live") {
+        const { data } = await _sb.from("questions").select("*").order("created_at", { ascending: false });
+        // Append curated seed doubts so the board is never empty; they route to
+        // localStorage for answering (see isSeed), real ones go to Supabase.
+        const seeds = ensureSeed().filter((q) => q.kind !== "pyq");
+        return (data || []).concat(seeds);
+      }
       return ensureSeed();
     },
     // Previous-year questions: curated seed items (always shown) + any live
