@@ -1,0 +1,110 @@
+---
+import ProjectCard from "./ProjectCard.astro";
+import type { Project } from "../consts";
+
+interface Props {
+  projects: Project[];
+  /** Show All / Web apps / AI apps filter chips. */
+  filters?: boolean;
+  compact?: boolean;
+  id?: string;
+}
+
+const { projects, filters = false, compact = false, id = "project-grid" } = Astro.props;
+const counts = {
+  all: projects.length,
+  web: projects.filter((p) => p.kind === "web").length,
+  ai: projects.filter((p) => p.kind === "ai").length,
+};
+---
+
+<div class="project-grid-root" id={id}>
+  {
+    filters && (
+      <div class="mb-6 flex flex-wrap gap-2" role="group" aria-label="Filter projects">
+        <button type="button" class="filter-chip active" data-filter="all" aria-pressed="true">All <span class="opacity-60">{counts.all}</span></button>
+        <button type="button" class="filter-chip" data-filter="web" aria-pressed="false">🌐 Web apps <span class="opacity-60">{counts.web}</span></button>
+        <button type="button" class="filter-chip" data-filter="ai" aria-pressed="false">🤖 AI apps <span class="opacity-60">{counts.ai}</span></button>
+      </div>
+    )
+  }
+  <div data-reveal class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {projects.map((p) => <ProjectCard project={p} compact={compact} />)}
+  </div>
+</div>
+
+<script is:inline define:vars={{ id }}>
+  (function () {
+    const root = document.getElementById(id);
+    if (!root) return;
+
+    // Filter chips
+    const chips = root.querySelectorAll("[data-filter]");
+    chips.forEach((chip) =>
+      chip.addEventListener("click", () => {
+        const f = chip.getAttribute("data-filter");
+        chips.forEach((c) => {
+          const on = c === chip;
+          c.classList.toggle("active", on);
+          c.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        root.querySelectorAll("[data-kind]").forEach((card) => {
+          card.hidden = f !== "all" && card.getAttribute("data-kind") !== f;
+        });
+      })
+    );
+
+    // Live Hugging Face Space status. The HF API is CORS-enabled for this
+    // origin; one request per Space, cached for 5 minutes per tab. Any
+    // failure leaves the server-rendered fallback badge untouched.
+    const MAP = {
+      RUNNING: ["Live", "status-live", false],
+      RUNNING_BUILDING: ["Live · updating", "status-live", false],
+      SLEEPING: ["Sleeping · wakes on open", "status-sleeping", false],
+      PAUSED: ["Paused", "status-sleeping", false],
+      BUILDING: ["Starting up", "status-building", false],
+      APP_STARTING: ["Starting up", "status-building", false],
+      RUNTIME_ERROR: ["Temporarily down", "status-error", true],
+      BUILD_ERROR: ["Temporarily down", "status-error", true],
+      CONFIG_ERROR: ["Temporarily down", "status-error", true],
+      NO_APP_FILE: ["Temporarily down", "status-error", true],
+    };
+    const cache = (window.__hfStatus = window.__hfStatus || {});
+    root.querySelectorAll("[data-hf-space]").forEach((pill) => {
+      const space = pill.getAttribute("data-hf-space");
+      if (!space) return;
+      const key = "hf-status:" + space;
+      let p = cache[space];
+      if (!p) {
+        try {
+          const hit = JSON.parse(sessionStorage.getItem(key) || "null");
+          if (hit && Date.now() - hit.t < 300000) p = Promise.resolve(hit.stage);
+        } catch (e) {}
+      }
+      if (!p) {
+        const ctl = "AbortController" in window ? new AbortController() : null;
+        const timer = ctl && setTimeout(() => ctl.abort(), 6000);
+        p = fetch("https://huggingface.co/api/spaces/" + space, { signal: ctl ? ctl.signal : undefined })
+          .then((r) => (r.ok ? r.json() : null))
+          .then((d) => {
+            const stage = d && d.runtime && d.runtime.stage;
+            if (stage) try { sessionStorage.setItem(key, JSON.stringify({ stage, t: Date.now() })); } catch (e) {}
+            return stage;
+          })
+          .catch(() => null)
+          .finally(() => timer && clearTimeout(timer));
+      }
+      cache[space] = p;
+      p.then((stage) => {
+        const m = stage && MAP[stage];
+        if (!m) return;
+        pill.classList.remove("status-live", "status-sleeping", "status-building", "status-error");
+        pill.classList.add(m[1]);
+        pill.querySelector(".status-text").textContent = m[0];
+        pill.title = "Hugging Face status: " + stage.toLowerCase().replace(/_/g, " ");
+        const note = pill.closest("article") && pill.closest("article").querySelector(".error-note");
+        if (note) note.hidden = !m[2];
+      });
+    });
+  })();
+</script>

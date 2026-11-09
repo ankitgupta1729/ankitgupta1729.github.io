@@ -45,6 +45,7 @@ export const AI = {
 
 export const SOCIAL = {
   github: "https://github.com/ankitgupta1729",
+  huggingface: "https://huggingface.co/ankitgupta1729",
   // Update these to your real handles when ready — they render only if set.
   twitter: "https://twitter.com/",
   linkedin: "https://www.linkedin.com/",
@@ -85,6 +86,7 @@ export const NAV = [
   { name: "Exams", href: "/exams" },
   { name: "Frontiers", href: "/frontiers" },
   { name: "Arcade", href: "/play" },
+  { name: "Projects", href: "/projects" },
   { name: "Write", href: "/write" },
   { name: "About", href: "/about" },
 ];
@@ -115,3 +117,187 @@ export const NEWSLETTER = {
   blurb:
     "A short, ad-free digest of new Polymath articles across AI, science, maths and more. No spam, unsubscribe anytime.",
 };
+
+// ---------------------------------------------------------------------------
+// Live applications & projects — the single source of truth for the homepage
+// "Live apps" section, /projects, the footer and the command palette.
+//
+// `hfSpace` ("owner/name") turns on a live status badge: the browser asks the
+// public Hugging Face API (CORS-enabled for this origin) whether the Space is
+// running, sleeping, building or failing. `status` is the fallback shown
+// before that check returns, or when it can't run (offline, blocked, no JS).
+// ---------------------------------------------------------------------------
+export type ProjectStatus = "live" | "sleeping" | "building" | "error" | "paused";
+export type ProjectKind = "web" | "ai";
+
+export interface Project {
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  icon: string;
+  /** Two colours for the card's gradient header. */
+  gradient: [string, string];
+  kind: ProjectKind;
+  platform: "GitHub Pages" | "Hugging Face Spaces";
+  tech: string[];
+  highlights: string[];
+  /** Direct link to the running application. */
+  liveUrl: string;
+  /** Hugging Face Space page (model card, logs, files). */
+  spaceUrl?: string;
+  hfSpace?: string;
+  /** Public source repository, if any. */
+  repoUrl?: string;
+  repoLabel?: string;
+  /** Shown instead of a source link when the code is not public. */
+  sourceNote?: string;
+  /** Extra hint for first-time visitors (e.g. demo login). */
+  note?: string;
+  status: ProjectStatus;
+  featured?: boolean;
+  self?: boolean;
+}
+
+export const PROJECTS: Project[] = [
+  {
+    slug: "madrigal-influence",
+    name: "Madrigal Influence Intelligence",
+    tagline: "Physician referral-network analytics for pharma field teams",
+    description:
+      "Ranks physicians by how much they shape patient care — not just how many patients they see — using referral-network influence scores, an interactive US map, patient segmentation and week-by-week patient flow.",
+    icon: "🧭",
+    gradient: ["#4f46e5", "#0ea5e9"],
+    kind: "web",
+    platform: "GitHub Pages",
+    tech: ["React", "TypeScript", "MapLibre", "PySpark", "Graph analytics"],
+    highlights: ["Influence map with referral lines", "Patient segmentation & flow", "Shareable deep links"],
+    liveUrl: "https://ankitgupta1729.github.io/madrigal-influence-demo/",
+    repoUrl: "https://github.com/ankitgupta1729/madrigal-influence-demo",
+    repoLabel: "Demo build",
+    sourceNote: "Source is private (client work). The demo runs on fully synthetic data.",
+    status: "live",
+    featured: true,
+  },
+  {
+    slug: "gateoverflow-chatbot",
+    name: "GateOverflow Chatbot",
+    tagline: "AI study buddy for GATE CS & DA, grounded in real PYQs",
+    description:
+      "A retrieval-augmented tutor that answers with citations to real previous-year GATE questions, plus mock tests, spaced-repetition flashcards, a study planner and a progress dashboard.",
+    icon: "🎯",
+    gradient: ["#ef4444", "#f59e0b"],
+    kind: "ai",
+    platform: "Hugging Face Spaces",
+    tech: ["RAG", "LLM", "Python", "Docker"],
+    highlights: ["Cited answers from PYQs", "Mock tests & flashcards", "Study planner"],
+    liveUrl: "https://ankitgupta1729-gateoverflow-chatbot.hf.space/",
+    spaceUrl: "https://huggingface.co/spaces/ankitgupta1729/gateoverflow-chatbot",
+    hfSpace: "ankitgupta1729/gateoverflow-chatbot",
+    status: "live",
+    featured: true,
+  },
+  {
+    slug: "items-income-tax",
+    name: "ITEMS — Income Tax System",
+    tagline: "Practice-management workspace for tax professionals",
+    description:
+      "Client records, original and revised return filing with automatic tax computation, firm accounts (Trading, P&L, Balance Sheet) and statutory reports — a web edition of a VB.NET + Oracle production system.",
+    icon: "🧾",
+    gradient: ["#059669", "#14b8a6"],
+    kind: "web",
+    platform: "GitHub Pages",
+    tech: ["JavaScript", "HTML/CSS", "Local storage"],
+    highlights: ["Automatic tax computation", "Trading, P&L & Balance Sheet", "Statutory reports"],
+    liveUrl: "https://ankitgupta1729.github.io/items-income-tax-system/",
+    repoUrl: "https://github.com/ankitgupta1729/items-income-tax-system",
+    note: "Demo login: admin / admin@123 — data stays in your browser.",
+    status: "live",
+    featured: true,
+  },
+  {
+    slug: "income-tax-evaluation",
+    name: "Income Tax Evaluation System",
+    tagline: "Income Tax Evaluation & Maintenance System — dashboard edition",
+    description:
+      "A single-page tax office dashboard with client management, tax computation, trading and P&L accounts, balance sheets and printable reports, in light and dark themes.",
+    icon: "💰",
+    gradient: ["#7c3aed", "#ec4899"],
+    kind: "web",
+    platform: "GitHub Pages",
+    tech: ["JavaScript", "HTML/CSS", "Local storage"],
+    highlights: ["Client & return management", "Financial statements", "Light & dark themes"],
+    liveUrl: "https://ankitgupta1729.github.io/IncomeTaxEvaluationSystem-WebDemo/",
+    repoUrl: "https://github.com/ankitgupta1729/IncomeTaxEvaluationSystem-WebDemo",
+    note: "Demo credentials are shown on the sign-in screen.",
+    status: "live",
+  },
+  {
+    slug: "mcp-sentiment-tool",
+    name: "MCP Sentiment Tool",
+    tagline: "Sentiment analysis exposed as a Model Context Protocol server",
+    description:
+      "Scores any text for polarity and subjectivity. Use it in the browser, or connect it to an AI agent as an MCP tool through the Space's built-in MCP endpoint.",
+    icon: "📉",
+    gradient: ["#6366f1", "#eab308"],
+    kind: "ai",
+    platform: "Hugging Face Spaces",
+    tech: ["Gradio", "MCP server", "TextBlob", "Python"],
+    highlights: ["Polarity & subjectivity", "MCP tool endpoint", "JSON output"],
+    liveUrl: "https://ankitgupta1729-mcp-sentiment-tool.hf.space/",
+    spaceUrl: "https://huggingface.co/spaces/ankitgupta1729/mcp-sentiment-tool",
+    hfSpace: "ankitgupta1729/mcp-sentiment-tool",
+    status: "live",
+  },
+  {
+    slug: "mcp-client",
+    name: "MCP Client",
+    tagline: "A tool-calling agent that uses remote MCP tools",
+    description:
+      "A smolagents code agent with a chat interface that discovers tools from a remote MCP server and calls them to answer questions.",
+    icon: "🦀",
+    gradient: ["#6366f1", "#ef4444"],
+    kind: "ai",
+    platform: "Hugging Face Spaces",
+    tech: ["Gradio", "smolagents", "MCP client", "Python"],
+    highlights: ["Agentic tool calling", "Remote MCP tools", "Chat interface"],
+    liveUrl: "https://ankitgupta1729-mcp-client.hf.space/",
+    spaceUrl: "https://huggingface.co/spaces/ankitgupta1729/mcp-client",
+    hfSpace: "ankitgupta1729/mcp-client",
+    status: "error",
+  },
+  {
+    slug: "polymath",
+    name: "Polymath",
+    tagline: "This site — a free, open knowledge hub",
+    description:
+      "Explainers across AI, maths, science and finance, with exam prep, mock tests, interactive simulations, a community forum and an in-browser AI assistant.",
+    icon: "🧠",
+    gradient: ["#4f46e5", "#ec4899"],
+    kind: "web",
+    platform: "GitHub Pages",
+    tech: ["Astro", "Tailwind CSS", "Supabase", "Transformers.js"],
+    highlights: ["Articles & exam prep", "Simulations & arcade", "On-device AI assistant"],
+    liveUrl: "https://ankitgupta1729.github.io/",
+    repoUrl: "https://github.com/ankitgupta1729/ankitgupta1729.github.io",
+    status: "live",
+    self: true,
+  },
+];
+
+export const PROFILES = [
+  {
+    name: "GitHub",
+    handle: "@ankitgupta1729",
+    href: "https://github.com/ankitgupta1729",
+    blurb: "Source code, notebooks and learning repositories.",
+    cta: "View repositories",
+  },
+  {
+    name: "Hugging Face",
+    handle: "ankitgupta1729",
+    href: "https://huggingface.co/ankitgupta1729",
+    blurb: "AI apps and MCP tools running as Spaces.",
+    cta: "View Spaces",
+  },
+];

@@ -63,6 +63,17 @@ Your content here…
 
 Then publish (see deployment below).
 
+## 🚀 Projects & live apps
+
+The homepage **"Try what I've built"** section, the [`/projects`](https://ankitgupta1729.github.io/projects/) page,
+the footer's **Live apps** column and the ⌘K search all read one list: `PROJECTS` in `src/consts.ts`.
+To add, rename or retire an app, edit that list only.
+
+* `liveUrl` — the running app (opens in a new tab); `repoUrl` / `spaceUrl` — public source or Hugging Face Space page.
+* `sourceNote` — shown instead of a source link when the code is private (e.g. client work).
+* `hfSpace: "owner/name"` — shows a **live status badge** (Live / Sleeping / Starting up / Temporarily down) fetched in
+  the browser from the public Hugging Face API; `status` is the fallback when that check can't run.
+
 ## 📦 Deployment
 
 The live site is published to the **`gh-pages`** branch and served by GitHub Pages.

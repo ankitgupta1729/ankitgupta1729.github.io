@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import { NAV, CATEGORIES } from "../consts";
+import { NAV, CATEGORIES, PROJECTS } from "../consts";
 import { categoryName } from "../lib/utils";
 
 const posts = (await getCollection("blog")).filter((p) => !p.data.draft);
@@ -9,6 +9,7 @@ const index = [
   { t: "Reading list", s: "Page", u: "/reading-list", k: "page" },
   { t: "Tags", s: "Page", u: "/tags", k: "page" },
   { t: "Community", s: "Page", u: "/community", k: "page" },
+  ...PROJECTS.filter((p) => !p.self).map((p) => ({ t: p.name, s: "Live app ↗", u: p.liveUrl, k: "app", i: p.icon })),
   ...CATEGORIES.map((c) => ({ t: c.name, s: "Topic", u: `/categories/${c.slug}`, k: "topic", i: c.icon })),
   ...posts.map((p) => ({ t: p.data.title, s: categoryName(p.data.category), u: `/blog/${p.id}/`, k: "article", i: p.data.heroEmoji })),
 ];
@@ -69,7 +70,7 @@ const index = [
         return;
       }
       results.innerHTML = items.map((x, i) =>
-        '<li><a href="' + x.u + '" data-i="' + i + '" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ' + (i === active ? "bg-brand-50 dark:bg-white/10" : "") + '">' +
+        '<li><a href="' + x.u + '"' + (/^https?:/.test(x.u) ? ' target="_blank" rel="noopener noreferrer"' : '') + ' data-i="' + i + '" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ' + (i === active ? "bg-brand-50 dark:bg-white/10" : "") + '">' +
           '<span class="text-base">' + (x.i || iconFor(x.k)) + '</span>' +
           '<span class="flex-1 truncate font-medium text-gray-900 dark:text-white">' + esc(x.t) + '</span>' +
           '<span class="shrink-0 text-xs text-gray-400">' + esc(x.s) + '</span>' +
@@ -103,7 +104,7 @@ const index = [
       if (e.key === "Escape") { e.preventDefault(); close(); }
       else if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
       else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
-      else if (e.key === "Enter") { const x = items[active]; if (x) location.href = x.u; }
+      else if (e.key === "Enter") { const x = items[active]; if (x) { if (/^https?:/.test(x.u)) { window.open(x.u, "_blank", "noopener"); close(); } else location.href = x.u; } }
     });
   })();
 </script>
